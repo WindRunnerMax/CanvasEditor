@@ -21,7 +21,10 @@ module.exports = {
   ],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./client"),
+      "@": path.resolve(__dirname, "./src"),
+      "sketching-core": path.resolve(__dirname, "../core/src"),
+      "sketching-delta": path.resolve(__dirname, "../delta/src"),
+      "sketching-utils": path.resolve(__dirname, "../utils/src"),
     },
   },
   builtins: {
