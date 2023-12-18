@@ -1,5 +1,14 @@
 {
-  "extends":"../tsconfig.json",
+  "extends":"../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "sketching-core": ["packages/core/src"],
+      "sketching-delta": ["packages/delta/src"],
+      "sketching-react": ["packages/react/src"],
+      "sketching-utils": ["packages/utils/src"]
+    }
+  },
   "include": [
     "src/**/*",
     "example/**/*"

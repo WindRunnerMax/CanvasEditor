@@ -12,7 +12,8 @@
     "dist"
   ],
   "scripts": {
-    "dev": "rspack serve",
+    "dev": "rspack serve --config ./rspack.config.js",
+    "build": "tsc -p tsconfig.build.json",
     "release": "./publish.sh"
   },
   "keywords": [],
@@ -22,15 +23,14 @@
     "sketching-core": "workspace: *",
     "sketching-delta": "workspace: *",
     "sketching-utils": "workspace: *",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
   },
   "devDependencies": {
-    "@types/react": "^17.0.2",
-    "@types/react-dom": "^17.0.2",
-    "@vitejs/plugin-react-swc": "^3.0.0",
-    "sass": "^1.62.1",
-    "typescript": "^4.9.4",
-    "vite": "^4.1.0"
+    "@types/react": "17.0.2",
+    "@types/react-dom": "17.0.2",
+    "@rspack/cli": "0.2.5",
+    "@rspack/plugin-html": "0.2.5",
+    "copy-webpack-plugin": "5"
   }
 }
