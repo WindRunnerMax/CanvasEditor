@@ -1,2 +1,11 @@
 export { Delta } from "./delta";
-export type { DeltaOptions } from "./types";
+export { DeltaSet } from "./delta-set";
+export type {
+  DeltaLike,
+  DeltaOptions,
+  DeltaSetLike,
+  DeltaSetOptions,
+  DeltaStatic,
+  Op,
+} from "./types";
+export { OpType } from "./types";

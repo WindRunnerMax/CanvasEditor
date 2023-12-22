@@ -1,14 +1,21 @@
-import { Delta } from "./delta";
-import { DeltaSetLike } from "./types";
+import type { Delta } from "./delta";
+import type { DeltaSetLike, DeltaStatic } from "./types";
 
 export class DeltaSet {
-  private static DeltaTypeStore: Record<string, Delta> = {};
+  private deltas: Record<string, Delta>;
   constructor(options: DeltaSetLike) {
-    console.log("options", options);
-    // TODO: From JSON Through DeltaTypeStore
+    this.deltas = {};
+    Object.entries(options).forEach(([key, delta]) => {
+      const DeltaType = DeltaSet.DeltaTypeStore[delta.key];
+      DeltaType && (this.deltas[key] = DeltaType.create(delta));
+    });
   }
 
-  public static register(delta: Delta) {
-    DeltaSet.DeltaTypeStore[delta.key] = delta;
+  private static DeltaTypeStore: Record<string, DeltaStatic> = {};
+  public static register(delta: DeltaStatic) {
+    if (!delta.KEY) {
+      throw new Error("Please implements DeltaStatic Type");
+    }
+    DeltaSet.DeltaTypeStore[delta.KEY] = delta;
   }
 }

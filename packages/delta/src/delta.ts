@@ -1,13 +1,13 @@
-import { DeltaOptions } from "./types";
+import type { DeltaOptions } from "./types";
 
-export abstract class Delta<T = unknown> {
+export abstract class Delta {
   public abstract readonly key: string;
-  public attrs: T;
   private x: number;
   private y: number;
   private width: number;
   private height: number;
   public children: Set<string>;
+  public attrs: Record<string, string>;
   public abstract invert: () => void;
   public abstract drawing: () => void;
 
@@ -17,8 +17,8 @@ export abstract class Delta<T = unknown> {
     this.y = y;
     this.width = width;
     this.height = height;
-    this.children = new Set();
-    this.attrs = options.attrs as T;
+    this.attrs = options.attrs || {};
+    this.children = new Set(options.children);
   }
 
   public getArea(): number {
@@ -52,5 +52,15 @@ export abstract class Delta<T = unknown> {
     return this;
   }
 
-  // TODO: toJSON
+  public toJSON() {
+    return {
+      x: this.x,
+      y: this.y,
+      key: this.key,
+      attrs: this.attrs,
+      width: this.width,
+      height: this.height,
+      children: Array.from(this.children),
+    };
+  }
 }
