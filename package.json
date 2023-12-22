@@ -15,7 +15,6 @@
   "homepage": "https://github.com/WindrunnerMax/CVEditor",
   "dependencies": {},
   "devDependencies": {
-    "sass": "1.52.3",
     "@typescript-eslint/eslint-plugin": "5.4.0",
     "@typescript-eslint/parser": "5.4.0",
     "eslint": "7.11.0",
@@ -24,10 +23,11 @@
     "eslint-plugin-prettier": "3.3.1",
     "eslint-plugin-react": "7.27.0",
     "eslint-plugin-react-hooks": "4.3.0",
+    "sass": "1.52.3",
     "stylelint": "14.8.5",
     "stylelint-config-sass-guidelines": "9.0.1",
     "stylelint-config-standard": "25.0.0",
-    "typescript": "4.9.4",
+    "typescript": "4.1.2",
     "postcss": "8.3.3",
     "prettier": "2.4.1"
   }

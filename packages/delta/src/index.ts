@@ -1,1 +1,2 @@
-export const PKG = "cv-delta";
+export { Delta } from "./delta";
+export type { DeltaOptions } from "./types";
