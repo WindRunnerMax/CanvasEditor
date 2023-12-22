@@ -21,7 +21,7 @@
     "paths": {
       "sketching-core": ["./packages/core/src"],
       "sketching-delta": ["./packages/delta/src"],
-      "sketching-react": ["./packages/react/src"],
+      "sketching-plugin": ["./packages/plugin/src"],
       "sketching-utils": ["./packages/utils/src"],
     },
   },

@@ -1,1 +1,1 @@
-export const PKG = "sketching-plugins";
+export const PKG = "sketching-utils";
