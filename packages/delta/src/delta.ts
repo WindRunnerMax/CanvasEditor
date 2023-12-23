@@ -12,9 +12,8 @@ export abstract class Delta {
   private height: number;
   public children: string[];
   public attrs: Record<string, string>;
-  public abstract invert: () => void;
-  public abstract drawing: (ctx: CanvasRenderingContext2D) => void;
   public getDeltaSet?: () => DeltaSet;
+  public abstract drawing: (ctx: CanvasRenderingContext2D) => void;
 
   public constructor(options: DeltaOptions) {
     const { id, x, y, width, height } = options;

@@ -1,4 +1,4 @@
-import type { Op } from "sketching-delta";
+import type { Delta, Op } from "sketching-delta";
 import { DeltaSet } from "sketching-delta";
 import { ROOT_ZONE } from "sketching-utils";
 
@@ -11,6 +11,7 @@ import { DeltaState } from "./delta-state";
 
 export class EditorState {
   private active = ROOT_ZONE;
+  public readonly entry: DeltaState;
   private status: Map<string, boolean>;
   private deltas: Map<string, DeltaState>;
 
@@ -22,9 +23,29 @@ export class EditorState {
       const entry = new EntryDelta(DEFAULT_DELTA_LIKE);
       this.deltas.set(entry.id, new DeltaState(editor, entry));
     }
-    this.deltaSet.forEach((deltaId, delta) => {
-      this.deltas.set(deltaId, new DeltaState(editor, delta));
+    this.deltaSet.forEach((id, delta) => {
+      this.deltas.set(id, new DeltaState(editor, delta));
     });
+    this.entry = this.getDeltaState(ROOT_ZONE);
+    this.createTreeState();
+  }
+
+  private createTreeState() {
+    const set = new WeakSet<Delta>();
+    const dfs = (current: Delta) => {
+      if (set.has(current)) return void 0;
+      const state = this.getDeltaState(current.id);
+      if (!state) return void 0;
+      state.children = current.children
+        .map(id => {
+          const childState = this.getDeltaState(id);
+          childState && childState.setParent(state);
+          childState && dfs(childState.delta);
+          return childState;
+        })
+        .filter(Boolean) as DeltaState[];
+    };
+    dfs(this.entry.delta);
   }
 
   public get(key: keyof typeof EDITOR_STATE) {

@@ -1,7 +1,8 @@
 import ReactDOM from "react-dom";
-import { PKG as PKGCore } from "sketching-core";
-import { PKG as PKGDelta } from "sketching-delta";
-import { PKG as PKGExample } from "sketching-utils";
+import { DeltaSet } from "sketching-delta";
 
-console.log(PKGCore, PKGDelta, PKGExample);
-ReactDOM.render(<div>Example</div>, document.getElementById("root"));
+import { Rect } from "../src";
+import { App } from "./components/app";
+
+DeltaSet.register(Rect);
+ReactDOM.render(<App />, document.getElementById("root"));

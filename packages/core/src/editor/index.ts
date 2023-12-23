@@ -1,6 +1,7 @@
 import { DeltaSet } from "sketching-delta";
 import { ROOT_ZONE } from "sketching-utils";
 
+import { Engine } from "../engine";
 import { Event } from "../event";
 import { LOG_LEVEL, Logger } from "../log";
 import { EditorState } from "../state";
@@ -20,6 +21,7 @@ export class Editor {
   public state: EditorState;
   public event: Event;
   public logger: Logger;
+  public engine: Engine;
 
   constructor(options: EditorOptions = {}) {
     const { deltaSet = new DeltaSet(DEFAULT_DELTA_SET_LIKE), logLevel = LOG_LEVEL.ERROR } = options;
@@ -34,6 +36,7 @@ export class Editor {
     this.state = new EditorState(this, this.deltaSet);
     this.event = new Event(this);
     this.logger = new Logger(logLevel);
+    this.engine = new Engine(this);
   }
 
   public onMount(container: HTMLDivElement) {
@@ -42,11 +45,13 @@ export class Editor {
     }
     this.container = container;
     this.state.set(EDITOR_STATE.MOUNTED, true);
+    this.engine.onMount();
     this.event.bind();
   }
 
   public destroy() {
     this.event.unbind();
+    this.engine.destroy();
     this.state.set(EDITOR_STATE.MOUNTED, false);
   }
 

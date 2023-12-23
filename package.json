@@ -1,7 +1,9 @@
 {
   "name": "cv-sketching",
   "version": "1.0.0",
-  "scripts": {},
+  "scripts": {
+    "dev:react": "pnpm --filter sketching-plugin run dev"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/WindrunnerMax/CVEditor.git"

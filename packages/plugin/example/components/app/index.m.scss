@@ -1,0 +1,21 @@
+@mixin full-screen {
+  height: 100%;
+  width: 100%;
+}
+
+html,
+body {
+  @include full-screen;
+
+  margin: 0;
+  padding: 0;
+}
+
+:global(#root) {
+  @include full-screen;
+}
+
+.canvas,
+.container {
+  @include full-screen;
+}

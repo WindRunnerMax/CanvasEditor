@@ -1,1 +1,1 @@
-export const PKG = "sketching-plugin";
+export { Rect } from "./rect";
