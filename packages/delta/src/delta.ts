@@ -1,7 +1,7 @@
 import { getUniqueId, isString } from "sketching-utils";
 
 import type { DeltaSet } from "./delta-set";
-import type { DeltaOptions } from "./types";
+import type { DeltaLike, DeltaOptions } from "./types";
 
 export abstract class Delta {
   public abstract readonly key: string;
@@ -13,7 +13,7 @@ export abstract class Delta {
   public children: string[];
   public attrs: Record<string, string>;
   public abstract invert: () => void;
-  public abstract drawing: () => void;
+  public abstract drawing: (ctx: CanvasRenderingContext2D) => void;
   public getDeltaSet?: () => DeltaSet;
 
   public constructor(options: DeltaOptions) {
@@ -78,10 +78,16 @@ export abstract class Delta {
     return { x: this.x, y: this.y };
   }
 
-  public toJSON() {
+  public clone() {
+    // @ts-expect-error constructor type
+    return new this.constructor(this.toJSON());
+  }
+
+  public toJSON(): DeltaLike {
     return {
       x: this.x,
       y: this.y,
+      id: this.id,
       key: this.key,
       attrs: this.attrs,
       width: this.width,

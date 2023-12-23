@@ -1,4 +1,4 @@
-export { DEFAULT_ZONE } from "./constant";
+export { DEFAULT_PRIORITY, ROOT_ZONE } from "./constant";
 export {
   getUniqueId,
   isArray,

@@ -1,3 +1,5 @@
+import { isString } from "sketching-utils";
+
 import type { Delta } from "./delta";
 import type { DeltaSetLike, DeltaStatic } from "./types";
 
@@ -15,38 +17,50 @@ export class DeltaSet {
     });
   }
 
-  getDeltas() {
-    return this.deltas;
+  public getDeltas(): DeltaSetLike {
+    return Object.keys(this.deltas)
+      .filter(key => this.deltas[key])
+      .reduce((pre, cur) => ({ ...pre, [cur]: this.deltas[cur].toJSON() }), {} as DeltaSetLike);
   }
 
-  get(key: string) {
-    // TODO: limit return types with interface extensions
+  public get(key: string) {
+    // TODO: Limit Return Types With Interface Extensions
     if (!this.deltas[key]) return null;
     return this.deltas[key];
   }
 
-  add(delta: Delta, targetId?: string) {
+  public add(delta: Delta, to?: string) {
     this.deltas[delta.id] = delta;
-    if (targetId) {
-      const delta = this.get(targetId);
+    delta.getDeltaSet = () => this;
+    if (to) {
+      const delta = this.get(to);
       delta && delta.insert(delta);
     }
     return this;
   }
 
-  remove(delta: Delta, targetId?: string) {
-    delete this.deltas[delta.id];
-    if (targetId) {
-      const delta = this.get(targetId);
+  public remove(id: string, from?: string): this;
+  public remove(delta: Delta, from?: string): this;
+  public remove(params: string | Delta, from?: string) {
+    const id = isString(params) ? params : params.id;
+    delete this.deltas[id];
+    if (from) {
+      const delta = this.get(from);
       delta && delta.remove(delta);
     }
     return this;
   }
 
+  forEach(cb: (zoneId: string, delta: Delta) => void) {
+    for (const [id, delta] of Object.entries(this.deltas)) {
+      cb(id, delta);
+    }
+  }
+
   private static DeltaTypeStore: Record<string, DeltaStatic> = {};
   public static register(delta: DeltaStatic) {
     if (!delta.KEY) {
-      throw new Error("Please implements DeltaStatic Type");
+      throw new TypeError("Please implements DeltaStatic Type");
     }
     DeltaSet.DeltaTypeStore[delta.KEY] = delta;
   }
