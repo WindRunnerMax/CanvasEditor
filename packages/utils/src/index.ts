@@ -1,2 +1,11 @@
 export { DEFAULT_ZONE } from "./constant";
-export { getUniqueId } from "laser-utils";
+export {
+  getUniqueId,
+  isArray,
+  isEmptyValue,
+  isFunction,
+  isNumber,
+  isObject,
+  isPlainNumber,
+  isString,
+} from "laser-utils";

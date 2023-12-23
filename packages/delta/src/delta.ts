@@ -1,32 +1,43 @@
+import { getUniqueId, isString } from "sketching-utils";
+
+import type { DeltaSet } from "./delta-set";
 import type { DeltaOptions } from "./types";
 
 export abstract class Delta {
   public abstract readonly key: string;
+  public readonly id: string;
   private x: number;
   private y: number;
   private width: number;
   private height: number;
-  public children: Set<string>;
+  public children: string[];
   public attrs: Record<string, string>;
   public abstract invert: () => void;
   public abstract drawing: () => void;
+  public getDeltaSet?: () => DeltaSet;
 
   public constructor(options: DeltaOptions) {
-    const { x, y, width, height } = options;
+    const { id, x, y, width, height } = options;
+    this.id = id || getUniqueId();
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
     this.attrs = options.attrs || {};
-    this.children = new Set(options.children);
+    this.children = [...(options.children || [])];
   }
 
-  public getArea(): number {
-    return this.width * this.height;
+  public insert(delta: Delta) {
+    this.children.push(delta.id);
+    return this;
   }
 
-  public getRect() {
-    return { x: this.x, y: this.y };
+  public remove(id: string): Delta;
+  public remove(delta: Delta): Delta;
+  public remove(params: string | Delta) {
+    const id = isString(params) ? params : params.id;
+    this.children.splice(this.children.indexOf(id), 1);
+    return this;
   }
 
   public setWidth(width: number) {
@@ -42,6 +53,13 @@ export abstract class Delta {
   public move(x: number, y: number) {
     this.x = x + this.x;
     this.y = y + this.y;
+    const deltaSet = this.getDeltaSet && this.getDeltaSet();
+    if (deltaSet) {
+      this.children.forEach(id => {
+        const delta = deltaSet.get(id);
+        delta && delta.move(x, y);
+      });
+    }
     return this;
   }
 
@@ -50,6 +68,14 @@ export abstract class Delta {
     const diffY = y - this.y;
     this.move(diffX, diffY);
     return this;
+  }
+
+  public getArea(): number {
+    return this.width * this.height;
+  }
+
+  public getRect() {
+    return { x: this.x, y: this.y };
   }
 
   public toJSON() {

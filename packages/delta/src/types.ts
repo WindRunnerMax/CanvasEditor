@@ -3,6 +3,7 @@ import type { Delta } from "./delta";
 export type DeltaLike = {
   x: number;
   y: number;
+  id?: string;
   key: string;
   width: number;
   height: number;
