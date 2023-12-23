@@ -6,7 +6,11 @@ export class Rect extends Delta {
   public key = Rect.KEY;
 
   public drawing = (ctx: CanvasRenderingContext2D) => {
-    console.log("ctx", this.id, ctx);
+    const borderWidth = Number(this.getAttr("borderWidth")) || 1;
+    const borderColor = this.getAttr("borderColor") || "#333";
+    ctx.lineWidth = borderWidth;
+    ctx.strokeStyle = borderColor;
+    ctx.strokeRect(this.x, this.y, this.width, this.height);
   };
 
   public static create = (options: DeltaOptions) => new Rect(options);

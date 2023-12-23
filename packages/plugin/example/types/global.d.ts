@@ -9,3 +9,8 @@ declare namespace NodeJS {
     NODE_ENV: "development" | "production";
   }
 }
+
+interface Window {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  editor: import("sketching-core").Editor;
+}

@@ -6,10 +6,10 @@ import type { DeltaLike, DeltaOptions } from "./types";
 export abstract class Delta {
   public abstract readonly key: string;
   public readonly id: string;
-  private x: number;
-  private y: number;
-  private width: number;
-  private height: number;
+  protected x: number;
+  protected y: number;
+  protected width: number;
+  protected height: number;
   public children: string[];
   public attrs: Record<string, string>;
   public getDeltaSet?: () => DeltaSet;
@@ -66,6 +66,15 @@ export abstract class Delta {
     const diffX = x - this.x;
     const diffY = y - this.y;
     this.move(diffX, diffY);
+    return this;
+  }
+
+  public getAttr(key: string): string | undefined {
+    return this.attrs[key];
+  }
+
+  public setAttr(key: string, value: string) {
+    this.attrs[key] = String(value);
     return this;
   }
 

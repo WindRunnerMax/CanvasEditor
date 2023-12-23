@@ -1,5 +1,5 @@
 import type { DeltaLike, DeltaSetLike } from "sketching-delta";
-import { ROOT_ZONE } from "sketching-utils";
+import { ROOT_DELTA } from "sketching-utils";
 
 import { EntryDelta } from "./entry";
 
@@ -12,5 +12,5 @@ export const DEFAULT_DELTA_LIKE: DeltaLike = {
 };
 
 export const DEFAULT_DELTA_SET_LIKE: DeltaSetLike = {
-  [ROOT_ZONE]: DEFAULT_DELTA_LIKE,
+  [ROOT_DELTA]: DEFAULT_DELTA_LIKE,
 };

@@ -1,5 +1,5 @@
 import { DeltaSet } from "sketching-delta";
-import { ROOT_ZONE } from "sketching-utils";
+import { ROOT_DELTA } from "sketching-utils";
 
 import { Engine } from "../engine";
 import { Event } from "../event";
@@ -15,19 +15,18 @@ export type EditorOptions = {
 };
 
 export class Editor {
-  private deltaSet: DeltaSet;
+  public readonly deltaSet: DeltaSet;
+  public readonly state: EditorState;
+  public readonly event: Event;
+  public readonly logger: Logger;
+  public readonly engine: Engine;
   private container: HTMLDivElement;
-
-  public state: EditorState;
-  public event: Event;
-  public logger: Logger;
-  public engine: Engine;
 
   constructor(options: EditorOptions = {}) {
     const { deltaSet = new DeltaSet(DEFAULT_DELTA_SET_LIKE), logLevel = LOG_LEVEL.ERROR } = options;
     this.deltaSet = deltaSet;
     // Verify DeltaSet Rules
-    if (!this.deltaSet.get(ROOT_ZONE)) {
+    if (!this.deltaSet.get(ROOT_DELTA)) {
       this.deltaSet.add(new EntryDelta(DEFAULT_DELTA_LIKE));
     }
     this.container = document.createElement("div");

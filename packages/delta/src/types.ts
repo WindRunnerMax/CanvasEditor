@@ -22,11 +22,12 @@ export enum OpType {
   DELETE,
 }
 type WithId<T> = T & { id: string };
-export type Op<T = unknown> =
-  | WithId<{ type: OpType.INSERT | OpType.DELETE }>
+export type Op =
+  | { type: OpType.INSERT; delta: Delta; id?: string }
+  | WithId<{ type: OpType.DELETE }>
   | WithId<{ type: OpType.MOVE; x: number; y: number }>
   | WithId<{ type: OpType.RESIZE; width: number; height: number }>
-  | WithId<{ type: OpType.REVISE; attrs: T }>;
+  | WithId<{ type: OpType.REVISE; attrs: Record<string, string> }>;
 
 export type DeltaStatic = typeof Delta & {
   KEY: string;

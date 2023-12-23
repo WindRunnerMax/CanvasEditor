@@ -13,4 +13,10 @@ export class DeltaState {
   public setParent(parent: DeltaState | null) {
     this.parent = parent;
   }
+
+  public insert(delta: Delta) {
+    this.editor.deltaSet.add(delta);
+    this.delta.insert(delta);
+    return this;
+  }
 }

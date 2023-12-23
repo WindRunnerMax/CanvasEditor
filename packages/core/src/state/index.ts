@@ -1,6 +1,6 @@
 import type { Delta, Op } from "sketching-delta";
-import { DeltaSet } from "sketching-delta";
-import { ROOT_ZONE } from "sketching-utils";
+import { DeltaSet, OpType } from "sketching-delta";
+import { ROOT_DELTA } from "sketching-utils";
 
 import type { Editor } from "../editor";
 import { DEFAULT_DELTA_LIKE } from "../editor/constant";
@@ -10,7 +10,7 @@ import type { EDITOR_STATE } from "./constant";
 import { DeltaState } from "./delta-state";
 
 export class EditorState {
-  private active = ROOT_ZONE;
+  private active = ROOT_DELTA;
   public readonly entry: DeltaState;
   private status: Map<string, boolean>;
   private deltas: Map<string, DeltaState>;
@@ -19,14 +19,14 @@ export class EditorState {
     this.status = new Map();
     this.deltas = new Map();
     // Verify DeltaSet Rules
-    if (!this.deltaSet.get(ROOT_ZONE)) {
+    if (!this.deltaSet.get(ROOT_DELTA)) {
       const entry = new EntryDelta(DEFAULT_DELTA_LIKE);
       this.deltas.set(entry.id, new DeltaState(editor, entry));
     }
     this.deltaSet.forEach((id, delta) => {
       this.deltas.set(id, new DeltaState(editor, delta));
     });
-    this.entry = this.getDeltaState(ROOT_ZONE);
+    this.entry = this.getDeltaState(ROOT_DELTA);
     this.createTreeState();
   }
 
@@ -57,18 +57,17 @@ export class EditorState {
     return this;
   }
 
-  public getDeltaState(deltaId: typeof ROOT_ZONE): DeltaState;
+  public getDeltaState(deltaId: typeof ROOT_DELTA): DeltaState;
   public getDeltaState(deltaId: string): DeltaState | null;
   public getDeltaState(deltaId: string): DeltaState | null {
     return this.deltas.get(deltaId) || null;
   }
 
-  public getActiveZone() {
+  public getActiveDelta() {
     return this.active;
   }
 
-  // TODO: 根据`focus`的节点查找对应的`deltaId`
-  public setActiveZone(deltaId: string) {
+  public setActiveDelta(deltaId: string) {
     this.active = deltaId;
   }
 
@@ -76,6 +75,18 @@ export class EditorState {
     const { source = "user" } = options;
     const previous = new DeltaSet(this.deltaSet.getDeltas());
     const effect: string[] = [];
+
+    switch (op.type) {
+      case OpType.INSERT: {
+        const { delta, id } = op;
+        const target = id ? this.getDeltaState(id) : this.entry;
+        target && target.insert(delta);
+        break;
+      }
+      default: {
+        break;
+      }
+    }
 
     Promise.resolve().then(() => {
       this.editor.event.trigger(EDITOR_EVENT.CONTENT_CHANGE, {
@@ -87,5 +98,7 @@ export class EditorState {
         effect,
       });
     });
+
+    this.editor.engine.drawingAll();
   }
 }
