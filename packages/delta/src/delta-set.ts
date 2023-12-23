@@ -1,18 +1,17 @@
 import { isString } from "sketching-utils";
 
 import type { Delta } from "./delta";
-import type { DeltaSetLike, DeltaStatic } from "./types";
+import type { DeltaLike, DeltaSetLike, DeltaStatic } from "./types";
 
 export class DeltaSet {
   private deltas: Record<string, Delta>;
   constructor(options: DeltaSetLike) {
     this.deltas = {};
-    Object.entries(options).forEach(([key, delta]) => {
-      const DeltaType = DeltaSet.DeltaTypeStore[delta.key];
-      if (DeltaType) {
-        const instance = DeltaType.create(delta);
+    Object.entries(options).forEach(([id, delta]) => {
+      const instance = DeltaSet.create(delta);
+      if (instance) {
         instance.getDeltaSet = () => this;
-        this.deltas[key] = instance;
+        this.deltas[id] = instance;
       }
     });
   }
@@ -51,7 +50,7 @@ export class DeltaSet {
     return this;
   }
 
-  forEach(cb: (zoneId: string, delta: Delta) => void) {
+  forEach(cb: (id: string, delta: Delta) => void) {
     for (const [id, delta] of Object.entries(this.deltas)) {
       cb(id, delta);
     }
@@ -63,5 +62,9 @@ export class DeltaSet {
       throw new TypeError("Please implements DeltaStatic Type");
     }
     DeltaSet.DeltaTypeStore[delta.KEY] = delta;
+  }
+  public static create(delta: DeltaLike) {
+    const DeltaType = DeltaSet.DeltaTypeStore[delta.key];
+    return DeltaType ? DeltaType.create(delta) : null;
   }
 }

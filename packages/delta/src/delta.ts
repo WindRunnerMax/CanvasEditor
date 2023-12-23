@@ -83,7 +83,7 @@ export abstract class Delta {
   }
 
   public getRect() {
-    return { x: this.x, y: this.y };
+    return { x: this.x, y: this.y, width: this.width, height: this.height };
   }
 
   public clone() {
