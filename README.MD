@@ -1,2 +1,4 @@
-# CVEditor
+# CurVisEditor
+
 Curriculum Vision Canvas Editor
+

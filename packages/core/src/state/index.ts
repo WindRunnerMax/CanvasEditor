@@ -99,6 +99,6 @@ export class EditorState {
       });
     });
 
-    this.editor.canvas.drawingAll();
+    this.editor.canvas.graph.drawingAll();
   }
 }
