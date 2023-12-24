@@ -1,5 +1,5 @@
 import type { Editor } from "../../editor";
-import { EDITOR_STATE } from "../../state/constant";
+import { EDITOR_STATE } from "../../state/utils/constant";
 import type { EventBus } from "../bus";
 import { NATIVE_EVENTS } from "./types";
 

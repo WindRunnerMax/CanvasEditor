@@ -4,11 +4,11 @@ import { ROOT_DELTA } from "sketching-utils";
 import { Canvas } from "../canvas";
 import { Event } from "../event";
 import { LOG_LEVEL, Logger } from "../log";
+import { Selection } from "../selection";
 import { EditorState } from "../state";
-import { EDITOR_STATE } from "../state/constant";
+import { EDITOR_STATE } from "../state/utils/constant";
 import { DEFAULT_DELTA_LIKE, DEFAULT_DELTA_SET_LIKE } from "./constant";
 import { EntryDelta } from "./entry";
-
 export type EditorOptions = {
   deltaSet?: DeltaSet;
   logLevel?: typeof LOG_LEVEL[keyof typeof LOG_LEVEL];
@@ -20,6 +20,7 @@ export class Editor {
   public readonly event: Event;
   public readonly logger: Logger;
   public readonly canvas: Canvas;
+  public readonly selection: Selection;
   private container: HTMLDivElement;
 
   constructor(options: EditorOptions = {}) {
@@ -32,10 +33,11 @@ export class Editor {
     this.container = document.createElement("div");
     this.container.setAttribute("data-type", "mock");
     // Modules
-    this.state = new EditorState(this, this.deltaSet);
     this.event = new Event(this);
+    this.state = new EditorState(this, this.deltaSet);
     this.logger = new Logger(logLevel);
     this.canvas = new Canvas(this);
+    this.selection = new Selection(this);
   }
 
   public onMount(container: HTMLDivElement) {
@@ -51,6 +53,7 @@ export class Editor {
   public destroy() {
     this.event.unbind();
     this.canvas.destroy();
+    this.selection.destroy();
     this.state.set(EDITOR_STATE.MOUNTED, false);
   }
 

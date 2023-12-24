@@ -6,18 +6,15 @@ import type { Editor } from "../editor";
 import { DEFAULT_DELTA_LIKE } from "../editor/constant";
 import { EntryDelta } from "../editor/entry";
 import { EDITOR_EVENT } from "../event/bus/action";
-import type { EDITOR_STATE } from "./constant";
-import { DeltaState } from "./delta-state";
+import { DeltaState } from "./modules/delta-state";
+import type { EDITOR_STATE } from "./utils/constant";
 
 export class EditorState {
-  private active = ROOT_DELTA;
   public readonly entry: DeltaState;
-  private status: Map<string, boolean>;
-  private deltas: Map<string, DeltaState>;
+  private status: Map<string, boolean> = new Map();
+  private deltas: Map<string, DeltaState> = new Map();
 
   constructor(private editor: Editor, private deltaSet: DeltaSet) {
-    this.status = new Map();
-    this.deltas = new Map();
     // Verify DeltaSet Rules
     if (!this.deltaSet.get(ROOT_DELTA)) {
       const entry = new EntryDelta(DEFAULT_DELTA_LIKE);
@@ -51,7 +48,6 @@ export class EditorState {
   public get(key: keyof typeof EDITOR_STATE) {
     return this.status.get(key);
   }
-
   public set(key: keyof typeof EDITOR_STATE, value: boolean) {
     this.status.set(key, value);
     return this;
@@ -61,14 +57,6 @@ export class EditorState {
   public getDeltaState(deltaId: string): DeltaState | null;
   public getDeltaState(deltaId: string): DeltaState | null {
     return this.deltas.get(deltaId) || null;
-  }
-
-  public getActiveDelta() {
-    return this.active;
-  }
-
-  public setActiveDelta(deltaId: string) {
-    this.active = deltaId;
   }
 
   public apply(op: Op, options: { source?: string } = {}) {

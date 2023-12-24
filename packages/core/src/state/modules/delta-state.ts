@@ -1,6 +1,6 @@
 import type { Delta } from "sketching-delta";
 
-import type { Editor } from "../editor";
+import type { Editor } from "../../editor";
 
 export class DeltaState {
   public parent: DeltaState | null;
@@ -17,6 +17,9 @@ export class DeltaState {
   public insert(delta: Delta) {
     this.editor.deltaSet.add(delta);
     this.delta.insert(delta);
+    const state = new DeltaState(this.editor, delta);
+    state.parent = this;
+    this.children.push(state);
     return this;
   }
 }

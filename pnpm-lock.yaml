@@ -120,11 +120,11 @@ importers:
       '@types/lodash-es': 4.17.6
       babel-jest: 29.4.1
       jest: 29.4.1
-      laser-utils: 0.0.2-alpha.7
+      laser-utils: 0.0.2-alpha.8
       lodash-es: 4.17.21
       ts-jest: 29.0.5
     dependencies:
-      laser-utils: registry.npmmirror.com/laser-utils/0.0.2-alpha.7
+      laser-utils: registry.npmmirror.com/laser-utils/0.0.2-alpha.8
       lodash-es: registry.npmmirror.com/lodash-es/4.17.21
     devDependencies:
       '@babel/core': registry.npmmirror.com/@babel/core/7.20.12
@@ -7118,10 +7118,10 @@ packages:
     version: 0.24.0
     dev: true
 
-  registry.npmmirror.com/laser-utils/0.0.2-alpha.7:
-    resolution: {integrity: sha512-+YivB/Zk9ohZ431Uw099I87Rl72/pOIjxf3QJlzn4KxVIab9Rc/KtvUzsneqRd5SBYnCTFyEr+e98ZLZn1d2Xw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/laser-utils/-/laser-utils-0.0.2-alpha.7.tgz}
+  registry.npmmirror.com/laser-utils/0.0.2-alpha.8:
+    resolution: {integrity: sha512-drCZqUGXxB3Ez/6kcao0MKYaP5xPC062bwWaJwaQ0gLUB1lp8rOm9fpRm5lBOvBSjPBdZ9WEoERMjLibMOya4w==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/laser-utils/-/laser-utils-0.0.2-alpha.8.tgz}
     name: laser-utils
-    version: 0.0.2-alpha.7
+    version: 0.0.2-alpha.8
     dev: false
 
   registry.npmmirror.com/launch-editor/2.6.1:

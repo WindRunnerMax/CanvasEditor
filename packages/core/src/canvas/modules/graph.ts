@@ -1,17 +1,17 @@
-import type { Editor } from "../editor";
-import type { Canvas } from "./index";
+import type { Editor } from "../../editor";
+import type { Canvas } from "../index";
 
 export class Graph {
   private canvas: HTMLCanvasElement;
   public ctx: CanvasRenderingContext2D;
 
-  constructor(private editor: Editor, private parent: Canvas) {
+  constructor(private editor: Editor, private engine: Canvas) {
     this.canvas = document.createElement("canvas");
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
   }
 
   public onMount(dom: HTMLDivElement, ratio: number) {
-    const { width, height } = this.parent.getRect();
+    const { width, height } = this.engine.getRect();
     this.canvas.width = width * ratio;
     this.canvas.height = height * ratio;
     this.canvas.style.width = width + "px";
@@ -26,7 +26,7 @@ export class Graph {
 
   public drawingAll() {
     this.clear();
-    const { width: canvasWidth, height: canvasHeight } = this.parent.getRect();
+    const { width: canvasWidth, height: canvasHeight } = this.engine.getRect();
     this.editor.deltaSet.forEach((_, delta) => {
       const { x, y, width, height } = delta.getRect();
       // No drawing beyond the canvas
@@ -45,11 +45,11 @@ export class Graph {
 
   public resetCtx() {
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
-    this.ctx.scale(this.parent.devicePixelRatio, this.parent.devicePixelRatio);
+    this.ctx.scale(this.engine.devicePixelRatio, this.engine.devicePixelRatio);
   }
 
   public clear() {
-    const { width, height } = this.parent.getRect();
+    const { width, height } = this.engine.getRect();
     this.ctx.clearRect(0, 0, width, height);
   }
 }

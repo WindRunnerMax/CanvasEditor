@@ -1,6 +1,6 @@
 import type { Editor } from "../editor";
-import { Graph } from "./graph";
-import { Mask } from "./mask";
+import { Graph } from "./modules/graph";
+import { Mask } from "./modules/mask";
 
 export class Canvas {
   private width: number;
@@ -21,8 +21,8 @@ export class Canvas {
     const dom = this.editor.getContainer();
     this.width = dom.clientWidth;
     this.height = dom.clientHeight;
-    this.mask.onMount(dom, this.devicePixelRatio);
     this.graph.onMount(dom, this.devicePixelRatio);
+    this.mask.onMount(dom, this.devicePixelRatio);
     this.resetAllCtx();
     Promise.resolve().then(() => this.graph.drawingAll());
   }
