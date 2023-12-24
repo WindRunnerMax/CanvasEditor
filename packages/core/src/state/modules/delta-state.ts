@@ -22,4 +22,9 @@ export class DeltaState {
     this.children.push(state);
     return this;
   }
+
+  public move(x: number, y: number) {
+    this.delta.move(x, y);
+    return this;
+  }
 }

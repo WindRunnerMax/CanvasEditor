@@ -13,6 +13,8 @@ export type DeltaLike = {
 export type DeltaOptions = DeltaLike;
 export type DeltaSetLike = Record<string, DeltaLike>;
 export type DeltaSetOptions = DeltaSetLike;
+export type StrictDeltaLike = Required<DeltaLike>;
+export type StrictDeltaSetLike = Record<string, StrictDeltaLike>;
 
 export enum OpType {
   INSERT,
@@ -21,13 +23,12 @@ export enum OpType {
   REVISE,
   DELETE,
 }
-type WithId<T> = T & { id: string };
 export type Op =
   | { type: OpType.INSERT; delta: Delta; id?: string }
-  | WithId<{ type: OpType.DELETE }>
-  | WithId<{ type: OpType.MOVE; x: number; y: number }>
-  | WithId<{ type: OpType.RESIZE; width: number; height: number }>
-  | WithId<{ type: OpType.REVISE; attrs: Record<string, string> }>;
+  | { type: OpType.DELETE }
+  | { type: OpType.MOVE; x: number; y: number }
+  | { type: OpType.RESIZE; width: number; height: number }
+  | { type: OpType.REVISE; attrs: Record<string, string> };
 
 export type DeltaStatic = typeof Delta & {
   KEY: string;

@@ -1,7 +1,7 @@
 import { getUniqueId, isString } from "sketching-utils";
 
 import type { DeltaSet } from "./delta-set";
-import type { DeltaLike, DeltaOptions } from "./types";
+import type { DeltaOptions, StrictDeltaLike } from "./types";
 
 export abstract class Delta {
   public abstract readonly key: string;
@@ -91,7 +91,7 @@ export abstract class Delta {
     return new this.constructor(this.toJSON());
   }
 
-  public toJSON(): DeltaLike {
+  public toJSON(): StrictDeltaLike {
     return {
       x: this.x,
       y: this.y,

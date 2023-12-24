@@ -1,7 +1,7 @@
 import { isString } from "sketching-utils";
 
 import type { Delta } from "./delta";
-import type { DeltaLike, DeltaSetLike, DeltaStatic } from "./types";
+import type { DeltaLike, DeltaSetLike, DeltaStatic, StrictDeltaSetLike } from "./types";
 
 export class DeltaSet {
   private deltas: Record<string, Delta>;
@@ -16,10 +16,13 @@ export class DeltaSet {
     });
   }
 
-  public getDeltas(): DeltaSetLike {
+  public getDeltas() {
     return Object.keys(this.deltas)
       .filter(key => this.deltas[key])
-      .reduce((pre, cur) => ({ ...pre, [cur]: this.deltas[cur].toJSON() }), {} as DeltaSetLike);
+      .reduce(
+        (pre, cur) => ({ ...pre, [cur]: this.deltas[cur].toJSON() }),
+        {} as StrictDeltaSetLike
+      );
   }
 
   public get(key: string) {

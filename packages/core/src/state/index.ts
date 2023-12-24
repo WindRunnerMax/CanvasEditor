@@ -71,6 +71,15 @@ export class EditorState {
         target && target.insert(delta);
         break;
       }
+      case OpType.MOVE: {
+        const { x, y } = op;
+        const select = this.editor.selection.getActiveDeltas();
+        select.forEach(id => {
+          const target = this.getDeltaState(id);
+          target && target.move(x, y);
+        });
+        break;
+      }
       default: {
         break;
       }

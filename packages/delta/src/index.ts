@@ -7,5 +7,7 @@ export type {
   DeltaSetOptions,
   DeltaStatic,
   Op,
+  StrictDeltaLike,
+  StrictDeltaSetLike,
 } from "./types";
 export { OpType } from "./types";
