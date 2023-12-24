@@ -1,4 +1,5 @@
 import type { Editor } from "../../editor";
+import { EDITOR_EVENT } from "../../event/bus/action";
 import type { Canvas } from "../index";
 import { OP_LEN, OP_OFS } from "../utils/constant";
 import { BLUE, LIGHT_BLUE, WHITE } from "../utils/palette";
@@ -10,6 +11,7 @@ export class Mask {
   constructor(private editor: Editor, private engine: Canvas) {
     this.canvas = document.createElement("canvas");
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
+    this.editor.event.on(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange);
   }
 
   public onMount(dom: HTMLDivElement, ratio: number) {
@@ -24,6 +26,7 @@ export class Mask {
 
   public destroy(dom: HTMLDivElement) {
     dom.removeChild(this.canvas);
+    this.editor.event.off(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange);
   }
 
   public drawingSelectionBox() {
@@ -31,7 +34,7 @@ export class Mask {
     if (!selection) return void 0;
     const { startX, startY, endX, endY } = selection;
     this.ctx.beginPath();
-    this.ctx.rect(startX, startY, endX - startX, endY - startY);
+    this.ctx.rect(startX - 1, startY - 1, endX - startX + 2, endY - startY + 2);
     this.ctx.strokeStyle = BLUE;
     this.ctx.lineWidth = 2;
     this.ctx.stroke();
@@ -71,6 +74,10 @@ export class Mask {
     this.drawingSelectionBox();
     this.ctx.restore();
   }
+
+  private onSelectionChange = () => {
+    this.drawingState();
+  };
 
   public resetCtx() {
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;

@@ -3,9 +3,8 @@ import { throttle } from "sketching-utils";
 import type { Editor } from "../editor";
 import { EDITOR_EVENT } from "../event/bus/action";
 import { EDITOR_STATE } from "../state/utils/constant";
+import { Range } from "./modules/range";
 import { isInsideDelta } from "./utils/is";
-import type { Range } from "./utils/types";
-
 export class Selection {
   private hover: string;
   private current: Range | null;
@@ -27,10 +26,10 @@ export class Selection {
     // Multiple to be combined
     const active = this.active;
     if (active.size === 0) {
-      this.current = null;
+      this.set(null);
       return void 0;
     }
-    const current: Range = { startX: Infinity, startY: Infinity, endX: -Infinity, endY: -Infinity };
+    const current = { startX: Infinity, startY: Infinity, endX: -Infinity, endY: -Infinity };
     active.forEach(key => {
       const delta = this.editor.deltaSet.get(key);
       if (!delta) return void 0;
@@ -40,7 +39,7 @@ export class Selection {
       current.endX = Math.max(current.endX, x + width);
       current.endY = Math.max(current.endY, y + height);
     });
-    this.current = current;
+    this.set(new Range(current));
   }
 
   private onMouseDown = (e: MouseEvent) => {
@@ -52,7 +51,6 @@ export class Selection {
       !e.shiftKey && this.clearActiveDeltas();
     }
     this.composeRange();
-    this.editor.canvas.mask.drawingState();
   };
 
   private onMouseMove = throttle(
@@ -68,6 +66,16 @@ export class Selection {
 
   public get() {
     return this.current;
+  }
+  public set(range: Range | null) {
+    const previous = this.current;
+    if (Range.isEqual(previous, range)) return this;
+    this.current = range;
+    this.editor.event.trigger(EDITOR_EVENT.SELECTION_CHANGE, {
+      previous,
+      current: range,
+    });
+    return this;
   }
 
   public getHoverDelta() {
