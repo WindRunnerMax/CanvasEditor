@@ -4,6 +4,7 @@ import type { Editor } from "../editor";
 import { EDITOR_EVENT } from "../event/bus/action";
 import { EDITOR_STATE } from "../state/utils/constant";
 import { Range } from "./modules/range";
+import { setCursorState } from "./utils/cursor";
 import { isInsideDelta } from "./utils/is";
 export class Selection {
   private hover: string;
@@ -15,11 +16,13 @@ export class Selection {
     this.current = null;
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDown);
     this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMove);
+    this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUp);
   }
 
   public destroy() {
     this.editor.event.off(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDown);
     this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMove);
+    this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUp);
   }
 
   private composeRange() {
@@ -58,11 +61,16 @@ export class Selection {
       if (this.editor.state.get(EDITOR_STATE.MOUSE_DOWN)) return void 0;
       const delta = isInsideDelta(this.editor, e.offsetX, e.offsetY);
       delta && delta.id ? (this.hover = delta.id) : (this.hover = "");
+      this.get() && setCursorState(this.editor, e);
       this.editor.canvas.mask.drawingState();
     },
     60,
     { trailing: true }
   );
+
+  private onMouseUp = (e: MouseEvent) => {
+    setCursorState(this.editor, e);
+  };
 
   public get() {
     return this.current;

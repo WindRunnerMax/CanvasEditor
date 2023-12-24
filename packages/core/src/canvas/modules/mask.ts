@@ -1,8 +1,9 @@
 import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
 import type { Canvas } from "../index";
-import { OP_LEN, OP_OFS } from "../utils/constant";
+import { OP_LEN } from "../utils/constant";
 import { BLUE, LIGHT_BLUE, WHITE } from "../utils/palette";
+import { drawingArc, drawingRect } from "../utils/shape";
 
 export class Mask {
   private canvas: HTMLCanvasElement;
@@ -33,23 +34,19 @@ export class Mask {
     const selection = this.editor.selection.get();
     if (!selection) return void 0;
     const { startX, startY, endX, endY } = selection;
-    this.ctx.beginPath();
-    this.ctx.rect(startX - 1, startY - 1, endX - startX + 2, endY - startY + 2);
-    this.ctx.strokeStyle = BLUE;
-    this.ctx.lineWidth = 2;
-    this.ctx.stroke();
-    this.ctx.closePath();
-    this.ctx.beginPath();
-    this.ctx.rect(startX - OP_OFS, startX - OP_OFS, OP_LEN, OP_LEN);
-    this.ctx.rect(endX - OP_OFS, startY - OP_OFS, OP_LEN, OP_LEN);
-    this.ctx.rect(startX - OP_OFS, endY - OP_OFS, OP_LEN, OP_LEN);
-    this.ctx.rect(endX - OP_OFS, endY - OP_OFS, OP_LEN, OP_LEN);
-    this.ctx.fillStyle = WHITE;
-    this.ctx.fill();
-    this.ctx.lineWidth = 1;
-    this.ctx.strokeStyle = BLUE;
-    this.ctx.stroke();
-    this.ctx.closePath();
+    drawingRect(this.ctx, {
+      x: startX - 1,
+      y: startY - 1,
+      width: endX - startX + 2,
+      height: endY - startY + 2,
+      borderColor: BLUE,
+      borderWidth: 2,
+    });
+    const arc = { borderColor: BLUE, fillColor: WHITE, radius: OP_LEN / 2, borderWidth: 2 };
+    drawingArc(this.ctx, { ...arc, x: startX, y: startX });
+    drawingArc(this.ctx, { ...arc, x: endX, y: startY });
+    drawingArc(this.ctx, { ...arc, x: startX, y: endY });
+    drawingArc(this.ctx, { ...arc, x: endX, y: endY });
   }
 
   public drawingHoverBox() {
@@ -59,12 +56,14 @@ export class Mask {
     const delta = this.editor.deltaSet.get(hover);
     if (!delta) return void 0;
     const { x, y, width, height } = delta.getRect();
-    this.ctx.beginPath();
-    this.ctx.rect(x - 1, y - 1, width + 2, height + 2);
-    this.ctx.strokeStyle = LIGHT_BLUE;
-    this.ctx.lineWidth = 2;
-    this.ctx.stroke();
-    this.ctx.closePath();
+    drawingRect(this.ctx, {
+      x: x - 1,
+      y: y - 1,
+      width: width + 2,
+      height: height + 2,
+      borderColor: LIGHT_BLUE,
+      borderWidth: 2,
+    });
   }
 
   public drawingState() {
@@ -82,6 +81,14 @@ export class Mask {
   public resetCtx() {
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
     this.ctx.scale(this.engine.devicePixelRatio, this.engine.devicePixelRatio);
+  }
+
+  public setCursorState(state: string | null) {
+    this.canvas.style.cursor = state || "";
+    return this;
+  }
+  public getCursorState() {
+    return this.canvas.style.cursor || null;
   }
 
   public clear() {
