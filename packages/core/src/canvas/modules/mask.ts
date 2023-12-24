@@ -40,14 +40,14 @@ export class Mask {
   public drawingSelectionBox() {
     const selection = this.editor.selection.get();
     if (!selection) return void 0;
-    const { startX, startY, endX, endY } = selection;
+    const { startX, startY, endX, endY } = selection.flat();
     drawRect(this.ctx, {
       x: startX - 1,
       y: startY - 1,
       width: endX - startX + 2,
       height: endY - startY + 2,
       borderColor: BLUE,
-      borderWidth: 2,
+      borderWidth: 1,
     });
     const arc = { borderColor: BLUE, fillColor: WHITE, radius: OP_LEN / 2, borderWidth: 2 };
     drawArc(this.ctx, { ...arc, x: startX, y: startY });
@@ -69,14 +69,14 @@ export class Mask {
       width: width + 2,
       height: height + 2,
       borderColor: LIGHT_BLUE,
-      borderWidth: 2,
+      borderWidth: 1,
     });
   }
 
   public drawingTranslateBox() {
-    const rect = this.editor.selection.getState(SELECTION_STATE.TRANSLATE_RECT);
+    const rect = this.editor.selection.getState(SELECTION_STATE.OP_RECT);
     if (!rect) return void 0;
-    const { startX, startY, endX, endY } = rect;
+    const { startX, startY, endX, endY } = rect.flat();
     drawRect(this.ctx, {
       x: startX,
       y: startY,
@@ -104,10 +104,7 @@ export class Mask {
     // Explicitly declare the type that needs to be re-rendered
     if (event.type === SELECTION_STATE.RESIZE) {
       this.setCursorState();
-    } else if (
-      event.type === SELECTION_STATE.HOVER ||
-      event.type === SELECTION_STATE.TRANSLATE_RECT
-    ) {
+    } else if (event.type === SELECTION_STATE.HOVER || event.type === SELECTION_STATE.OP_RECT) {
       this.drawingState();
     }
   };

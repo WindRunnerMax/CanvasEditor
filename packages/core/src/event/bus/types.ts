@@ -1,7 +1,7 @@
 import type { DeltaSet } from "sketching-delta";
 
 import type { Range } from "../../selection/modules/range";
-import type { RESIZE_TYPE, SELECTION_STATE } from "../../selection/utils/constant";
+import type { SELECTION_STATE, SelectionState } from "../../selection/utils/constant";
 
 export type ContentChangeEvent = {
   current: DeltaSet;
@@ -13,7 +13,7 @@ export type ContentChangeEvent = {
 };
 
 export type PaintEvent = {
-  zoneId: string;
+  deltaId: string;
 };
 
 export type SelectionChangeEvent = {
@@ -21,12 +21,7 @@ export type SelectionChangeEvent = {
   current: Range | null;
 };
 
-export type SelectionStateEvent = {
-  type?: SELECTION_STATE;
-  [SELECTION_STATE.HOVER]?: string | null;
-  [SELECTION_STATE.RESIZE]?: RESIZE_TYPE | null;
-  [SELECTION_STATE.TRANSLATE]?: boolean | null;
-  [SELECTION_STATE.LANDING_POINT]?: { x: number; y: number } | null;
-  [SELECTION_STATE.TRANSLATE_RECT]?: Range | null;
-  [SELECTION_STATE.FRAME_SELECT]?: boolean | null;
+type SelectionStateMap = {
+  [P in SELECTION_STATE]: { type: P; payload: SelectionState[P] };
 };
+export type SelectionStateEvent = SelectionStateMap[keyof SelectionStateMap];

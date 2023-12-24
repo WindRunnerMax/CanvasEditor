@@ -1,16 +1,17 @@
-import { OpType } from "sketching-delta";
-import { throttle } from "sketching-utils";
+import { Op, OpType } from "sketching-delta";
+import { isEmptyValue, throttle } from "sketching-utils";
 
 import type { Editor } from "../editor";
 import { EDITOR_EVENT } from "../event/bus/action";
 import { EDITOR_STATE } from "../state/utils/constant";
+import { Point } from "./modules/point";
 import { Range } from "./modules/range";
-import { SelectionState } from "./modules/state";
-import { SELECT_BIAS, SELECTION_STATE } from "./utils/constant";
+import { SelectionStore } from "./modules/state";
+import { SELECT_BIAS, SELECTION_OP, SELECTION_STATE } from "./utils/constant";
 import { setCursorState } from "./utils/cursor";
 import { isInsideDelta } from "./utils/is";
 
-export class Selection extends SelectionState {
+export class Selection extends SelectionStore {
   private current: Range | null;
   private active = new Set<string>();
 
@@ -30,7 +31,7 @@ export class Selection extends SelectionState {
   // ====== Mouse Event ======
   // TODO: 需要重构事件的状态管理 拆分结构 太乱了
   private onMouseDown = (e: MouseEvent) => {
-    this.setState(SELECTION_STATE.LANDING_POINT, { x: e.offsetX, y: e.offsetY });
+    this.setState(SELECTION_STATE.LANDING_POINT, new Point(e.offsetX, e.offsetY));
     const delta = isInsideDelta(this.editor, e.offsetX, e.offsetY);
     // Process selection group
     if (delta) {
@@ -45,7 +46,7 @@ export class Selection extends SelectionState {
     (e: MouseEvent) => {
       const { offsetX, offsetY } = e;
       const point = this.getState(SELECTION_STATE.LANDING_POINT);
-      const translating = this.getState(SELECTION_STATE.TRANSLATE);
+      const opType = this.getState(SELECTION_STATE.OP);
       if (!this.editor.state.get(EDITOR_STATE.MOUSE_DOWN)) {
         // Pure hover state
         const delta = isInsideDelta(this.editor, e.offsetX, e.offsetY);
@@ -54,24 +55,27 @@ export class Selection extends SelectionState {
         } else {
           this.setState(SELECTION_STATE.HOVER, null);
         }
-        this.get() && setCursorState(this.editor, e);
-      } else if (translating && point && this.current) {
+        const state = setCursorState(this.editor, e);
+        this.setState(SELECTION_STATE.RESIZE, state);
+        !isEmptyValue(state) && this.setState(SELECTION_STATE.OP, SELECTION_OP.RESIZE);
+      } else if (opType === SELECTION_OP.TRANSLATE && point && this.current) {
+        const { startX, startY, endX, endY } = this.current.flat();
         this.setState(
-          SELECTION_STATE.TRANSLATE_RECT,
+          SELECTION_STATE.OP_RECT,
           new Range({
-            startX: this.current.startX + offsetX - point.x,
-            startY: this.current.startY + offsetY - point.y,
-            endX: this.current.endX + offsetX - point.x,
-            endY: this.current.endY + offsetY - point.y,
+            startX: startX + offsetX - point.x,
+            startY: startY + offsetY - point.y,
+            endX: endX + offsetX - point.x,
+            endY: endY + offsetY - point.y,
           })
         );
       } else if (point) {
         const { x, y } = point;
         if (Math.abs(e.offsetX - x) > SELECT_BIAS || Math.abs(e.offsetY - y) > SELECT_BIAS) {
           if (this.get()) {
-            this.setState(SELECTION_STATE.TRANSLATE, true);
+            this.setState(SELECTION_STATE.OP, SELECTION_OP.TRANSLATE);
           } else {
-            this.setState(SELECTION_STATE.FRAME_SELECT, true);
+            this.setState(SELECTION_STATE.OP, SELECTION_OP.FRAME_SELECT);
           }
         }
       }
@@ -81,19 +85,20 @@ export class Selection extends SelectionState {
   );
 
   private onMouseUp = (e: MouseEvent) => {
-    const translateRect = this.getState(SELECTION_STATE.TRANSLATE_RECT);
-    if (translateRect && this.current) {
-      this.editor.state.apply({
-        type: OpType.MOVE,
-        x: translateRect.startX - this.current.startX,
-        y: translateRect.startY - this.current.startY,
-      });
-      this.set(translateRect);
+    const rect = this.getState(SELECTION_STATE.OP_RECT);
+    if (rect && this.current) {
+      const { startX, startY } = this.current.flat();
+      this.editor.state.apply(
+        new Op(OpType.MOVE, {
+          x: rect.start.x - startX,
+          y: rect.start.y - startY,
+        })
+      );
+      this.set(rect);
     }
     this.setState(SELECTION_STATE.LANDING_POINT, null);
-    this.setState(SELECTION_STATE.TRANSLATE, null);
-    this.setState(SELECTION_STATE.TRANSLATE_RECT, null);
-    this.setState(SELECTION_STATE.FRAME_SELECT, null);
+    this.setState(SELECTION_STATE.OP_RECT, null);
+    this.setState(SELECTION_STATE.OP, null);
     setCursorState(this.editor, e);
   };
 

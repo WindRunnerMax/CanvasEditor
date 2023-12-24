@@ -1,4 +1,5 @@
 import type { Delta } from "./delta";
+import type { Op } from "./op";
 
 export type DeltaLike = {
   x: number;
@@ -15,6 +16,10 @@ export type DeltaSetLike = Record<string, DeltaLike>;
 export type DeltaSetOptions = DeltaSetLike;
 export type StrictDeltaLike = Required<DeltaLike>;
 export type StrictDeltaSetLike = Record<string, StrictDeltaLike>;
+export type DeltaStatic = typeof Delta & {
+  KEY: string;
+  create: (options: DeltaOptions) => Delta;
+};
 
 export enum OpType {
   INSERT,
@@ -23,14 +28,14 @@ export enum OpType {
   REVISE,
   DELETE,
 }
-export type Op =
-  | { type: OpType.INSERT; delta: Delta; id?: string }
-  | { type: OpType.DELETE }
-  | { type: OpType.MOVE; x: number; y: number }
-  | { type: OpType.RESIZE; width: number; height: number }
-  | { type: OpType.REVISE; attrs: Record<string, string> };
-
-export type DeltaStatic = typeof Delta & {
-  KEY: string;
-  create: (options: DeltaOptions) => Delta;
+export type OpPayload = {
+  [OpType.INSERT]: { delta: Delta; id?: string };
+  [OpType.DELETE]: { id?: string };
+  [OpType.MOVE]: { x: number; y: number };
+  [OpType.RESIZE]: { width: number; height: number };
+  [OpType.REVISE]: { attrs: Record<string, string> };
 };
+export type OpRecord = {
+  [K in OpType]: Op<K>;
+};
+export type Ops = OpRecord[OpType];

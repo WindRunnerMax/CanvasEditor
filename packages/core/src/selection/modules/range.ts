@@ -1,27 +1,24 @@
+import { Point } from "./point";
+
 export class Range {
-  public readonly startX: number;
-  public readonly startY: number;
-  public readonly endX: number;
-  public readonly endY: number;
+  public readonly start: Point;
+  public readonly end: Point;
   constructor(options: { startX: number; startY: number; endX: number; endY: number }) {
-    this.startX = options.startX;
-    this.startY = options.startY;
-    this.endX = options.endX;
-    this.endY = options.endY;
+    this.start = new Point(options.startX, options.startY);
+    this.end = new Point(options.endX, options.endY);
+  }
+
+  flat() {
+    return { startX: this.start.x, startY: this.start.y, endX: this.end.x, endY: this.end.y };
   }
 
   clone() {
-    return new Range({ ...this });
+    return new Range({ ...this.flat() });
   }
 
   static isEqual(origin: Range | null, target: Range | null): boolean {
     if (origin === target) return true;
     if (!origin || !target) return false;
-    return (
-      origin.startX === target.startX &&
-      origin.startY === target.startY &&
-      origin.endX === target.endX &&
-      origin.endY === target.endY
-    );
+    return Point.isEqual(origin.start, target.start) && Point.isEqual(origin.end, target.end);
   }
 }

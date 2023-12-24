@@ -1,15 +1,14 @@
 import { OP_OFS } from "../../canvas/utils/constant";
 import type { Editor } from "../../editor";
-import { RESIZE_TYPE, SELECT_BIAS, SELECTION_STATE } from "./constant";
+import { RESIZE_TYPE, SELECT_BIAS } from "./constant";
 
 export const setCursorState = (editor: Editor, e: MouseEvent) => {
   const selection = editor.selection.get();
   if (!selection) {
-    editor.selection.setState(SELECTION_STATE.RESIZE, null);
     return null;
   }
   let state: RESIZE_TYPE | null = null;
-  const { startX, startY, endX, endY } = selection;
+  const { startX, startY, endX, endY } = selection.flat();
   const { offsetX, offsetY } = e;
   if (
     Math.abs(startX - offsetX) <= SELECT_BIAS &&
@@ -67,6 +66,5 @@ export const setCursorState = (editor: Editor, e: MouseEvent) => {
   ) {
     state = RESIZE_TYPE.RB;
   }
-  editor.selection.setState(SELECTION_STATE.RESIZE, state);
   return state;
 };
