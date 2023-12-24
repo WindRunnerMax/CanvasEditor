@@ -17,7 +17,7 @@ export type ArcProps = {
   fillColor?: string;
 };
 
-export const drawingRect = (ctx: CanvasRenderingContext2D, options: RectProps) => {
+export const drawRect = (ctx: CanvasRenderingContext2D, options: RectProps) => {
   ctx.beginPath();
   ctx.rect(options.x, options.y, options.width, options.height);
   if (options.borderColor) {
@@ -32,7 +32,7 @@ export const drawingRect = (ctx: CanvasRenderingContext2D, options: RectProps) =
   ctx.closePath();
 };
 
-export const drawingArc = (ctx: CanvasRenderingContext2D, options: ArcProps) => {
+export const drawArc = (ctx: CanvasRenderingContext2D, options: ArcProps) => {
   ctx.beginPath();
   ctx.arc(options.x, options.y, options.radius, 0, 2 * Math.PI);
   if (options.borderColor) {

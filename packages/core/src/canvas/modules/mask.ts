@@ -3,7 +3,7 @@ import { EDITOR_EVENT } from "../../event/bus/action";
 import type { Canvas } from "../index";
 import { OP_LEN } from "../utils/constant";
 import { BLUE, LIGHT_BLUE, WHITE } from "../utils/palette";
-import { drawingArc, drawingRect } from "../utils/shape";
+import { drawArc, drawRect } from "../utils/shape";
 
 export class Mask {
   private canvas: HTMLCanvasElement;
@@ -34,7 +34,7 @@ export class Mask {
     const selection = this.editor.selection.get();
     if (!selection) return void 0;
     const { startX, startY, endX, endY } = selection;
-    drawingRect(this.ctx, {
+    drawRect(this.ctx, {
       x: startX - 1,
       y: startY - 1,
       width: endX - startX + 2,
@@ -43,10 +43,10 @@ export class Mask {
       borderWidth: 2,
     });
     const arc = { borderColor: BLUE, fillColor: WHITE, radius: OP_LEN / 2, borderWidth: 2 };
-    drawingArc(this.ctx, { ...arc, x: startX, y: startX });
-    drawingArc(this.ctx, { ...arc, x: endX, y: startY });
-    drawingArc(this.ctx, { ...arc, x: startX, y: endY });
-    drawingArc(this.ctx, { ...arc, x: endX, y: endY });
+    drawArc(this.ctx, { ...arc, x: startX, y: startX });
+    drawArc(this.ctx, { ...arc, x: endX, y: startY });
+    drawArc(this.ctx, { ...arc, x: startX, y: endY });
+    drawArc(this.ctx, { ...arc, x: endX, y: endY });
   }
 
   public drawingHoverBox() {
@@ -56,7 +56,7 @@ export class Mask {
     const delta = this.editor.deltaSet.get(hover);
     if (!delta) return void 0;
     const { x, y, width, height } = delta.getRect();
-    drawingRect(this.ctx, {
+    drawRect(this.ctx, {
       x: x - 1,
       y: y - 1,
       width: width + 2,

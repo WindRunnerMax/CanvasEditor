@@ -6,6 +6,7 @@ import { EDITOR_STATE } from "../state/utils/constant";
 import { Range } from "./modules/range";
 import { setCursorState } from "./utils/cursor";
 import { isInsideDelta } from "./utils/is";
+
 export class Selection {
   private hover: string;
   private current: Range | null;
