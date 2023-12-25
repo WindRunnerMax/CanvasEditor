@@ -3,9 +3,8 @@ import { isEmptyValue } from "sketching-utils";
 import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
 import type { SelectionStateEvent } from "../../event/bus/types";
-import { CURSOR_STATE, SELECTION_STATE } from "../../selection/utils/constant";
 import type { Canvas } from "../index";
-import { OP_LEN } from "../utils/constant";
+import { CANVAS_STATE, CURSOR_STATE, OP_LEN } from "../utils/constant";
 import { BLUE, LIGHT_BLUE, WHITE } from "../utils/palette";
 import { drawArc, drawRect } from "../utils/shape";
 
@@ -17,7 +16,7 @@ export class Mask {
     this.canvas = document.createElement("canvas");
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
     this.editor.event.on(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange);
-    this.editor.event.on(EDITOR_EVENT.SELECTION_STATE, this.onSelectionStateChange);
+    this.editor.event.on(EDITOR_EVENT.CANVAS_STATE, this.onSelectionStateChange);
   }
 
   public onMount(dom: HTMLDivElement, ratio: number) {
@@ -33,7 +32,7 @@ export class Mask {
   public destroy(dom: HTMLDivElement) {
     dom.removeChild(this.canvas);
     this.editor.event.off(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange);
-    this.editor.event.off(EDITOR_EVENT.SELECTION_STATE, this.onSelectionStateChange);
+    this.editor.event.off(EDITOR_EVENT.CANVAS_STATE, this.onSelectionStateChange);
   }
 
   // ====== Drawing Selection ======
@@ -57,7 +56,7 @@ export class Mask {
   }
 
   public drawingHoverBox() {
-    const hover = this.editor.selection.getState(SELECTION_STATE.HOVER);
+    const hover = this.engine.getState(CANVAS_STATE.HOVER);
     const active = this.editor.selection.getActiveDeltas();
     if (!hover || active.has(hover)) return void 0;
     const delta = this.editor.deltaSet.get(hover);
@@ -74,7 +73,7 @@ export class Mask {
   }
 
   public drawingTranslateBox() {
-    const rect = this.editor.selection.getState(SELECTION_STATE.OP_RECT);
+    const rect = this.engine.getState(CANVAS_STATE.OP_RECT);
     if (!rect) return void 0;
     const { startX, startY, endX, endY } = rect.flat();
     drawRect(this.ctx, {
@@ -102,16 +101,16 @@ export class Mask {
 
   private onSelectionStateChange = (event: SelectionStateEvent) => {
     // Explicitly declare the type that needs to be re-rendered
-    if (event.type === SELECTION_STATE.RESIZE) {
+    if (event.type === CANVAS_STATE.RESIZE) {
       this.setCursorState();
-    } else if (event.type === SELECTION_STATE.HOVER || event.type === SELECTION_STATE.OP_RECT) {
+    } else if (event.type === CANVAS_STATE.HOVER || event.type === CANVAS_STATE.OP_RECT) {
       this.drawingState();
     }
   };
 
   // ====== Cursor State ======
   public setCursorState() {
-    const state = this.editor.selection.getState(SELECTION_STATE.RESIZE);
+    const state = this.engine.getState(CANVAS_STATE.RESIZE);
     this.canvas.style.cursor = isEmptyValue(state) ? "" : CURSOR_STATE[state];
     return this;
   }

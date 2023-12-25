@@ -1,22 +1,22 @@
 import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
 import type { SelectionStateEvent } from "../../event/bus/types";
-import type { SELECTION_STATE, SelectionState } from "../utils/constant";
+import type { CANVAS_STATE, SelectionState } from "../utils/constant";
 
-export class SelectionStore {
+export class CanvasStateStore {
   private state: SelectionState;
   constructor(protected editor: Editor) {
     this.state = {};
   }
 
-  public setState<T extends SELECTION_STATE>(key: T, value: SelectionState[T]) {
+  public setState<T extends CANVAS_STATE>(key: T, value: SelectionState[T]) {
     this.state[key] = value;
     const action: SelectionStateEvent = { type: key as number, payload: value };
-    this.editor.event.trigger(EDITOR_EVENT.SELECTION_STATE, action);
+    this.editor.event.trigger(EDITOR_EVENT.CANVAS_STATE, action);
     return this;
   }
 
-  public getState<T extends SELECTION_STATE>(key: T): SelectionState[T] {
+  public getState<T extends CANVAS_STATE>(key: T): SelectionState[T] {
     return this.state[key];
   }
 

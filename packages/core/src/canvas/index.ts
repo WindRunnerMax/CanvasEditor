@@ -1,15 +1,17 @@
 import type { Editor } from "../editor";
 import { Graph } from "./modules/graph";
 import { Mask } from "./modules/mask";
+import { CanvasStateStore } from "./modules/state";
 
-export class Canvas {
+export class Canvas extends CanvasStateStore {
   private width: number;
   private height: number;
   public readonly devicePixelRatio: number;
   public readonly mask: Mask;
   public readonly graph: Graph;
 
-  constructor(private editor: Editor) {
+  constructor(protected editor: Editor) {
+    super(editor);
     this.width = 0;
     this.height = 0;
     this.mask = new Mask(editor, this);

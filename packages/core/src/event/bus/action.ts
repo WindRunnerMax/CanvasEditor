@@ -9,7 +9,7 @@ import type {
 
 export const EDITOR_EVENT = {
   CONTENT_CHANGE: "CONTENT_CHANGE",
-  SELECTION_STATE: "SELECTION_STATE",
+  CANVAS_STATE: "CANVAS_STATE",
   SELECTION_CHANGE: "SELECTION_CHANGE",
   PAINT: "PAINT",
   ...NATIVE_EVENTS,
@@ -18,7 +18,7 @@ export const EDITOR_EVENT = {
 export type EventMap = {
   [EDITOR_EVENT.PAINT]: PaintEvent;
   [EDITOR_EVENT.CONTENT_CHANGE]: ContentChangeEvent;
-  [EDITOR_EVENT.SELECTION_STATE]: SelectionStateEvent;
+  [EDITOR_EVENT.CANVAS_STATE]: SelectionStateEvent;
   [EDITOR_EVENT.SELECTION_CHANGE]: SelectionChangeEvent;
 } & NativeEventMap;
 

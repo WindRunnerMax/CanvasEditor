@@ -1,22 +1,20 @@
 import { Op, OpType } from "sketching-delta";
 import { isEmptyValue, throttle } from "sketching-utils";
 
+import { CANVAS_OP, CANVAS_STATE, SELECT_BIAS } from "../canvas/utils/constant";
+import { setCursorState } from "../canvas/utils/cursor";
+import { isInsideDelta } from "../canvas/utils/is";
 import type { Editor } from "../editor";
 import { EDITOR_EVENT } from "../event/bus/action";
 import { EDITOR_STATE } from "../state/utils/constant";
 import { Point } from "./modules/point";
 import { Range } from "./modules/range";
-import { SelectionStore } from "./modules/state";
-import { SELECT_BIAS, SELECTION_OP, SELECTION_STATE } from "./utils/constant";
-import { setCursorState } from "./utils/cursor";
-import { isInsideDelta } from "./utils/is";
 
-export class Selection extends SelectionStore {
+export class Selection {
   private current: Range | null;
   private active = new Set<string>();
 
   constructor(protected editor: Editor) {
-    super(editor);
     this.current = null;
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDown);
     this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMove);
@@ -31,7 +29,7 @@ export class Selection extends SelectionStore {
   // ====== Mouse Event ======
   // TODO: 需要重构事件的状态管理 拆分结构 太乱了
   private onMouseDown = (e: MouseEvent) => {
-    this.setState(SELECTION_STATE.LANDING_POINT, new Point(e.offsetX, e.offsetY));
+    this.editor.canvas.setState(CANVAS_STATE.LANDING_POINT, new Point(e.offsetX, e.offsetY));
     const delta = isInsideDelta(this.editor, e.offsetX, e.offsetY);
     // Process selection group
     if (delta) {
@@ -45,23 +43,23 @@ export class Selection extends SelectionStore {
   private onMouseMove = throttle(
     (e: MouseEvent) => {
       const { offsetX, offsetY } = e;
-      const point = this.getState(SELECTION_STATE.LANDING_POINT);
-      const opType = this.getState(SELECTION_STATE.OP);
+      const point = this.editor.canvas.getState(CANVAS_STATE.LANDING_POINT);
+      const opType = this.editor.canvas.getState(CANVAS_STATE.OP);
       if (!this.editor.state.get(EDITOR_STATE.MOUSE_DOWN)) {
         // Pure hover state
         const delta = isInsideDelta(this.editor, e.offsetX, e.offsetY);
         if (delta) {
-          this.setState(SELECTION_STATE.HOVER, delta.id);
+          this.editor.canvas.setState(CANVAS_STATE.HOVER, delta.id);
         } else {
-          this.setState(SELECTION_STATE.HOVER, null);
+          this.editor.canvas.setState(CANVAS_STATE.HOVER, null);
         }
         const state = setCursorState(this.editor, e);
-        this.setState(SELECTION_STATE.RESIZE, state);
-        !isEmptyValue(state) && this.setState(SELECTION_STATE.OP, SELECTION_OP.RESIZE);
-      } else if (opType === SELECTION_OP.TRANSLATE && point && this.current) {
+        this.editor.canvas.setState(CANVAS_STATE.RESIZE, state);
+        !isEmptyValue(state) && this.editor.canvas.setState(CANVAS_STATE.OP, CANVAS_OP.RESIZE);
+      } else if (opType === CANVAS_OP.TRANSLATE && point && this.current) {
         const { startX, startY, endX, endY } = this.current.flat();
-        this.setState(
-          SELECTION_STATE.OP_RECT,
+        this.editor.canvas.setState(
+          CANVAS_STATE.OP_RECT,
           new Range({
             startX: startX + offsetX - point.x,
             startY: startY + offsetY - point.y,
@@ -73,9 +71,9 @@ export class Selection extends SelectionStore {
         const { x, y } = point;
         if (Math.abs(e.offsetX - x) > SELECT_BIAS || Math.abs(e.offsetY - y) > SELECT_BIAS) {
           if (this.get()) {
-            this.setState(SELECTION_STATE.OP, SELECTION_OP.TRANSLATE);
+            this.editor.canvas.setState(CANVAS_STATE.OP, CANVAS_OP.TRANSLATE);
           } else {
-            this.setState(SELECTION_STATE.OP, SELECTION_OP.FRAME_SELECT);
+            this.editor.canvas.setState(CANVAS_STATE.OP, CANVAS_OP.FRAME_SELECT);
           }
         }
       }
@@ -85,7 +83,7 @@ export class Selection extends SelectionStore {
   );
 
   private onMouseUp = (e: MouseEvent) => {
-    const rect = this.getState(SELECTION_STATE.OP_RECT);
+    const rect = this.editor.canvas.getState(CANVAS_STATE.OP_RECT);
     if (rect && this.current) {
       const { startX, startY } = this.current.flat();
       this.editor.state.apply(
@@ -96,9 +94,9 @@ export class Selection extends SelectionStore {
       );
       this.set(rect);
     }
-    this.setState(SELECTION_STATE.LANDING_POINT, null);
-    this.setState(SELECTION_STATE.OP_RECT, null);
-    this.setState(SELECTION_STATE.OP, null);
+    this.editor.canvas.setState(CANVAS_STATE.LANDING_POINT, null);
+    this.editor.canvas.setState(CANVAS_STATE.OP_RECT, null);
+    this.editor.canvas.setState(CANVAS_STATE.OP, null);
     setCursorState(this.editor, e);
   };
 

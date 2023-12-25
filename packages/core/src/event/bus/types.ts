@@ -1,7 +1,8 @@
 import type { DeltaSet } from "sketching-delta";
 
+import type { CANVAS_STATE } from "../../canvas/utils/constant";
+import type { SelectionState } from "../../canvas/utils/constant";
 import type { Range } from "../../selection/modules/range";
-import type { SELECTION_STATE, SelectionState } from "../../selection/utils/constant";
 
 export type ContentChangeEvent = {
   current: DeltaSet;
@@ -22,6 +23,6 @@ export type SelectionChangeEvent = {
 };
 
 type SelectionStateMap = {
-  [P in SELECTION_STATE]: { type: P; payload: SelectionState[P] };
+  [P in CANVAS_STATE]: { type: P; payload: SelectionState[P] };
 };
 export type SelectionStateEvent = SelectionStateMap[keyof SelectionStateMap];
