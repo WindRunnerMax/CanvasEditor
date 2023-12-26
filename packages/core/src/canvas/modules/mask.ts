@@ -41,10 +41,10 @@ export class Mask {
     if (!selection) return void 0;
     const { startX, startY, endX, endY } = selection.flat();
     drawRect(this.ctx, {
-      x: startX - 1,
-      y: startY - 1,
-      width: endX - startX + 2,
-      height: endY - startY + 2,
+      x: startX,
+      y: startY,
+      width: endX - startX,
+      height: endY - startY,
       borderColor: BLUE,
       borderWidth: 1,
     });
@@ -63,10 +63,10 @@ export class Mask {
     if (!delta) return void 0;
     const { x, y, width, height } = delta.getRect();
     drawRect(this.ctx, {
-      x: x - 1,
-      y: y - 1,
-      width: width + 2,
-      height: height + 2,
+      x: x,
+      y: y,
+      width: width,
+      height: height,
       borderColor: LIGHT_BLUE,
       borderWidth: 1,
     });
