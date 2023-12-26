@@ -30,6 +30,7 @@ export class Canvas extends CanvasStateStore {
   }
 
   public destroy() {
+    super.destroy();
     const dom = this.editor.getContainer();
     this.mask.destroy(dom);
     this.graph.destroy(dom);
