@@ -3,22 +3,26 @@ import type { Delta } from "sketching-delta";
 import type { Editor } from "../../editor";
 
 export class DeltaState {
-  public parent: DeltaState | null;
-  public children: DeltaState[];
+  public _parent: DeltaState | null;
+  public readonly children: DeltaState[];
   constructor(private editor: Editor, public readonly delta: Delta) {
-    this.parent = null;
+    this._parent = null;
     this.children = [];
   }
 
+  public get parent() {
+    return this._parent;
+  }
+
   public setParent(parent: DeltaState | null) {
-    this.parent = parent;
+    this._parent = parent;
   }
 
   public insert(delta: Delta) {
     this.editor.deltaSet.add(delta);
     this.delta.insert(delta);
     const state = new DeltaState(this.editor, delta);
-    state.parent = this;
+    state.setParent(this);
     this.children.push(state);
     return this;
   }
