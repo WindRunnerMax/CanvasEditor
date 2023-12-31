@@ -1,4 +1,5 @@
 import type { Editor } from "../../editor";
+import type { Range } from "../../selection/modules/range";
 import type { ResizeType } from "./constant";
 import { OP_OFS } from "./constant";
 import { RESIZE_TYPE, SELECT_BIAS } from "./constant";
@@ -69,4 +70,18 @@ export const setCursorState = (editor: Editor, e: MouseEvent) => {
     state = RESIZE_TYPE.RB;
   }
   return state;
+};
+
+export const recordRectBySelection = (editor: Editor, selection: Range | null) => {
+  editor.canvas.setState(RESIZE_TYPE.T, null);
+  editor.canvas.setState(RESIZE_TYPE.B, null);
+  editor.canvas.setState(RESIZE_TYPE.L, null);
+  editor.canvas.setState(RESIZE_TYPE.R, null);
+  editor.canvas.setState(RESIZE_TYPE.LB, null);
+  editor.canvas.setState(RESIZE_TYPE.LT, null);
+  editor.canvas.setState(RESIZE_TYPE.RB, null);
+  editor.canvas.setState(RESIZE_TYPE.RT, null);
+  if (selection) {
+    //
+  }
 };

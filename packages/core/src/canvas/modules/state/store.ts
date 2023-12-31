@@ -1,16 +1,17 @@
 import { Op, OP_TYPE } from "sketching-delta";
 import { isEmptyValue, throttle } from "sketching-utils";
 
-import type { Editor } from "../../editor";
-import { EDITOR_EVENT } from "../../event/bus/action";
-import type { CanvasStateEvent } from "../../event/bus/types";
-import { Point } from "../../selection/modules/point";
-import { Range } from "../../selection/modules/range";
-import { EDITOR_STATE } from "../../state/utils/constant";
-import type { CanvasStore } from "../utils/constant";
-import { CANVAS_OP, CANVAS_STATE, SELECT_BIAS } from "../utils/constant";
-import { setCursorState } from "../utils/cursor";
-import { isInsideDelta } from "../utils/is";
+import type { Editor } from "../../../editor";
+import { EDITOR_EVENT } from "../../../event/bus/action";
+import type { CanvasStateEvent, SelectionChangeEvent } from "../../../event/bus/types";
+import { Point } from "../../../selection/modules/point";
+import { Range } from "../../../selection/modules/range";
+import { EDITOR_STATE } from "../../../state/utils/constant";
+import type { CanvasStore } from "../../utils/constant";
+import { CANVAS_OP, CANVAS_STATE, SELECT_BIAS } from "../../utils/constant";
+import { setCursorState } from "../../utils/cursor";
+import { isInsideDelta } from "../../utils/is";
+
 export class CanvasStateStore {
   private store: CanvasStore;
   constructor(protected editor: Editor) {
@@ -18,12 +19,14 @@ export class CanvasStateStore {
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDown);
     this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMove);
     this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUp);
+    this.editor.event.on(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange);
   }
 
   public destroy() {
     this.editor.event.off(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDown);
     this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMove);
     this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUp);
+    this.editor.event.off(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange);
   }
 
   // ====== Mouse Event ======
@@ -92,6 +95,13 @@ export class CanvasStateStore {
     this.editor.canvas.setState(CANVAS_STATE.RECT, null);
     this.editor.canvas.setState(CANVAS_STATE.LANDING, null);
     setCursorState(this.editor, e);
+  };
+
+  // ====== Selection ======
+  private onSelectionChange = (e: SelectionChangeEvent) => {
+    const { current } = e;
+    // TODO: 通过选区变换来记录节点状态
+    console.log("current :>> ", current);
   };
 
   // ====== State ======

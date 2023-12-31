@@ -1,7 +1,7 @@
 import type { Editor } from "../editor";
-import { Graph } from "./modules/graph";
-import { Mask } from "./modules/mask";
-import { CanvasStateStore } from "./modules/state";
+import { Graph } from "./modules/draw/graph";
+import { Mask } from "./modules/draw/mask";
+import { CanvasStateStore } from "./modules/state/store";
 
 export class Canvas extends CanvasStateStore {
   private width: number;
