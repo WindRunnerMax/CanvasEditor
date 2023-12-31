@@ -1,5 +1,5 @@
-import type { Point } from "../../selection/modules/point";
-import type { Range } from "../../selection/modules/range";
+import type { Point } from "../../selection/point";
+import type { Range } from "../../selection/range";
 
 export const OP_OFS = 5;
 export const OP_LEN = 10;

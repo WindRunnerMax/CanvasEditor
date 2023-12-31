@@ -1,16 +1,16 @@
 import { Op, OP_TYPE } from "sketching-delta";
 import { isEmptyValue, throttle } from "sketching-utils";
 
-import type { Editor } from "../../../editor";
-import { EDITOR_EVENT } from "../../../event/bus/action";
-import type { CanvasStateEvent, SelectionChangeEvent } from "../../../event/bus/types";
-import { Point } from "../../../selection/modules/point";
-import { Range } from "../../../selection/modules/range";
-import { EDITOR_STATE } from "../../../state/utils/constant";
-import type { CanvasStore } from "../../utils/constant";
-import { CANVAS_OP, CANVAS_STATE, SELECT_BIAS } from "../../utils/constant";
-import { setCursorState } from "../../utils/cursor";
-import { isInsideDelta } from "../../utils/is";
+import type { Editor } from "../../editor";
+import { EDITOR_EVENT } from "../../event/bus/action";
+import type { CanvasStateEvent, SelectionChangeEvent } from "../../event/bus/types";
+import { Point } from "../../selection/point";
+import { Range } from "../../selection/range";
+import { EDITOR_STATE } from "../../state/utils/constant";
+import type { CanvasStore } from "../utils/constant";
+import { CANVAS_OP, CANVAS_STATE, SELECT_BIAS } from "../utils/constant";
+import { setCursorState } from "../utils/cursor";
+import { isInsideDelta } from "../utils/is";
 
 export class CanvasStateStore {
   private store: CanvasStore;

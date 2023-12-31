@@ -1,7 +1,7 @@
 import type { DeltaSet } from "sketching-delta";
 
 import type { CanvasStore } from "../../canvas/utils/constant";
-import type { Range } from "../../selection/modules/range";
+import type { Range } from "../../selection/range";
 
 export type ContentChangeEvent = {
   current: DeltaSet;

@@ -3,10 +3,10 @@ import { DeltaSet, OP_TYPE } from "sketching-delta";
 import { ROOT_DELTA } from "sketching-utils";
 
 import type { Editor } from "../editor";
-import { DEFAULT_DELTA_LIKE } from "../editor/constant";
-import { EntryDelta } from "../editor/entry";
+import { EntryDelta } from "../editor/delta/entry";
+import { DEFAULT_DELTA_LIKE } from "../editor/utils/constant";
 import { EDITOR_EVENT } from "../event/bus/action";
-import { DeltaState } from "./modules/delta-state";
+import { DeltaState } from "./delta/state";
 import type { EDITOR_STATE } from "./utils/constant";
 
 export class EditorState {

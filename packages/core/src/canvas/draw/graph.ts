@@ -1,5 +1,5 @@
-import type { Editor } from "../../../editor";
-import type { Canvas } from "../../index";
+import type { Editor } from "../../editor";
+import type { Canvas } from "../index";
 
 export class Graph {
   private canvas: HTMLCanvasElement;

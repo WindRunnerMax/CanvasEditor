@@ -1,7 +1,7 @@
 import { isInsideDelta } from "../canvas/utils/is";
 import type { Editor } from "../editor";
 import { EDITOR_EVENT } from "../event/bus/action";
-import { Range } from "./modules/range";
+import { Range } from "./range";
 
 export class Selection {
   private current: Range | null;

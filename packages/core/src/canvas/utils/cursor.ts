@@ -1,5 +1,5 @@
 import type { Editor } from "../../editor";
-import type { Range } from "../../selection/modules/range";
+import type { Range } from "../../selection/range";
 import type { ResizeType } from "./constant";
 import { OP_OFS } from "./constant";
 import { RESIZE_TYPE, SELECT_BIAS } from "./constant";

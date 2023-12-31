@@ -7,8 +7,8 @@ import { LOG_LEVEL, Logger } from "../log";
 import { Selection } from "../selection";
 import { EditorState } from "../state";
 import { EDITOR_STATE } from "../state/utils/constant";
-import { DEFAULT_DELTA_LIKE, DEFAULT_DELTA_SET_LIKE } from "./constant";
-import { EntryDelta } from "./entry";
+import { EntryDelta } from "./delta/entry";
+import { DEFAULT_DELTA_LIKE, DEFAULT_DELTA_SET_LIKE } from "./utils/constant";
 export type EditorOptions = {
   deltaSet?: DeltaSet;
   logLevel?: typeof LOG_LEVEL[keyof typeof LOG_LEVEL];

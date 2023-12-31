@@ -1,7 +1,7 @@
 import type { DeltaLike, DeltaSetLike } from "sketching-delta";
 import { ROOT_DELTA } from "sketching-utils";
 
-import { EntryDelta } from "./entry";
+import { EntryDelta } from "../delta/entry";
 
 export const DEFAULT_DELTA_LIKE: DeltaLike = {
   x: 0,

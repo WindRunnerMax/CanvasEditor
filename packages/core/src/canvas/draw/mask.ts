@@ -1,12 +1,12 @@
 import { isEmptyValue } from "sketching-utils";
 
-import type { Editor } from "../../../editor";
-import { EDITOR_EVENT } from "../../../event/bus/action";
-import type { CanvasStateEvent } from "../../../event/bus/types";
-import type { Canvas } from "../../index";
-import { CANVAS_STATE, CURSOR_STATE, OP_LEN } from "../../utils/constant";
-import { BLUE, LIGHT_BLUE, WHITE } from "../../utils/palette";
-import { drawArc, drawRect } from "../../utils/shape";
+import type { Editor } from "../../editor";
+import { EDITOR_EVENT } from "../../event/bus/action";
+import type { CanvasStateEvent } from "../../event/bus/types";
+import type { Canvas } from "../index";
+import { CANVAS_STATE, CURSOR_STATE, OP_LEN } from "../utils/constant";
+import { BLUE, LIGHT_BLUE, WHITE } from "../utils/palette";
+import { drawArc, drawRect } from "../utils/shape";
 
 export class Mask {
   private canvas: HTMLCanvasElement;
