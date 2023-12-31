@@ -7,12 +7,12 @@ import type { SelectionStateEvent } from "../../event/bus/types";
 import { Point } from "../../selection/modules/point";
 import { Range } from "../../selection/modules/range";
 import { EDITOR_STATE } from "../../state/utils/constant";
-import type { SelectionState } from "../utils/constant";
+import type { CanvasState, CanvasStateKey } from "../utils/constant";
 import { CANVAS_OP, CANVAS_STATE, SELECT_BIAS } from "../utils/constant";
 import { setCursorState } from "../utils/cursor";
 import { isInsideDelta } from "../utils/is";
 export class CanvasStateStore {
-  private state: SelectionState;
+  private state: CanvasState;
   constructor(protected editor: Editor) {
     this.state = {};
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDown);
@@ -95,14 +95,14 @@ export class CanvasStateStore {
   };
 
   // ====== State ======
-  public setState<T extends CANVAS_STATE>(key: T, value: SelectionState[T]) {
+  public setState<T extends CanvasStateKey>(key: T, value: CanvasState[T]) {
     this.state[key] = value;
-    const action: SelectionStateEvent = { type: key as number, payload: value };
+    const action: SelectionStateEvent = { type: key, payload: value };
     this.editor.event.trigger(EDITOR_EVENT.CANVAS_STATE, action);
     return this;
   }
 
-  public getState<T extends CANVAS_STATE>(key: T): SelectionState[T] {
+  public getState<T extends CanvasStateKey>(key: T): CanvasState[T] {
     return this.state[key];
   }
 

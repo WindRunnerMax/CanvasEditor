@@ -1,4 +1,5 @@
 import type { Editor } from "../../editor";
+import type { ResizeType } from "./constant";
 import { OP_OFS } from "./constant";
 import { RESIZE_TYPE, SELECT_BIAS } from "./constant";
 
@@ -8,7 +9,7 @@ export const setCursorState = (editor: Editor, e: MouseEvent) => {
     return null;
   }
   // TODO: 存储坐标状态而不是每次都重新计算坐标状态
-  let state: RESIZE_TYPE | null = null;
+  let state: ResizeType | null = null;
   const { startX, startY, endX, endY } = selection.flat();
   const { offsetX, offsetY } = e;
   if (
