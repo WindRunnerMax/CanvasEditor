@@ -10,7 +10,8 @@ export type {
   OpPayload,
   OpRecord,
   Ops,
+  OpType,
   StrictDeltaLike,
   StrictDeltaSetLike,
 } from "./types";
-export { OpType } from "./types";
+export { OP_TYPE } from "./types";

@@ -1,20 +1,20 @@
-import { Op, OpType } from "sketching-delta";
+import { Op, OP_TYPE } from "sketching-delta";
 import { isEmptyValue, throttle } from "sketching-utils";
 
 import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
-import type { SelectionStateEvent } from "../../event/bus/types";
+import type { CanvasStateEvent } from "../../event/bus/types";
 import { Point } from "../../selection/modules/point";
 import { Range } from "../../selection/modules/range";
 import { EDITOR_STATE } from "../../state/utils/constant";
-import type { CanvasState, CanvasStateKey } from "../utils/constant";
+import type { CanvasStore } from "../utils/constant";
 import { CANVAS_OP, CANVAS_STATE, SELECT_BIAS } from "../utils/constant";
 import { setCursorState } from "../utils/cursor";
 import { isInsideDelta } from "../utils/is";
 export class CanvasStateStore {
-  private state: CanvasState;
+  private store: CanvasStore;
   constructor(protected editor: Editor) {
-    this.state = {};
+    this.store = {};
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDown);
     this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMove);
     this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUp);
@@ -29,14 +29,14 @@ export class CanvasStateStore {
   // ====== Mouse Event ======
   // TODO: 需要重构事件的状态管理 拆分结构 太乱了
   private onMouseDown = (e: MouseEvent) => {
-    this.editor.canvas.setState(CANVAS_STATE.LANDING_POINT, new Point(e.offsetX, e.offsetY));
+    this.editor.canvas.setState(CANVAS_STATE.LANDING, new Point(e.offsetX, e.offsetY));
   };
 
   private onMouseMove = throttle(
     (e: MouseEvent) => {
       const { offsetX, offsetY } = e;
       const selection = this.editor.selection.get();
-      const point = this.editor.canvas.getState(CANVAS_STATE.LANDING_POINT);
+      const point = this.editor.canvas.getState(CANVAS_STATE.LANDING);
       const opType = this.editor.canvas.getState(CANVAS_STATE.OP);
       if (!this.editor.state.get(EDITOR_STATE.MOUSE_DOWN)) {
         // Pure hover state
@@ -52,7 +52,7 @@ export class CanvasStateStore {
       } else if (opType === CANVAS_OP.TRANSLATE && point && selection) {
         const { startX, startY, endX, endY } = selection.flat();
         this.editor.canvas.setState(
-          CANVAS_STATE.OP_RECT,
+          CANVAS_STATE.RECT,
           new Range({
             startX: startX + offsetX - point.x,
             startY: startY + offsetY - point.y,
@@ -76,38 +76,38 @@ export class CanvasStateStore {
   );
 
   private onMouseUp = (e: MouseEvent) => {
-    const rect = this.editor.canvas.getState(CANVAS_STATE.OP_RECT);
+    const rect = this.editor.canvas.getState(CANVAS_STATE.RECT);
     const selection = this.editor.selection.get();
     if (rect && selection) {
       const { startX, startY } = selection.flat();
       this.editor.state.apply(
-        new Op(OpType.MOVE, {
+        new Op(OP_TYPE.MOVE, {
           x: rect.start.x - startX,
           y: rect.start.y - startY,
         })
       );
       this.editor.selection.set(rect);
     }
-    this.editor.canvas.setState(CANVAS_STATE.LANDING_POINT, null);
-    this.editor.canvas.setState(CANVAS_STATE.OP_RECT, null);
     this.editor.canvas.setState(CANVAS_STATE.OP, null);
+    this.editor.canvas.setState(CANVAS_STATE.RECT, null);
+    this.editor.canvas.setState(CANVAS_STATE.LANDING, null);
     setCursorState(this.editor, e);
   };
 
   // ====== State ======
-  public setState<T extends CanvasStateKey>(key: T, value: CanvasState[T]) {
-    this.state[key] = value;
-    const action: SelectionStateEvent = { type: key, payload: value };
+  public setState<T extends keyof Required<CanvasStore>>(key: T, value: CanvasStore[T]) {
+    this.store[key] = value;
+    const action = { type: key, payload: value } as CanvasStateEvent;
     this.editor.event.trigger(EDITOR_EVENT.CANVAS_STATE, action);
     return this;
   }
 
-  public getState<T extends CanvasStateKey>(key: T): CanvasState[T] {
-    return this.state[key];
+  public getState<T extends keyof CanvasStore>(key: T): CanvasStore[T] {
+    return this.store[key];
   }
 
   public resetState() {
-    this.state = {};
+    this.store = {};
     return this;
   }
 }

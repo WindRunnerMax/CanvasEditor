@@ -21,19 +21,21 @@ export type DeltaStatic = typeof Delta & {
   create: (options: DeltaOptions) => Delta;
 };
 
-export enum OpType {
-  INSERT,
-  MOVE,
-  RESIZE,
-  REVISE,
-  DELETE,
-}
+export const OP_TYPE = {
+  INSERT: "INSERT",
+  MOVE: "MOVE",
+  RESIZE: "RESIZE",
+  REVISE: "REVISE",
+  DELETE: "DELETE",
+} as const;
+export type OpType = keyof typeof OP_TYPE;
+
 export type OpPayload = {
-  [OpType.INSERT]: { delta: Delta; id?: string };
-  [OpType.DELETE]: { id?: string };
-  [OpType.MOVE]: { x: number; y: number };
-  [OpType.RESIZE]: { width: number; height: number };
-  [OpType.REVISE]: { attrs: Record<string, string> };
+  [OP_TYPE.INSERT]: { delta: Delta; id?: string };
+  [OP_TYPE.DELETE]: { id?: string };
+  [OP_TYPE.MOVE]: { x: number; y: number };
+  [OP_TYPE.RESIZE]: { width: number; height: number };
+  [OP_TYPE.REVISE]: { attrs: Record<string, string> };
 };
 export type OpRecord = {
   [K in OpType]: Op<K>;

@@ -36,19 +36,26 @@ export const CANVAS_OP = {
 
 export const CANVAS_STATE = {
   OP: "OP",
+  RECT: "RECT",
   HOVER: "HOVER",
   RESIZE: "RESIZE",
-  LANDING_POINT: "LANDING_POINT",
-  OP_RECT: "OP_RECT",
+  LANDING: "LANDING",
 } as const;
 
 export type CanvasOp = keyof typeof CANVAS_OP;
 export type ResizeType = keyof typeof RESIZE_TYPE;
-export type CanvasStateKey = keyof typeof CANVAS_STATE;
-export type CanvasState = {
+export type CanvasStore = {
+  [RESIZE_TYPE.L]?: Range | null;
+  [RESIZE_TYPE.R]?: Range | null;
+  [RESIZE_TYPE.T]?: Range | null;
+  [RESIZE_TYPE.B]?: Range | null;
+  [RESIZE_TYPE.LT]?: Range | null;
+  [RESIZE_TYPE.RT]?: Range | null;
+  [RESIZE_TYPE.LB]?: Range | null;
+  [RESIZE_TYPE.RB]?: Range | null;
+  [CANVAS_STATE.RECT]?: Range | null;
   [CANVAS_STATE.OP]?: CanvasOp | null;
   [CANVAS_STATE.HOVER]?: string | null;
+  [CANVAS_STATE.LANDING]?: Point | null;
   [CANVAS_STATE.RESIZE]?: ResizeType | null;
-  [CANVAS_STATE.LANDING_POINT]?: Point | null;
-  [CANVAS_STATE.OP_RECT]?: Range | null;
 };

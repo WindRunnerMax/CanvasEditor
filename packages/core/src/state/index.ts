@@ -1,5 +1,5 @@
 import type { Delta, Ops } from "sketching-delta";
-import { DeltaSet, OpType } from "sketching-delta";
+import { DeltaSet, OP_TYPE } from "sketching-delta";
 import { ROOT_DELTA } from "sketching-utils";
 
 import type { Editor } from "../editor";
@@ -65,13 +65,13 @@ export class EditorState {
     const effect: string[] = [];
 
     switch (op.type) {
-      case OpType.INSERT: {
+      case OP_TYPE.INSERT: {
         const { delta, id } = op.payload;
         const target = id ? this.getDeltaState(id) : this.entry;
         target && target.insert(delta);
         break;
       }
-      case OpType.MOVE: {
+      case OP_TYPE.MOVE: {
         const { x, y } = op.payload;
         const select = this.editor.selection.getActiveDeltas();
         select.forEach(id => {
