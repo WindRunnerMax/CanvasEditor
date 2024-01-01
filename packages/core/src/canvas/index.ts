@@ -1,4 +1,5 @@
 import type { Editor } from "../editor";
+import { Range } from "../selection/range";
 import { Graph } from "./draw/graph";
 import { Mask } from "./draw/mask";
 import { Root } from "./state/root";
@@ -26,6 +27,7 @@ export class Canvas extends CanvasStateStore {
     const dom = this.editor.getContainer();
     this.width = dom.clientWidth;
     this.height = dom.clientHeight;
+    this.root.setRange(Range.from(this.width, this.height));
     this.graph.onMount(dom, this.devicePixelRatio);
     this.mask.onMount(dom, this.devicePixelRatio);
     this.resetAllCtx();

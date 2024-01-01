@@ -1,3 +1,7 @@
+import type { DeltaLike } from "sketching-delta";
+import { Delta } from "sketching-delta";
+import { isNumber, isObject } from "sketching-utils";
+
 import { Point } from "./point";
 
 export class Range {
@@ -16,8 +20,23 @@ export class Range {
     return new Range({ ...this.flat() });
   }
 
-  static from(startX: number, startY: number, endX: number, endY: number) {
-    return new Range({ startX, startY, endX, endY });
+  static from(delta: Delta): Range;
+  static from(delta: DeltaLike): Range;
+  static from(endX: number, endY: number): Range;
+  static from(startX: number, startY: number, endX: number, endY: number): Range;
+  static from(a: number | Delta | DeltaLike, b?: number, c?: number, d?: number): Range {
+    if (a instanceof Delta) {
+      const { x, y, height, width } = a.getRect();
+      return Range.from(x, y, x + width, y + height);
+    } else if (isObject(a)) {
+      const { x, y, height, width } = a;
+      return Range.from(x, y, x + width, y + height);
+    } else if (isNumber(b) && !isNumber(c) && !isNumber(d)) {
+      return new Range({ startX: 0, startY: 0, endX: a, endY: b });
+    } else if (isNumber(a) && isNumber(b) && isNumber(c) && isNumber(d)) {
+      return new Range({ startX: a, startY: b, endX: c, endY: d });
+    }
+    return new Range({ startX: 0, startY: 0, endX: 0, endY: 0 });
   }
 
   static isEqual(origin: Range | null, target: Range | null): boolean {

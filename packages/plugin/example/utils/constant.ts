@@ -4,7 +4,7 @@ export const EXAMPLE: DeltaSetLike = {
   ROOT: {
     x: 0,
     y: 0,
-    id: "TczzEXDhyw",
+    id: "ROOT",
     key: "entry",
     attrs: {},
     width: 0,

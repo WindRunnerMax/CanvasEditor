@@ -1,7 +1,12 @@
+type EventOptions = { bubble?: boolean; capture?: boolean };
+
 class Event {
   public bubble: boolean;
-  constructor() {
-    this.bubble = true;
+  public capture: boolean;
+  constructor(options?: EventOptions) {
+    const { bubble = true, capture = false } = options || {};
+    this.bubble = bubble;
+    this.capture = capture;
   }
 
   public stop() {
@@ -16,8 +21,13 @@ export class MouseEvent extends Event {
   public readonly ctrlKey: boolean;
   public readonly shiftKey: boolean;
   public readonly altKey: boolean;
-  constructor(event: globalThis.MouseEvent) {
-    super();
+
+  constructor(
+    event: globalThis.MouseEvent,
+    // 默认不捕获 默认不冒泡
+    options: EventOptions = { bubble: false, capture: false }
+  ) {
+    super(options);
     this.x = event.offsetX;
     this.y = event.offsetY;
     this.metaKey = event.metaKey;

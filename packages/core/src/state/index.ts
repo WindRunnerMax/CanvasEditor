@@ -6,7 +6,7 @@ import type { Editor } from "../editor";
 import { EntryDelta } from "../editor/delta/entry";
 import { DEFAULT_DELTA_LIKE } from "../editor/utils/constant";
 import { EDITOR_EVENT } from "../event/bus/action";
-import { DeltaState } from "./delta/state";
+import { DeltaState } from "./node/state";
 import type { EDITOR_STATE } from "./utils/constant";
 
 export class EditorState {
@@ -24,11 +24,11 @@ export class EditorState {
       this.deltas.set(id, new DeltaState(editor, delta));
     });
     this.entry = this.getDeltaState(ROOT_DELTA);
-    this.createTreeState();
+    this.createDeltaStateTree();
   }
 
-  private createTreeState() {
-    // 初始化构建整个状态树
+  private createDeltaStateTree() {
+    // 初始化构建整个`Delta`状态树
     const set = new WeakSet<Delta>();
     const dfs = (current: Delta) => {
       if (set.has(current)) return void 0;

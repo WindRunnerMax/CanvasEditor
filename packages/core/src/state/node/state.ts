@@ -3,9 +3,11 @@ import type { Delta } from "sketching-delta";
 import type { Editor } from "../../editor";
 
 export class DeltaState {
+  public readonly id: string;
   public _parent: DeltaState | null;
   public readonly children: DeltaState[];
   constructor(private editor: Editor, public readonly delta: Delta) {
+    this.id = delta.id;
     this._parent = null;
     this.children = [];
   }

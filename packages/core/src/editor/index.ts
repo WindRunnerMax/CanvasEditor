@@ -36,8 +36,8 @@ export class Editor {
     this.event = new Event(this);
     this.state = new EditorState(this, this.deltaSet);
     this.logger = new Logger(logLevel);
-    this.canvas = new Canvas(this);
     this.selection = new Selection(this);
+    this.canvas = new Canvas(this);
   }
 
   public onMount(container: HTMLDivElement) {

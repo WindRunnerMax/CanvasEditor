@@ -1,4 +1,3 @@
-import { isInsideDelta } from "../canvas/utils/is";
 import type { Editor } from "../editor";
 import { EDITOR_EVENT } from "../event/bus/action";
 import { Range } from "./range";
@@ -9,24 +8,11 @@ export class Selection {
 
   constructor(protected editor: Editor) {
     this.current = null;
-    this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDown, 0);
   }
 
   public destroy() {
-    this.editor.event.off(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDown);
+    // Placeholder
   }
-
-  // ====== Mouse Event ======
-  private onMouseDown = (e: MouseEvent) => {
-    const delta = isInsideDelta(this.editor, e.offsetX, e.offsetY);
-    // Process selection group
-    if (delta) {
-      e.shiftKey ? this.addActiveDelta(delta.id) : this.setActiveDelta(delta.id);
-    } else {
-      !e.shiftKey && this.clearActiveDeltas();
-    }
-    this.composeRange();
-  };
 
   // ====== Selection ======
   public get() {
@@ -64,10 +50,11 @@ export class Selection {
 
   public clearActiveDeltas() {
     this.active.clear();
+    this.set(null);
   }
 
   // ====== Range ======
-  private composeRange() {
+  public compose() {
     // Multiple to be combined
     const active = this.active;
     if (active.size === 0) {

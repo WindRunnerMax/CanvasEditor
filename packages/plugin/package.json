@@ -20,17 +20,19 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
     "sketching-core": "workspace: *",
     "sketching-delta": "workspace: *",
-    "sketching-utils": "workspace: *",
-    "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "sketching-utils": "workspace: *"
   },
   "devDependencies": {
-    "@types/react": "17.0.2",
-    "@types/react-dom": "17.0.2",
     "@rspack/cli": "0.2.5",
     "@rspack/plugin-html": "0.2.5",
-    "copy-webpack-plugin": "5"
+    "@types/react": "17.0.2",
+    "@types/react-dom": "17.0.2",
+    "copy-webpack-plugin": "5",
+    "less-loader": "^11.1.4",
+    "sass-loader": "^13.3.3"
   }
 }

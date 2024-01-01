@@ -8,10 +8,12 @@ export class Node {
   private _parent: Node | null;
   public readonly children: Node[];
 
-  public onMouseDown?: (event: MouseEvent) => void;
-  public onMouseUp?: (event: MouseEvent) => void;
-  public onMouseEnter?: (event: MouseEvent) => void;
-  public onMouseLeave?: (event: MouseEvent) => void;
+  // 尽可能简单地实现事件流
+  // 直接通过`bubble`来决定捕获/冒泡
+  protected onMouseDown?: (event: MouseEvent) => void;
+  protected onMouseUp?: (event: MouseEvent) => void;
+  protected onMouseEnter?: (event: MouseEvent) => void;
+  protected onMouseLeave?: (event: MouseEvent) => void;
 
   constructor(range: Range) {
     this.root = null;

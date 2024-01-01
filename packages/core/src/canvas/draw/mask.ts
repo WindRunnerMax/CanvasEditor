@@ -56,10 +56,12 @@ export class Mask {
   }
 
   public drawingHoverBox() {
-    const hover = this.engine.getState(CANVAS_STATE.HOVER);
+    // 暂时依旧取`hover`的值 用来做全量绘制
+    // TODO: 基于事件实现+`clip`仅绘制/取消副作用是可行的
+    const hover = this.engine.root.hover;
     const active = this.editor.selection.getActiveDeltas();
-    if (!hover || active.has(hover)) return void 0;
-    const delta = this.editor.deltaSet.get(hover);
+    if (!hover || active.has(hover.id)) return void 0;
+    const delta = this.editor.deltaSet.get(hover.id);
     if (!delta) return void 0;
     const { x, y, width, height } = delta.getRect();
     drawRect(this.ctx, {
