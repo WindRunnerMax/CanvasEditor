@@ -80,7 +80,7 @@ export class Root extends Node {
     depthTraversal(this, 0);
   }
 
-  private getFlatNode = () => {
+  public getFlatNode = () => {
     const cache = ROOT_TO_NODE.get(this);
     if (cache) return cache;
     // 层次遍历且后置先行

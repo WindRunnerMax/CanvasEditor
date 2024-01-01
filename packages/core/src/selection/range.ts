@@ -16,8 +16,37 @@ export class Range {
     return { startX: this.start.x, startY: this.start.y, endX: this.end.x, endY: this.end.y };
   }
 
+  rect() {
+    return {
+      x: this.start.x,
+      y: this.start.y,
+      width: this.end.x - this.start.x,
+      height: this.end.y - this.start.x,
+    };
+  }
+
   clone() {
     return new Range({ ...this.flat() });
+  }
+
+  zoom(size: number) {
+    return new Range({
+      startX: this.start.x - size,
+      startY: this.start.y - size,
+      endX: this.end.x + size,
+      endY: this.end.y + size,
+    });
+  }
+
+  compose(range: Range) {
+    const { startX, startY, endX, endY } = range.flat();
+    const { startX: startX1, startY: startY1, endX: endX1, endY: endY1 } = this.flat();
+    return new Range({
+      startX: Math.min(startX, startX1),
+      startY: Math.min(startY, startY1),
+      endX: Math.max(endX, endX1),
+      endY: Math.max(endY, endY1),
+    });
   }
 
   static from(delta: Delta): Range;

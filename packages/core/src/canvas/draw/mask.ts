@@ -1,10 +1,11 @@
 import { isEmptyValue } from "sketching-utils";
 
 import type { Editor } from "../../editor";
-import { EDITOR_EVENT } from "../../event/bus/action";
-import type { CanvasStateEvent } from "../../event/bus/types";
+import type { Range } from "../../selection/range";
+import type { Node } from "../dom/node";
 import type { Canvas } from "../index";
 import { CANVAS_STATE, CURSOR_STATE, OP_LEN } from "../utils/constant";
+import { isRangeIntersect } from "../utils/is";
 import { BLUE, LIGHT_BLUE, WHITE } from "../utils/palette";
 import { drawArc, drawRect } from "../utils/shape";
 
@@ -15,8 +16,6 @@ export class Mask {
   constructor(private editor: Editor, private engine: Canvas) {
     this.canvas = document.createElement("canvas");
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
-    this.editor.event.on(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange);
-    this.editor.event.on(EDITOR_EVENT.CANVAS_STATE, this.onCanvasStateChange);
   }
 
   public onMount(dom: HTMLDivElement, ratio: number) {
@@ -31,8 +30,40 @@ export class Mask {
 
   public destroy(dom: HTMLDivElement) {
     dom.removeChild(this.canvas);
-    this.editor.event.off(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange);
-    this.editor.event.off(EDITOR_EVENT.CANVAS_STATE, this.onCanvasStateChange);
+  }
+
+  // ====== Drawing Range ======
+  private collectEffects(range: Range) {
+    // 判定`range`范围内影响的节点
+    const effects = new Set<Node>();
+    const nodes: Node[] = this.engine.root.getFlatNode();
+    for (const node of nodes) {
+      // 需要排除`root`否则必然导致全量重绘
+      if (node === this.engine.root) continue;
+      if (isRangeIntersect(range, node.range)) {
+        effects.add(node);
+      }
+    }
+    let current = range;
+    effects.forEach(node => {
+      current = range.compose(node.range);
+    });
+    return { range: current, effects };
+  }
+
+  public drawingRange(range: Range) {
+    // 增量绘制`range`范围内的节点
+    const { effects, range: effectRange } = this.collectEffects(range);
+    const { x, y, width, height } = effectRange.rect();
+    // 只绘制受影响的节点并且裁剪多余位置
+    this.clear(effectRange);
+    this.ctx.save();
+    this.ctx.beginPath();
+    this.ctx.rect(x, y, width, height);
+    this.ctx.clip();
+    effects.forEach(node => node.drawingMask?.(this.ctx));
+    this.ctx.closePath();
+    this.ctx.restore();
   }
 
   // ====== Drawing Selection ======
@@ -97,19 +128,6 @@ export class Mask {
     this.ctx.restore();
   }
 
-  private onSelectionChange = () => {
-    this.drawingState();
-  };
-
-  private onCanvasStateChange = (event: CanvasStateEvent) => {
-    // Explicitly declare the type that needs to be re-rendered
-    if (event.type === CANVAS_STATE.RESIZE) {
-      this.setCursorState();
-    } else if (event.type === CANVAS_STATE.HOVER || event.type === CANVAS_STATE.RECT) {
-      this.drawingState();
-    }
-  };
-
   // ====== Cursor State ======
   public setCursorState() {
     const state = this.engine.getState(CANVAS_STATE.RESIZE);
@@ -127,8 +145,13 @@ export class Mask {
     this.ctx.scale(this.engine.devicePixelRatio, this.engine.devicePixelRatio);
   }
 
-  public clear() {
-    const { width, height } = this.engine.getRect();
-    this.ctx.clearRect(0, 0, width, height);
+  public clear(range?: Range) {
+    if (range) {
+      const { x, y, width, height } = range.rect();
+      this.ctx.clearRect(x, y, width, height);
+    } else {
+      const { width, height } = this.engine.getRect();
+      this.ctx.clearRect(0, 0, width, height);
+    }
   }
 }

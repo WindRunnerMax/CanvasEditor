@@ -15,6 +15,10 @@ export class Selection {
   }
 
   // ====== Selection ======
+  public has(id: string) {
+    return this.active.has(id);
+  }
+
   public get() {
     return this.current;
   }
@@ -36,19 +40,26 @@ export class Selection {
   }
 
   public addActiveDelta(deltaId: string) {
+    if (this.active.has(deltaId)) return void 0;
     this.active.add(deltaId);
+    this.compose();
   }
 
   public removeActiveDelta(deltaId: string) {
+    if (!this.active.has(deltaId)) return void 0;
     this.active.delete(deltaId);
+    this.compose();
   }
 
   public setActiveDelta(deltaId: string) {
-    this.clearActiveDeltas();
+    if (this.active.size === 1 && this.active.has(deltaId)) return void 0;
+    this.active.clear();
     this.addActiveDelta(deltaId);
+    this.compose();
   }
 
   public clearActiveDeltas() {
+    if (this.active.size === 0) return void 0;
     this.active.clear();
     this.set(null);
   }

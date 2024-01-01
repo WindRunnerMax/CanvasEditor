@@ -99,9 +99,11 @@ export class CanvasStateStore {
 
   // ====== Selection ======
   private onSelectionChange = (e: SelectionChangeEvent) => {
-    const { current } = e;
+    const { current, previous } = e;
     // TODO: 通过选区变换来记录节点状态
     console.log("current :>> ", current);
+    const range = current || previous;
+    range && this.editor.canvas.mask.drawingRange(range);
   };
 
   // ====== State ======
