@@ -1,6 +1,8 @@
 import type { Delta } from "sketching-delta";
 
+import { DELTA_TO_NODE } from "../../canvas/state/map";
 import type { Editor } from "../../editor";
+import { Range } from "../../selection/range";
 
 export class DeltaState {
   public readonly id: string;
@@ -36,6 +38,10 @@ export class DeltaState {
 
   public move(x: number, y: number) {
     this.delta.move(x, y);
+    const node = DELTA_TO_NODE.get(this);
+    if (node) {
+      node.setRange(Range.from(this.delta));
+    }
     return this;
   }
 }

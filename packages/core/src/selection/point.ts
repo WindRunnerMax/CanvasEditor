@@ -10,6 +10,10 @@ export class Point {
     return new Point(this.x, this.y);
   }
 
+  diff(target: Point) {
+    return { x: target.x - this.x, y: target.y - this.y };
+  }
+
   static from(event: globalThis.MouseEvent) {
     return new Point(event.offsetX, event.offsetY);
   }

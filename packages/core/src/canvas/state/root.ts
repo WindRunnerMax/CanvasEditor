@@ -1,4 +1,3 @@
-import type { Delta } from "sketching-delta";
 import { throttle } from "sketching-utils";
 
 import type { Editor } from "../../editor";
@@ -40,18 +39,21 @@ export class Root extends Node {
     queue.push(this.editor.state.entry);
     DELTA_TO_NODE.set(this.editor.state.entry, this);
     NODE_TO_DELTA.set(this, this.editor.state.entry);
-    const createElement = (id: string, delta: Delta) => {
-      return new ElementNode(id, this.editor, Range.from(delta));
+    const createElement = (state: DeltaState) => {
+      const element = DELTA_TO_NODE.get(state);
+      if (element) return element;
+      return new ElementNode(state.id, this.editor, Range.from(state.delta));
     };
     while (queue.length) {
       const current = queue.shift();
       if (!current) break;
       if (set.has(current)) continue;
-      const parent = DELTA_TO_NODE.get(current) || createElement(current.id, current.delta);
+      const parent = createElement(current);
       DELTA_TO_NODE.set(current, parent);
       for (const state of current.children) {
         queue.push(state);
-        const node = createElement(state.id, state.delta);
+        const node = createElement(state);
+        DELTA_TO_NODE.set(state, node);
         parent.append(node);
       }
     }
