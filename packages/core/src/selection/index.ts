@@ -72,16 +72,12 @@ export class Selection {
       this.set(null);
       return void 0;
     }
-    const current = { startX: Infinity, startY: Infinity, endX: -Infinity, endY: -Infinity };
+    let range = Range.from(Infinity, Infinity, -Infinity, -Infinity);
     active.forEach(key => {
       const delta = this.editor.deltaSet.get(key);
       if (!delta) return void 0;
-      const { x, y, width, height } = delta.getRect();
-      current.startX = Math.min(current.startX, x);
-      current.startY = Math.min(current.startY, y);
-      current.endX = Math.max(current.endX, x + width);
-      current.endY = Math.max(current.endY, y + height);
+      range = range.compose(Range.from(delta));
     });
-    this.set(new Range(current));
+    this.set(range);
   }
 }

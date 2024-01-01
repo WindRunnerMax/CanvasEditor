@@ -4,10 +4,11 @@ import type { Editor } from "../../editor";
 import type { Range } from "../../selection/range";
 import type { Node } from "../dom/node";
 import type { Canvas } from "../index";
-import { CANVAS_STATE, CURSOR_STATE, OP_LEN } from "../utils/constant";
+import type { ResizeType } from "../utils/constant";
+import { CANVAS_STATE, CURSOR_STATE } from "../utils/constant";
 import { isRangeIntersect } from "../utils/is";
-import { BLUE, LIGHT_BLUE, WHITE } from "../utils/palette";
-import { drawArc, drawRect } from "../utils/shape";
+import { BLUE } from "../utils/palette";
+import { drawRect } from "../utils/shape";
 
 export class Mask {
   private canvas: HTMLCanvasElement;
@@ -44,19 +45,17 @@ export class Mask {
         effects.add(node);
       }
     }
-    let current = range;
-    effects.forEach(node => {
-      current = range.compose(node.range);
-    });
-    return { range: current, effects };
+    return effects;
   }
 
   public drawingRange(range: Range) {
+    // COMPAT: 选区范围未能完全覆盖
+    const current = range.zoom(1);
     // 增量绘制`range`范围内的节点
-    const { effects, range: effectRange } = this.collectEffects(range);
-    const { x, y, width, height } = effectRange.rect();
+    const effects = this.collectEffects(current);
+    const { x, y, width, height } = current.rect();
     // 只绘制受影响的节点并且裁剪多余位置
-    this.clear(effectRange);
+    this.clear(current);
     this.ctx.save();
     this.ctx.beginPath();
     this.ctx.rect(x, y, width, height);
@@ -64,45 +63,6 @@ export class Mask {
     effects.forEach(node => node.drawingMask?.(this.ctx));
     this.ctx.closePath();
     this.ctx.restore();
-  }
-
-  // ====== Drawing Selection ======
-  public drawingSelectionBox() {
-    const selection = this.editor.selection.get();
-    if (!selection) return void 0;
-    const { startX, startY, endX, endY } = selection.flat();
-    drawRect(this.ctx, {
-      x: startX,
-      y: startY,
-      width: endX - startX,
-      height: endY - startY,
-      borderColor: BLUE,
-      borderWidth: 1,
-    });
-    const arc = { borderColor: BLUE, fillColor: WHITE, radius: OP_LEN / 2, borderWidth: 2 };
-    drawArc(this.ctx, { ...arc, x: startX, y: startY });
-    drawArc(this.ctx, { ...arc, x: endX, y: startY });
-    drawArc(this.ctx, { ...arc, x: startX, y: endY });
-    drawArc(this.ctx, { ...arc, x: endX, y: endY });
-  }
-
-  public drawingHoverBox() {
-    // 暂时依旧取`hover`的值 用来做全量绘制
-    // TODO: 基于事件实现+`clip`仅绘制/取消副作用是可行的
-    const hover = this.engine.root.hover;
-    const active = this.editor.selection.getActiveDeltas();
-    if (!hover || active.has(hover.id)) return void 0;
-    const delta = this.editor.deltaSet.get(hover.id);
-    if (!delta) return void 0;
-    const { x, y, width, height } = delta.getRect();
-    drawRect(this.ctx, {
-      x: x,
-      y: y,
-      width: width,
-      height: height,
-      borderColor: LIGHT_BLUE,
-      borderWidth: 1,
-    });
   }
 
   public drawingTranslateBox() {
@@ -122,21 +82,14 @@ export class Mask {
   public drawingState() {
     this.clear();
     this.ctx.save();
-    this.drawingHoverBox();
-    this.drawingSelectionBox();
     this.drawingTranslateBox();
     this.ctx.restore();
   }
 
   // ====== Cursor State ======
-  public setCursorState() {
-    const state = this.engine.getState(CANVAS_STATE.RESIZE);
-    this.canvas.style.cursor = isEmptyValue(state) ? "" : CURSOR_STATE[state];
+  public setCursorState(type: ResizeType | null) {
+    this.canvas.style.cursor = isEmptyValue(type) ? "" : CURSOR_STATE[type];
     return this;
-  }
-
-  public getCursorState() {
-    return this.canvas.style.cursor || null;
   }
 
   // ====== Canvas Actions ======

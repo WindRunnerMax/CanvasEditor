@@ -12,23 +12,6 @@ export class Range {
     this.end = new Point(options.endX, options.endY);
   }
 
-  flat() {
-    return { startX: this.start.x, startY: this.start.y, endX: this.end.x, endY: this.end.y };
-  }
-
-  rect() {
-    return {
-      x: this.start.x,
-      y: this.start.y,
-      width: this.end.x - this.start.x,
-      height: this.end.y - this.start.x,
-    };
-  }
-
-  clone() {
-    return new Range({ ...this.flat() });
-  }
-
   zoom(size: number) {
     return new Range({
       startX: this.start.x - size,
@@ -47,6 +30,37 @@ export class Range {
       endX: Math.max(endX, endX1),
       endY: Math.max(endY, endY1),
     });
+  }
+
+  move(x: number, y: number) {
+    return new Range({
+      startX: this.start.x + x,
+      startY: this.start.y + y,
+      endX: this.end.x + x,
+      endY: this.end.y + y,
+    });
+  }
+
+  clone() {
+    return new Range({ ...this.flat() });
+  }
+
+  flat() {
+    return { startX: this.start.x, startY: this.start.y, endX: this.end.x, endY: this.end.y };
+  }
+
+  rect() {
+    return {
+      x: this.start.x,
+      y: this.start.y,
+      width: this.end.x - this.start.x,
+      height: this.end.y - this.start.y,
+    };
+  }
+
+  center() {
+    const { x, y, width, height } = this.rect();
+    return new Point(x + width / 2, y + height / 2);
   }
 
   static from(delta: Delta): Range;

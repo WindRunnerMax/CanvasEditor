@@ -10,6 +10,10 @@ export class Point {
     return new Point(this.x, this.y);
   }
 
+  static from(event: globalThis.MouseEvent) {
+    return new Point(event.offsetX, event.offsetY);
+  }
+
   static isEqual(origin: Point | null, target: Point | null): boolean {
     if (origin === target) return true;
     if (!origin || !target) return false;

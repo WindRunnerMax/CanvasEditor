@@ -19,7 +19,7 @@ export class CanvasStateStore {
     // this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDown);
     // this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMove);
     // this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUp);
-    this.editor.event.on(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange);
+    // this.editor.event.on(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange);
   }
 
   public destroy() {

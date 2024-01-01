@@ -23,7 +23,6 @@ export class ElementNode extends Node {
   protected onMouseEnter = () => {
     this.isHovering = true;
     if (!this.editor.selection.has(this.id)) {
-      // TODO: 绘制区域似乎有点问题 需要`zoom(1)`
       this.editor.canvas.mask.drawingRange(this.range);
     }
   };
@@ -36,9 +35,7 @@ export class ElementNode extends Node {
   };
 
   public drawingMask = (ctx: CanvasRenderingContext2D) => {
-    if (this.editor.selection.has(this.id)) {
-      //
-    } else if (this.isHovering && !this.editor.selection.has(this.id)) {
+    if (this.isHovering && !this.editor.selection.has(this.id)) {
       const { x, y, width, height } = this.range.rect();
       drawRect(ctx, {
         x: x,

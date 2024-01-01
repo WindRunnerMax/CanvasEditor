@@ -1,3 +1,4 @@
+import type { Delta } from "sketching-delta";
 import { throttle } from "sketching-utils";
 
 import type { Editor } from "../../editor";
@@ -7,18 +8,29 @@ import type { DeltaState } from "../../state/node/state";
 import { ElementNode } from "../dom/element";
 import { MouseEvent } from "../dom/event";
 import { Node } from "../dom/node";
+import { ResizeNode } from "../dom/resize";
 import { isPointInRange } from "../utils/is";
 import { DELTA_TO_NODE, NODE_TO_DELTA, ROOT_TO_NODE } from "./map";
+import { SelectNode } from "./select";
 
 export class Root extends Node {
-  public hover: ElementNode | null;
+  public hover: ElementNode | ResizeNode | null;
+  private select: SelectNode;
   constructor(private editor: Editor) {
-    super(Range.from(0, 0, 0, 0));
+    super(Range.from(0, 0));
     this.hover = null;
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);
     this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
     this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
+    this.select = new SelectNode(this.editor);
     this.createNodeStateTree();
+  }
+
+  destroy() {
+    this.select.destroy();
+    this.editor.event.off(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);
+    this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
+    this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
   }
 
   private createNodeStateTree() {
@@ -28,20 +40,22 @@ export class Root extends Node {
     queue.push(this.editor.state.entry);
     DELTA_TO_NODE.set(this.editor.state.entry, this);
     NODE_TO_DELTA.set(this, this.editor.state.entry);
+    const createElement = (id: string, delta: Delta) => {
+      return new ElementNode(id, this.editor, Range.from(delta));
+    };
     while (queue.length) {
       const current = queue.shift();
       if (!current) break;
       if (set.has(current)) continue;
-      const parent =
-        DELTA_TO_NODE.get(current) ||
-        new ElementNode(current.id, this.editor, Range.from(current.delta));
+      const parent = DELTA_TO_NODE.get(current) || createElement(current.id, current.delta);
       DELTA_TO_NODE.set(current, parent);
       for (const state of current.children) {
         queue.push(state);
-        const node = new ElementNode(state.id, this.editor, Range.from(state.delta));
+        const node = createElement(state.id, state.delta);
         parent.append(node);
       }
     }
+    this.append(this.select);
   }
 
   protected onMouseDown = (e: MouseEvent) => {
@@ -50,6 +64,7 @@ export class Root extends Node {
 
   private emit(
     target: Node,
+    // TODO: 抽象一下事件和类型对应关系
     type: "onMouseDown" | "onMouseUp" | "onMouseEnter" | "onMouseLeave",
     event: MouseEvent
   ) {
@@ -83,7 +98,7 @@ export class Root extends Node {
   public getFlatNode = () => {
     const cache = ROOT_TO_NODE.get(this);
     if (cache) return cache;
-    // 层次遍历且后置先行
+    // 顺序很重要 层次遍历且后置先行
     const queue: Node[] = [];
     const result: Node[] = [];
     queue.push(this);
@@ -114,9 +129,10 @@ export class Root extends Node {
   private onMouseMoveController = throttle(
     (e: globalThis.MouseEvent) => {
       const flatNode = this.getFlatNode();
-      let hit: ElementNode | null = null;
+      let hit: ElementNode | ResizeNode | null = null;
       for (const node of flatNode) {
-        if (node instanceof ElementNode && isPointInRange(e.offsetX, e.offsetY, node.range)) {
+        const authorize = node instanceof ElementNode || node instanceof ResizeNode;
+        if (authorize && isPointInRange(e.offsetX, e.offsetY, node.range)) {
           hit = node;
           break;
         }
@@ -144,10 +160,4 @@ export class Root extends Node {
     }
     hit && this.emit(hit, "onMouseUp", new MouseEvent(e));
   };
-
-  destroy() {
-    this.editor.event.off(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);
-    this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
-    this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
-  }
 }

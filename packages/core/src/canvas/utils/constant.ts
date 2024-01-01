@@ -1,8 +1,8 @@
 import type { Point } from "../../selection/point";
 import type { Range } from "../../selection/range";
 
-export const OP_OFS = 5;
-export const OP_LEN = 10;
+export const RESIZE_OFS = 5;
+export const RESIZE_LEN = 10;
 export const SELECT_BIAS = 3;
 
 export const RESIZE_TYPE = {
