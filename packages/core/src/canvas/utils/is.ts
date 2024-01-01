@@ -1,4 +1,5 @@
 import type { Editor } from "../../editor";
+import type { Range } from "../../selection/range";
 import { SELECT_BIAS } from "./constant";
 
 export const isInsideDelta = (editor: Editor, offsetX: number, offsetY: number) => {
@@ -15,4 +16,12 @@ export const isInsideDelta = (editor: Editor, offsetX: number, offsetY: number) 
     }
   }
   return null;
+};
+
+export const isPointInRange = (offsetX: number, offsetY: number, range: Range) => {
+  const { startX, startY, endX, endY } = range.flat();
+  if (offsetX >= startX && offsetX <= endX && offsetY >= startY && offsetY <= endY) {
+    return true;
+  }
+  return false;
 };

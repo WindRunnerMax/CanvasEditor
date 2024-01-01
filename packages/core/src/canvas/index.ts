@@ -1,6 +1,7 @@
 import type { Editor } from "../editor";
 import { Graph } from "./draw/graph";
 import { Mask } from "./draw/mask";
+import { Root } from "./state/root";
 import { CanvasStateStore } from "./state/store";
 
 export class Canvas extends CanvasStateStore {
@@ -9,11 +10,13 @@ export class Canvas extends CanvasStateStore {
   public readonly devicePixelRatio: number;
   public readonly mask: Mask;
   public readonly graph: Graph;
+  public readonly root: Root;
 
   constructor(protected editor: Editor) {
     super(editor);
     this.width = 0;
     this.height = 0;
+    this.root = new Root(editor);
     this.mask = new Mask(editor, this);
     this.graph = new Graph(editor, this);
     this.devicePixelRatio = window.devicePixelRatio || 1;
@@ -32,6 +35,7 @@ export class Canvas extends CanvasStateStore {
   public destroy() {
     super.destroy();
     const dom = this.editor.getContainer();
+    this.root.destroy();
     this.mask.destroy(dom);
     this.graph.destroy(dom);
   }

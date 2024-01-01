@@ -16,6 +16,10 @@ export class Range {
     return new Range({ ...this.flat() });
   }
 
+  static from(startX: number, startY: number, endX: number, endY: number) {
+    return new Range({ startX, startY, endX, endY });
+  }
+
   static isEqual(origin: Range | null, target: Range | null): boolean {
     if (origin === target) return true;
     if (!origin || !target) return false;

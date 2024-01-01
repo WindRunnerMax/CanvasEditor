@@ -18,6 +18,11 @@ export class DeltaState {
     this._parent = parent;
   }
 
+  public addChild(child: DeltaState) {
+    child.setParent(this);
+    this.children.push(child);
+  }
+
   public insert(delta: Delta) {
     this.editor.deltaSet.add(delta);
     this.delta.insert(delta);

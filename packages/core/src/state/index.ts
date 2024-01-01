@@ -28,19 +28,19 @@ export class EditorState {
   }
 
   private createTreeState() {
+    // 初始化构建整个状态树
     const set = new WeakSet<Delta>();
     const dfs = (current: Delta) => {
       if (set.has(current)) return void 0;
       const state = this.getDeltaState(current.id);
       if (!state) return void 0;
-      state.children = current.children
-        .map(id => {
-          const childState = this.getDeltaState(id);
-          childState && childState.setParent(state);
-          childState && dfs(childState.delta);
-          return childState;
-        })
-        .filter(Boolean) as DeltaState[];
+      current.children.forEach(id => {
+        const child = this.getDeltaState(id);
+        if (child) {
+          state.addChild(child);
+          dfs(child.delta);
+        }
+      });
     };
     dfs(this.entry.delta);
   }
