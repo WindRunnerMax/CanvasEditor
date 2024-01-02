@@ -9,7 +9,7 @@ import { Range } from "../../selection/range";
 import { Node } from "../dom/node";
 import { ResizeNode } from "../dom/resize";
 import type { ResizeType } from "../utils/constant";
-import { RESIZE_OFS, RESIZE_TYPE, SELECT_BIAS } from "../utils/constant";
+import { RESIZE_OFS, RESIZE_TYPE, SELECT_BIAS, THE_CONFIG, THE_DELAY } from "../utils/constant";
 import { BLUE } from "../utils/palette";
 import { drawRect } from "../utils/shape";
 
@@ -25,7 +25,7 @@ export class SelectNode extends Node {
     this.editor.event.on(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange);
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);
     Object.keys(RESIZE_TYPE).forEach(key => {
-      this.append(new ResizeNode(this.editor, key as ResizeType));
+      this.append(new ResizeNode(this.editor, key as ResizeType, this));
     });
   }
 
@@ -57,32 +57,29 @@ export class SelectNode extends Node {
     this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
   };
 
-  private onMouseMoveController = throttle(
-    (e: globalThis.MouseEvent) => {
-      const selection = this.editor.selection.get();
-      if (!this.landing || !selection) return void 0;
-      const point = Point.from(e);
-      const { x, y } = this.landing.diff(point);
-      if (!this.isDragging && (Math.abs(x) > SELECT_BIAS || Math.abs(y) > SELECT_BIAS)) {
-        this.isDragging = true;
-      }
-      if (this.isDragging && selection) {
-        const { startX, startY, endX, endY } = selection.flat();
-        const latest = new Range({
-          startX: startX + x,
-          startY: startY + y,
-          endX: endX + x,
-          endY: endY + y,
-        });
-        // 重绘拖拽过的最大区域
-        this.draggedRange = this.draggedRange.compose(latest.zoom(RESIZE_OFS));
-        this.setRange(latest);
-        this.editor.canvas.mask.drawingRange(this.draggedRange);
-      }
-    },
-    30,
-    { trailing: true }
-  );
+  private onMouseMoveBridge = (e: globalThis.MouseEvent) => {
+    const selection = this.editor.selection.get();
+    if (!this.landing || !selection) return void 0;
+    const point = Point.from(e);
+    const { x, y } = this.landing.diff(point);
+    if (!this.isDragging && (Math.abs(x) > SELECT_BIAS || Math.abs(y) > SELECT_BIAS)) {
+      this.isDragging = true;
+    }
+    if (this.isDragging && selection) {
+      const { startX, startY, endX, endY } = selection.flat();
+      const latest = new Range({
+        startX: startX + x,
+        startY: startY + y,
+        endX: endX + x,
+        endY: endY + y,
+      });
+      // 重绘拖拽过的最大区域
+      this.draggedRange = this.draggedRange.compose(latest.zoom(RESIZE_OFS));
+      this.setRange(latest);
+      this.editor.canvas.mask.drawingRange(this.draggedRange);
+    }
+  };
+  private onMouseMoveController = throttle(this.onMouseMoveBridge, THE_DELAY, THE_CONFIG);
 
   private onMouseUpController = () => {
     this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);

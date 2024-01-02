@@ -9,9 +9,11 @@ import { Node } from "./node";
 
 export class ResizeNode extends Node {
   private type: ResizeType;
-  constructor(private editor: Editor, type: ResizeType) {
+
+  constructor(private editor: Editor, type: ResizeType, parent: Node) {
     super(Range.from(0, 0));
     this.type = type;
+    this.setParent(parent);
   }
 
   public setRange = (range: Range) => {

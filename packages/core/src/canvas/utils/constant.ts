@@ -5,6 +5,9 @@ export const RESIZE_OFS = 5;
 export const RESIZE_LEN = 10;
 export const SELECT_BIAS = 3;
 
+export const THE_DELAY = 30;
+export const THE_CONFIG = { trailing: true };
+
 export const RESIZE_TYPE = {
   L: "L",
   R: "R",

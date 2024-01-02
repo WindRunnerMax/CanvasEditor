@@ -5,10 +5,8 @@ import type { Range } from "../../selection/range";
 import type { Node } from "../dom/node";
 import type { Canvas } from "../index";
 import type { ResizeType } from "../utils/constant";
-import { CANVAS_STATE, CURSOR_STATE } from "../utils/constant";
+import { CURSOR_STATE } from "../utils/constant";
 import { isRangeIntersect } from "../utils/is";
-import { BLUE } from "../utils/palette";
-import { drawRect } from "../utils/shape";
 
 export class Mask {
   private canvas: HTMLCanvasElement;
@@ -33,7 +31,7 @@ export class Mask {
     dom.removeChild(this.canvas);
   }
 
-  // ====== Drawing Range ======
+  // ====== Drawing On Demand ======
   private collectEffects(range: Range) {
     // 判定`range`范围内影响的节点
     const effects = new Set<Node>();
@@ -62,27 +60,6 @@ export class Mask {
     this.ctx.clip();
     effects.forEach(node => node.drawingMask?.(this.ctx));
     this.ctx.closePath();
-    this.ctx.restore();
-  }
-
-  public drawingTranslateBox() {
-    const rect = this.engine.getState(CANVAS_STATE.RECT);
-    if (!rect) return void 0;
-    const { startX, startY, endX, endY } = rect.flat();
-    drawRect(this.ctx, {
-      x: startX,
-      y: startY,
-      width: endX - startX,
-      height: endY - startY,
-      borderColor: BLUE,
-      borderWidth: 1,
-    });
-  }
-
-  public drawingState() {
-    this.clear();
-    this.ctx.save();
-    this.drawingTranslateBox();
     this.ctx.restore();
   }
 

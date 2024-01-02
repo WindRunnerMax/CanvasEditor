@@ -3,9 +3,8 @@ import { Range } from "../selection/range";
 import { Graph } from "./draw/graph";
 import { Mask } from "./draw/mask";
 import { Root } from "./state/root";
-import { CanvasStateStore } from "./state/store";
 
-export class Canvas extends CanvasStateStore {
+export class Canvas {
   private width: number;
   private height: number;
   public readonly devicePixelRatio: number;
@@ -14,7 +13,6 @@ export class Canvas extends CanvasStateStore {
   public readonly root: Root;
 
   constructor(protected editor: Editor) {
-    super(editor);
     this.width = 0;
     this.height = 0;
     this.root = new Root(editor);
@@ -35,7 +33,6 @@ export class Canvas extends CanvasStateStore {
   }
 
   public destroy() {
-    super.destroy();
     const dom = this.editor.getContainer();
     this.root.destroy();
     this.mask.destroy(dom);

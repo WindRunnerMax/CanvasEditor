@@ -8,6 +8,7 @@ import { ElementNode } from "../dom/element";
 import { MouseEvent } from "../dom/event";
 import { Node } from "../dom/node";
 import { ResizeNode } from "../dom/resize";
+import { THE_CONFIG, THE_DELAY } from "../utils/constant";
 import { isPointInRange } from "../utils/is";
 import { DELTA_TO_NODE, NODE_TO_DELTA, ROOT_TO_NODE } from "./map";
 import { SelectNode } from "./select";
@@ -101,6 +102,7 @@ export class Root extends Node {
     const cache = ROOT_TO_NODE.get(this);
     if (cache) return cache;
     // 顺序很重要 层次遍历且后置先行
+    // TODO: 如果不需要在组合时独立选中则只需要`children`即可
     const queue: Node[] = [];
     const result: Node[] = [];
     queue.push(this);
@@ -128,28 +130,25 @@ export class Root extends Node {
     hit && this.emit(hit, "onMouseDown", new MouseEvent(e));
   };
 
-  private onMouseMoveController = throttle(
-    (e: globalThis.MouseEvent) => {
-      const flatNode = this.getFlatNode();
-      let hit: ElementNode | ResizeNode | null = null;
-      for (const node of flatNode) {
-        const authorize = node instanceof ElementNode || node instanceof ResizeNode;
-        if (authorize && isPointInRange(e.offsetX, e.offsetY, node.range)) {
-          hit = node;
-          break;
-        }
+  private onMouseMoveBridge = (e: globalThis.MouseEvent) => {
+    const flatNode = this.getFlatNode();
+    let hit: ElementNode | ResizeNode | null = null;
+    for (const node of flatNode) {
+      const authorize = node instanceof ElementNode || node instanceof ResizeNode;
+      if (authorize && isPointInRange(e.offsetX, e.offsetY, node.range)) {
+        hit = node;
+        break;
       }
-      // 如果命中节点且没有暂存的`hover`节点
-      if (this.hover !== hit) {
-        const prev = this.hover;
-        this.hover = hit;
-        prev && this.emit(prev, "onMouseLeave", new MouseEvent(e));
-        hit && this.emit(hit, "onMouseEnter", new MouseEvent(e));
-      }
-    },
-    30,
-    { trailing: true }
-  );
+    }
+    // 如果命中节点且没有暂存的`hover`节点
+    if (this.hover !== hit) {
+      const prev = this.hover;
+      this.hover = hit;
+      prev && this.emit(prev, "onMouseLeave", new MouseEvent(e));
+      hit && this.emit(hit, "onMouseEnter", new MouseEvent(e));
+    }
+  };
+  private onMouseMoveController = throttle(this.onMouseMoveBridge, THE_DELAY, THE_CONFIG);
 
   private onMouseUpController = (e: globalThis.MouseEvent) => {
     const flatNode = this.getFlatNode();
