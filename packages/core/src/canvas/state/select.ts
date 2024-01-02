@@ -10,6 +10,7 @@ import { Node } from "../dom/node";
 import { ResizeNode } from "../dom/resize";
 import type { ResizeType } from "../utils/constant";
 import { RESIZE_OFS, RESIZE_TYPE, SELECT_BIAS, THE_CONFIG, THE_DELAY } from "../utils/constant";
+import { isInSelectRange } from "../utils/is";
 import { BLUE } from "../utils/palette";
 import { drawRect } from "../utils/shape";
 
@@ -22,14 +23,16 @@ export class SelectNode extends Node {
     this.landing = null;
     this.isDragging = false;
     this.draggedRange = Range.from(0, 0);
-    this.editor.event.on(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange);
+    this.editor.event.on(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange, 10);
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);
+    this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     Object.keys(RESIZE_TYPE).forEach(key => {
       this.append(new ResizeNode(this.editor, key as ResizeType, this));
     });
   }
 
   destroy() {
+    this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     this.editor.event.off(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);
     this.editor.event.off(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange);
   }
@@ -49,12 +52,14 @@ export class SelectNode extends Node {
   };
 
   private onMouseDownController = (e: globalThis.MouseEvent) => {
+    // 这里需要用原生事件绑定 需要在选区完成后再执行 否则交互上就必须要先点选再拖拽
     this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
-    this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
-    // TODO: 点击区域判定
+    // 选区 & 严格点击区域判定
+    if (!this.editor.selection.get() || !isInSelectRange(Point.from(e), this.range)) {
+      return void 0;
+    }
     this.landing = Point.from(e);
     this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
-    this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
   };
 
   private onMouseMoveBridge = (e: globalThis.MouseEvent) => {
@@ -83,8 +88,6 @@ export class SelectNode extends Node {
 
   private onMouseUpController = () => {
     this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
-    this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
-    this.landing = null;
     if (this.isDragging) {
       const selection = this.editor.selection.get();
       const rect = this.range;
@@ -98,10 +101,11 @@ export class SelectNode extends Node {
         );
         this.editor.selection.set(rect);
       }
+      this.editor.canvas.mask.drawingRange(this.draggedRange);
     }
+    this.landing = null;
     this.isDragging = false;
     this.editor.canvas.mask.setCursorState(null);
-    this.editor.canvas.mask.drawingRange(this.draggedRange);
   };
 
   public drawingMask = (ctx: CanvasRenderingContext2D) => {
