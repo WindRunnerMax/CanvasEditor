@@ -15,17 +15,15 @@ import { drawRect } from "../utils/shape";
 
 export class SelectNode extends Node {
   private landing: Point | null;
-  private refreshRange: Range;
+  private draggedRange: Range;
   private isDragging: boolean;
   constructor(private editor: Editor) {
     super(Range.from(0, 0));
-    this.isDragging = false;
     this.landing = null;
-    this.refreshRange = Range.from(0, 0);
+    this.isDragging = false;
+    this.draggedRange = Range.from(0, 0);
     this.editor.event.on(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange);
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);
-    this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
-    this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     Object.keys(RESIZE_TYPE).forEach(key => {
       this.append(new ResizeNode(this.editor, key as ResizeType));
     });
@@ -33,8 +31,6 @@ export class SelectNode extends Node {
 
   destroy() {
     this.editor.event.off(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);
-    this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
-    this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     this.editor.event.off(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange);
   }
 
@@ -53,8 +49,12 @@ export class SelectNode extends Node {
   };
 
   private onMouseDownController = (e: globalThis.MouseEvent) => {
+    this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
+    this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     // TODO: 点击区域判定
     this.landing = Point.from(e);
+    this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
+    this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
   };
 
   private onMouseMoveController = throttle(
@@ -74,9 +74,10 @@ export class SelectNode extends Node {
           endX: endX + x,
           endY: endY + y,
         });
-        this.refreshRange = this.refreshRange.compose(latest.zoom(RESIZE_OFS));
+        // 重绘拖拽过的最大区域
+        this.draggedRange = this.draggedRange.compose(latest.zoom(RESIZE_OFS));
         this.setRange(latest);
-        this.editor.canvas.mask.drawingRange(this.refreshRange);
+        this.editor.canvas.mask.drawingRange(this.draggedRange);
       }
     },
     30,
@@ -84,6 +85,8 @@ export class SelectNode extends Node {
   );
 
   private onMouseUpController = () => {
+    this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
+    this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     this.landing = null;
     if (this.isDragging) {
       const selection = this.editor.selection.get();
@@ -99,9 +102,9 @@ export class SelectNode extends Node {
         this.editor.selection.set(rect);
       }
     }
-    this.editor.canvas.mask.setCursorState(null);
-    this.editor.canvas.mask.drawingRange(this.refreshRange);
     this.isDragging = false;
+    this.editor.canvas.mask.setCursorState(null);
+    this.editor.canvas.mask.drawingRange(this.draggedRange);
   };
 
   public drawingMask = (ctx: CanvasRenderingContext2D) => {
