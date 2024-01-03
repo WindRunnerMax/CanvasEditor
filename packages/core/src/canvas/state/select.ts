@@ -105,6 +105,8 @@ export class SelectNode extends Node {
     }
     this.landing = null;
     this.isDragging = false;
+    // TODO: 实现`resize`时测试下重设鼠标状态
+    // TODO: 可行的话就可以不在此处重置并且继续按需挂载`MouseUp`事件
     this.editor.canvas.mask.setCursorState(null);
   };
 

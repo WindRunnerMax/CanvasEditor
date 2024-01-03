@@ -50,12 +50,13 @@ export class Range {
   }
 
   rect() {
-    return {
-      x: this.start.x,
-      y: this.start.y,
-      width: this.end.x - this.start.x,
-      height: this.end.y - this.start.y,
-    };
+    // 标准化矩形
+    const { startX, startY, endX, endY } = this.flat();
+    const x = Math.min(startX, endX);
+    const y = Math.min(startY, endY);
+    const width = Math.abs(endX - startX);
+    const height = Math.abs(endY - startY);
+    return { x, y, width, height };
   }
 
   center() {

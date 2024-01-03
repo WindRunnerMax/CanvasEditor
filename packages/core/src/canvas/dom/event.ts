@@ -21,6 +21,7 @@ export class MouseEvent extends Event {
   public readonly ctrlKey: boolean;
   public readonly shiftKey: boolean;
   public readonly altKey: boolean;
+  public readonly native: globalThis.MouseEvent;
 
   constructor(
     event: globalThis.MouseEvent,
@@ -34,5 +35,6 @@ export class MouseEvent extends Event {
     this.ctrlKey = event.ctrlKey;
     this.shiftKey = event.shiftKey;
     this.altKey = event.altKey;
+    this.native = event;
   }
 }

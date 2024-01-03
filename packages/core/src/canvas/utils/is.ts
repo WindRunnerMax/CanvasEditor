@@ -3,7 +3,7 @@ import type { Range } from "../../selection/range";
 import { RESIZE_OFS } from "./constant";
 
 export const isInSelectRange = (point: Point, range: Range) => {
-  // 严格判断点击区域 选区的`Range`需要排除八向的占位
+  // 严格判断点击区域 选区的`Range`需要排除八向占位
   const { startX, startY, endX, endY } = range.flat();
   const center = range.center();
   const { x, y } = point;
@@ -26,11 +26,12 @@ export const isInSelectRange = (point: Point, range: Range) => {
     x <= endX &&
     y >= startY &&
     y <= endY &&
-    // 排除八向占位
+    // 排除对角线向占位
     !(x <= startX1OFS && y <= startY1OFS) &&
     !(x >= endX0OFS && y <= startY1OFS) &&
     !(x <= startX1OFS && y >= endY0OFS) &&
     !(x >= endX0OFS && y >= endY0OFS) &&
+    // 排除中心线向占位
     !(x <= startX1Offset && y >= centerY0OFS && y <= centerY1OFS) &&
     !(x >= endX0Offset && y >= centerY0OFS && y <= centerY1OFS) &&
     !(y <= startY1Offset && x >= centerX0OFS && x <= centerX1OFS) &&
