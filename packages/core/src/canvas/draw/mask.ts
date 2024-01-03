@@ -6,7 +6,6 @@ import type { Node } from "../dom/node";
 import type { Canvas } from "../index";
 import type { ResizeType } from "../utils/constant";
 import { CURSOR_STATE } from "../utils/constant";
-import { isRangeIntersect } from "../utils/is";
 
 export class Mask {
   private canvas: HTMLCanvasElement;
@@ -39,7 +38,7 @@ export class Mask {
     for (const node of nodes) {
       // 需要排除`root`否则必然导致全量重绘
       if (node === this.engine.root) continue;
-      if (isRangeIntersect(range, node.range)) {
+      if (range.intersect(node.range)) {
         effects.add(node);
       }
     }

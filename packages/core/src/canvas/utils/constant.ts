@@ -6,6 +6,7 @@ export const RESIZE_LEN = 10;
 export const SELECT_BIAS = 3;
 
 export const THE_DELAY = 30;
+export const MAX_Z_INDEX = 999999;
 export const THE_CONFIG = { trailing: true };
 
 export const RESIZE_TYPE = {

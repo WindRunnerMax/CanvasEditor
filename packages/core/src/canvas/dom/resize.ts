@@ -2,7 +2,7 @@ import type { Editor } from "../../editor";
 import { Range } from "../../selection/range";
 import { EDITOR_STATE } from "../../state/utils/constant";
 import type { ResizeType } from "../utils/constant";
-import { RESIZE_LEN, RESIZE_OFS, RESIZE_TYPE } from "../utils/constant";
+import { MAX_Z_INDEX, RESIZE_LEN, RESIZE_OFS, RESIZE_TYPE } from "../utils/constant";
 import { DEEP_GRAY, GRAY, WHITE } from "../utils/palette";
 import { drawArc, drawRect } from "../utils/shape";
 import { Node } from "./node";
@@ -14,6 +14,7 @@ export class ResizeNode extends Node {
     super(Range.from(0, 0));
     this.type = type;
     this.setParent(parent);
+    this._z = MAX_Z_INDEX - 1;
   }
 
   public setRange = (range: Range) => {

@@ -9,7 +9,14 @@ import { Range } from "../../selection/range";
 import { Node } from "../dom/node";
 import { ResizeNode } from "../dom/resize";
 import type { ResizeType } from "../utils/constant";
-import { RESIZE_OFS, RESIZE_TYPE, SELECT_BIAS, THE_CONFIG, THE_DELAY } from "../utils/constant";
+import {
+  MAX_Z_INDEX,
+  RESIZE_OFS,
+  RESIZE_TYPE,
+  SELECT_BIAS,
+  THE_CONFIG,
+  THE_DELAY,
+} from "../utils/constant";
 import { isInSelectRange } from "../utils/is";
 import { BLUE } from "../utils/palette";
 import { drawRect } from "../utils/shape";
@@ -22,6 +29,7 @@ export class SelectNode extends Node {
     super(Range.from(0, 0));
     this.landing = null;
     this.isDragging = false;
+    this._z = MAX_Z_INDEX - 2;
     this.draggedRange = Range.from(0, 0);
     this.editor.event.on(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange, 10);
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);

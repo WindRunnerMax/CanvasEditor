@@ -2,6 +2,7 @@ import { throttle } from "sketching-utils";
 
 import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
+import { Point } from "../../selection/point";
 import { Range } from "../../selection/range";
 import type { DeltaState } from "../../state/node/state";
 import { ElementNode } from "../dom/element";
@@ -9,8 +10,7 @@ import { MouseEvent } from "../dom/event";
 import { Node } from "../dom/node";
 import { ResizeNode } from "../dom/resize";
 import { THE_CONFIG, THE_DELAY } from "../utils/constant";
-import { isPointInRange } from "../utils/is";
-import { DELTA_TO_NODE, NODE_TO_DELTA, ROOT_TO_NODE } from "./map";
+import { DELTA_TO_NODE, NODE_TO_DELTA } from "./map";
 import { SelectNode } from "./select";
 
 export class Root extends Node {
@@ -35,11 +35,9 @@ export class Root extends Node {
 
   private createNodeStateTree() {
     // 初始化构建整个`Node`状态树
-    const set = new WeakSet<DeltaState>();
     const queue: DeltaState[] = [];
     queue.push(this.editor.state.entry);
     DELTA_TO_NODE.set(this.editor.state.entry, this);
-    NODE_TO_DELTA.set(this, this.editor.state.entry);
     const createElement = (state: DeltaState) => {
       const element = DELTA_TO_NODE.get(state);
       if (element) return element;
@@ -48,17 +46,22 @@ export class Root extends Node {
     while (queue.length) {
       const current = queue.shift();
       if (!current) break;
-      if (set.has(current)) continue;
       const parent = createElement(current);
       DELTA_TO_NODE.set(current, parent);
+      NODE_TO_DELTA.set(parent, current);
       for (const state of current.children) {
         queue.push(state);
         const node = createElement(state);
         DELTA_TO_NODE.set(state, node);
+        NODE_TO_DELTA.set(node, state);
         parent.append(node);
       }
     }
     this.append(this.select);
+  }
+
+  public getFlatNode(): Node[] {
+    return [...super.getFlatNode(), this];
   }
 
   protected onMouseDown = (e: MouseEvent) => {
@@ -71,58 +74,35 @@ export class Root extends Node {
     type: "onMouseDown" | "onMouseUp" | "onMouseEnter" | "onMouseLeave",
     event: MouseEvent
   ) {
-    const store = new WeakSet<Node>();
-    const depthTraversal = (current: Node, depth: number) => {
-      if (store.has(current)) return void 0;
-      store.add(current);
-      const eventFn = current[type];
-      // 如果目标是节点本身 执行即可
-      if (current === target) {
-        eventFn && eventFn(event);
-        return void 0;
-      }
-      // 捕获阶段执行的事件
-      event.capture && eventFn && eventFn(event);
-      for (const node of current.children) {
-        if (node === target) {
-          const eventFn = node[type];
-          // 执行节点的事件
-          eventFn && eventFn(event);
-          break;
-        }
-        depthTraversal(node, depth + 1);
-      }
-      // 冒泡阶段执行的事件
-      event.bubble && eventFn && eventFn(event);
-    };
-    depthTraversal(this, 0);
-  }
-
-  public getFlatNode = () => {
-    const cache = ROOT_TO_NODE.get(this);
-    if (cache) return cache;
-    // 顺序很重要 层次遍历且后置先行
-    // TODO: 如果不需要在组合时独立选中则只需要`children`即可
-    const queue: Node[] = [];
-    const result: Node[] = [];
-    queue.push(this);
-    while (queue.length) {
-      const current = queue.shift();
-      if (!current) break;
-      result.unshift(current);
-      for (const node of current.children) {
-        queue.push(node);
-      }
+    const stack: Node[] = [];
+    let node: Node | null = target.parent;
+    while (node) {
+      stack.push(node);
+      node = node.parent;
     }
-    ROOT_TO_NODE.set(this, result);
-    return result;
-  };
+    // 捕获阶段执行的事件
+    for (const node of stack.reverse()) {
+      if (!event.capture) break;
+      const eventFn = node[type];
+      eventFn && eventFn(event);
+    }
+    // 节点本身 执行即可
+    const eventFn = target[type];
+    eventFn && eventFn(event);
+    // 冒泡阶段执行的事件
+    for (const node of stack) {
+      if (!event.bubble) break;
+      const eventFn = node[type];
+      eventFn && eventFn(event);
+    }
+  }
 
   private onMouseDownController = (e: globalThis.MouseEvent) => {
     const flatNode = this.getFlatNode();
     let hit: Node | null = null;
+    const point = Point.from(e);
     for (const node of flatNode) {
-      if (isPointInRange(e.offsetX, e.offsetY, node.range)) {
+      if (node.range.include(point)) {
         hit = node;
         break;
       }
@@ -133,9 +113,10 @@ export class Root extends Node {
   private onMouseMoveBridge = (e: globalThis.MouseEvent) => {
     const flatNode = this.getFlatNode();
     let hit: ElementNode | ResizeNode | null = null;
+    const point = Point.from(e);
     for (const node of flatNode) {
       const authorize = node instanceof ElementNode || node instanceof ResizeNode;
-      if (authorize && isPointInRange(e.offsetX, e.offsetY, node.range)) {
+      if (authorize && node.range.include(point)) {
         hit = node;
         break;
       }
@@ -153,8 +134,9 @@ export class Root extends Node {
   private onMouseUpController = (e: globalThis.MouseEvent) => {
     const flatNode = this.getFlatNode();
     let hit: Node | null = null;
+    const point = Point.from(e);
     for (const node of flatNode) {
-      if (isPointInRange(e.offsetX, e.offsetY, node.range)) {
+      if (node.range.include(point)) {
         hit = node;
         break;
       }

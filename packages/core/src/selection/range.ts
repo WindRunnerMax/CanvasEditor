@@ -64,6 +64,23 @@ export class Range {
     return new Point(x + width / 2, y + height / 2);
   }
 
+  in(range: Range) {
+    const { startX, startY, endX, endY } = this.flat();
+    const { startX: startX1, startY: startY1, endX: endX1, endY: endY1 } = range.flat();
+    return startX >= startX1 && startY >= startY1 && endX <= endX1 && endY <= endY1;
+  }
+
+  intersect(range: Range) {
+    const { startX, startY, endX, endY } = this.flat();
+    const { startX: startX1, startY: startY1, endX: endX1, endY: endY1 } = range.flat();
+    // 两个矩形相交 水平方向和垂直方向都相交
+    return startX <= endX1 && endX >= startX1 && startY <= endY1 && endY >= startY1;
+  }
+
+  include(point: Point) {
+    return point.in(this);
+  }
+
   static from(delta: Delta): Range;
   static from(delta: DeltaLike): Range;
   static from(endX: number, endY: number): Range;
