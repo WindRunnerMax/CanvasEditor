@@ -31,9 +31,9 @@ export abstract class Delta {
     return this;
   }
 
-  public remove(id: string): Delta;
-  public remove(delta: Delta): Delta;
-  public remove(params: string | Delta) {
+  public removeChild(id: string): Delta;
+  public removeChild(delta: Delta): Delta;
+  public removeChild(params: string | Delta) {
     const id = isString(params) ? params : params.id;
     this.children.splice(this.children.indexOf(id), 1);
     return this;

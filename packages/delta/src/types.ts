@@ -32,7 +32,7 @@ export type OpType = keyof typeof OP_TYPE;
 
 export type OpPayload = {
   [OP_TYPE.INSERT]: { delta: Delta; id?: string };
-  [OP_TYPE.DELETE]: { id?: string };
+  [OP_TYPE.DELETE]: { id: string };
   [OP_TYPE.MOVE]: { x: number; y: number };
   [OP_TYPE.RESIZE]: { width: number; height: number };
   [OP_TYPE.REVISE]: { attrs: Record<string, string> };

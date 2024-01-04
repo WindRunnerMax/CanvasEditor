@@ -27,12 +27,21 @@ export class DeltaState {
     this.children.push(child);
   }
 
-  public insert(delta: Delta) {
+  public insert(state: DeltaState) {
+    const delta = state.delta;
     this.editor.deltaSet.add(delta);
     this.delta.insert(delta);
-    const state = new DeltaState(this.editor, delta);
     state.setParent(this);
     this.children.push(state);
+    return this;
+  }
+
+  public remove() {
+    this.editor.deltaSet.remove(this.delta);
+    const parent = this.parent;
+    if (!parent) return this;
+    parent.delta.removeChild(this.delta);
+    parent.children.splice(parent.children.indexOf(this), 1);
     return this;
   }
 

@@ -1,20 +1,41 @@
+import { throttle } from "sketching-utils";
+
 import type { Editor } from "../../editor";
+import { EDITOR_EVENT } from "../../event/bus/action";
+import { Point } from "../../selection/point";
 import { Range } from "../../selection/range";
 import { EDITOR_STATE } from "../../state/utils/constant";
 import type { ResizeType } from "../utils/constant";
-import { MAX_Z_INDEX, RESIZE_LEN, RESIZE_OFS, RESIZE_TYPE } from "../utils/constant";
+import {
+  MAX_Z_INDEX,
+  RESIZE_LEN,
+  RESIZE_OFS,
+  RESIZE_TYPE,
+  SELECT_BIAS,
+  THE_CONFIG,
+  THE_DELAY,
+} from "../utils/constant";
 import { DEEP_GRAY, GRAY, WHITE } from "../utils/palette";
 import { drawArc, drawRect } from "../utils/shape";
+import type { MouseEvent } from "./event";
 import { Node } from "./node";
 
 export class ResizeNode extends Node {
   private type: ResizeType;
+  private draggedRange: Range;
+  private isDragging: boolean;
+  private landing: Point | null;
+  private landingRange: Range | null;
 
   constructor(private editor: Editor, type: ResizeType, parent: Node) {
     super(Range.from(-1, -1, -1, -1));
     this.type = type;
+    this.landing = null;
     this.setParent(parent);
+    this.isDragging = false;
+    this.landingRange = null;
     this._z = MAX_Z_INDEX - 1;
+    this.draggedRange = Range.from(0, 0);
   }
 
   public setRange = (range: Range) => {
@@ -84,6 +105,82 @@ export class ResizeNode extends Node {
 
   protected onMouseLeave = () => {
     if (this.editor.state.get(EDITOR_STATE.MOUSE_DOWN)) return void 0;
+    this.editor.canvas.mask.setCursorState(null);
+  };
+
+  protected onMouseDown = (e: MouseEvent) => {
+    // 这里需要用原生事件绑定 需要在选区完成后再执行 否则交互上就必须要先点选再拖拽
+    this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
+    this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
+    const selection = this.editor.selection.get();
+    if (!selection || !this.parent) {
+      return void 0;
+    }
+    this.landingRange = selection;
+    this.landing = Point.from(e.x, e.y);
+    this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
+    this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
+  };
+
+  private onMouseMoveBridge = (e: globalThis.MouseEvent) => {
+    const selection = this.editor.selection.get();
+    if (!this.landing || !selection || !this.landingRange || !this.parent) return void 0;
+    const point = Point.from(e);
+    const { x, y } = this.landing.diff(point);
+    if (!this.isDragging && (Math.abs(x) > SELECT_BIAS || Math.abs(y) > SELECT_BIAS)) {
+      this.isDragging = true;
+    }
+    if (this.isDragging && selection) {
+      const { startX, startY, endX, endY } = this.landingRange.flat();
+      let latest = Range.from(0, 0);
+      switch (this.type) {
+        case RESIZE_TYPE.LT: {
+          latest = Range.from(startX + x, startY + y, endX, endY);
+          break;
+        }
+        case RESIZE_TYPE.RT: {
+          latest = Range.from(startX, startY + y, endX + x, endY);
+          break;
+        }
+        case RESIZE_TYPE.LB: {
+          latest = Range.from(startX + x, startY, endX, endY + y);
+          break;
+        }
+        case RESIZE_TYPE.RB: {
+          latest = Range.from(startX, startY, endX + x, endY + y);
+          break;
+        }
+        case RESIZE_TYPE.L: {
+          latest = Range.from(startX + x, startY, endX, endY);
+          break;
+        }
+        case RESIZE_TYPE.R: {
+          latest = Range.from(startX, startY, endX + x, endY);
+          break;
+        }
+        case RESIZE_TYPE.T: {
+          latest = Range.from(startX, startY + y, endX, endY);
+          break;
+        }
+        case RESIZE_TYPE.B: {
+          latest = Range.from(startX, startY, endX, endY + y);
+          break;
+        }
+      }
+      this.editor.selection.set(latest);
+      // 重绘拖拽过的最大区域
+      this.draggedRange = this.draggedRange.compose(latest.zoom(RESIZE_OFS));
+      this.editor.canvas.mask.drawingRange(this.draggedRange);
+    }
+  };
+  private onMouseMoveController = throttle(this.onMouseMoveBridge, THE_DELAY, THE_CONFIG);
+
+  private onMouseUpController = () => {
+    this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
+    this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
+    this.landing = null;
+    this.isDragging = false;
+    this.landingRange = null;
     this.editor.canvas.mask.setCursorState(null);
   };
 

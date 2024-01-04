@@ -16,30 +16,26 @@ export class EditorState {
 
   constructor(private editor: Editor, private deltaSet: DeltaSet) {
     // Verify DeltaSet Rules
-    if (!this.deltaSet.get(ROOT_DELTA)) {
-      const entry = new EntryDelta(DEFAULT_DELTA_LIKE);
-      this.deltas.set(entry.id, new DeltaState(editor, entry));
-    }
-    this.deltaSet.forEach((id, delta) => {
-      this.deltas.set(id, new DeltaState(editor, delta));
-    });
+    const entryDelta = this.deltaSet.get(ROOT_DELTA);
+    const entry = new EntryDelta(entryDelta?.toJSON() || DEFAULT_DELTA_LIKE);
+    this.deltas.set(entry.id, new DeltaState(editor, entry));
     this.entry = this.getDeltaState(ROOT_DELTA);
     this.createDeltaStateTree();
   }
 
   private createDeltaStateTree() {
     // 初始化构建整个`Delta`状态树
-    const set = new WeakSet<Delta>();
-    const dfs = (current: Delta) => {
-      if (set.has(current)) return void 0;
-      const state = this.getDeltaState(current.id);
+    const dfs = (delta: Delta) => {
+      const state = this.getDeltaState(delta.id);
       if (!state) return void 0;
-      current.children.forEach(id => {
-        const child = this.getDeltaState(id);
-        if (child) {
-          state.addChild(child);
-          dfs(child.delta);
-        }
+      delta.children.forEach(id => {
+        const child = this.deltaSet.get(id);
+        if (!child) return void 0;
+        // 按需创建`state`以及关联关系
+        const childState = new DeltaState(this.editor, child);
+        this.deltas.set(id, childState);
+        state.addChild(childState);
+        dfs(childState.delta);
       });
     };
     dfs(this.entry.delta);
@@ -51,6 +47,10 @@ export class EditorState {
   public set(key: keyof typeof EDITOR_STATE, value: boolean) {
     this.status.set(key, value);
     return this;
+  }
+
+  public getDeltas() {
+    return this.deltas;
   }
 
   public getDeltaState(deltaId: typeof ROOT_DELTA): DeltaState;
@@ -68,7 +68,16 @@ export class EditorState {
       case OP_TYPE.INSERT: {
         const { delta, id } = op.payload;
         const target = id ? this.getDeltaState(id) : this.entry;
-        target && target.insert(delta);
+        const state = new DeltaState(this.editor, delta);
+        this.deltas.set(delta.id, state);
+        target && target.insert(state);
+        break;
+      }
+      case OP_TYPE.DELETE: {
+        const { id } = op.payload;
+        this.deltas.delete(id);
+        const target = this.getDeltaState(id);
+        target && target.remove();
         break;
       }
       case OP_TYPE.MOVE: {
@@ -80,7 +89,10 @@ export class EditorState {
         });
         break;
       }
-      default: {
+      case OP_TYPE.RESIZE: {
+        break;
+      }
+      case OP_TYPE.REVISE: {
         break;
       }
     }

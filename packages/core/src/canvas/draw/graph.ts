@@ -27,14 +27,14 @@ export class Graph {
   public drawingAll() {
     this.clear();
     const { width: canvasWidth, height: canvasHeight } = this.engine.getRect();
-    this.editor.deltaSet.forEach((_, delta) => {
-      const { x, y, width, height } = delta.getRect();
+    this.editor.state.getDeltas().forEach(state => {
+      const { x, y, width, height } = state.delta.getRect();
       // No drawing beyond the canvas
       if (x > canvasWidth || y > canvasHeight || x + width < 0 || y + height < 0) {
         return void 0;
       }
       this.ctx.save();
-      delta.drawing(this.ctx);
+      state.delta.drawing(this.ctx);
       this.ctx.restore();
     });
   }
