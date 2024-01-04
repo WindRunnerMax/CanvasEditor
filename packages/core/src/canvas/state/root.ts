@@ -15,7 +15,7 @@ import { SelectNode } from "./select";
 
 export class Root extends Node {
   public hover: ElementNode | ResizeNode | null;
-  private select: SelectNode;
+  public readonly select: SelectNode;
   constructor(private editor: Editor) {
     super(Range.from(0, 0));
     this.hover = null;

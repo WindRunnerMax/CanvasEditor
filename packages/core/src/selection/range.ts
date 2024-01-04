@@ -23,8 +23,8 @@ export class Range {
 
   compose(range: Range | null) {
     if (!range) return this;
-    const { startX, startY, endX, endY } = range.flat();
-    const { startX: startX1, startY: startY1, endX: endX1, endY: endY1 } = this.flat();
+    const { startX, startY, endX, endY } = range.flatten();
+    const { startX: startX1, startY: startY1, endX: endX1, endY: endY1 } = this.flatten();
     return new Range({
       startX: Math.min(startX, startX1),
       startY: Math.min(startY, startY1),
@@ -50,6 +50,10 @@ export class Range {
     return { startX: this.start.x, startY: this.start.y, endX: this.end.x, endY: this.end.y };
   }
 
+  flatten() {
+    return this.normalize().flat();
+  }
+
   rect() {
     // 标准化矩形
     const { startX, startY, endX, endY } = this.flat();
@@ -65,15 +69,20 @@ export class Range {
     return new Point(x + width / 2, y + height / 2);
   }
 
+  normalize() {
+    const { x, y, width, height } = this.rect();
+    return new Range({ startX: x, startY: y, endX: x + width, endY: y + height });
+  }
+
   in(range: Range) {
-    const { startX, startY, endX, endY } = this.flat();
-    const { startX: startX1, startY: startY1, endX: endX1, endY: endY1 } = range.flat();
+    const { startX, startY, endX, endY } = this.flatten();
+    const { startX: startX1, startY: startY1, endX: endX1, endY: endY1 } = range.flatten();
     return startX >= startX1 && startY >= startY1 && endX <= endX1 && endY <= endY1;
   }
 
   intersect(range: Range) {
-    const { startX, startY, endX, endY } = this.flat();
-    const { startX: startX1, startY: startY1, endX: endX1, endY: endY1 } = range.flat();
+    const { startX, startY, endX, endY } = this.flatten();
+    const { startX: startX1, startY: startY1, endX: endX1, endY: endY1 } = range.flatten();
     // 两个矩形相交 水平方向和垂直方向都相交
     return startX <= endX1 && endX >= startX1 && startY <= endY1 && endY >= startY1;
   }

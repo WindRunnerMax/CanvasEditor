@@ -22,7 +22,6 @@ import { Node } from "./node";
 
 export class ResizeNode extends Node {
   private type: ResizeType;
-  private draggedRange: Range;
   private isDragging: boolean;
   private landing: Point | null;
   private landingRange: Range | null;
@@ -35,7 +34,6 @@ export class ResizeNode extends Node {
     this.isDragging = false;
     this.landingRange = null;
     this._z = MAX_Z_INDEX - 1;
-    this.draggedRange = Range.from(0, 0);
   }
 
   public setRange = (range: Range) => {
@@ -99,7 +97,9 @@ export class ResizeNode extends Node {
   };
 
   protected onMouseEnter = () => {
-    if (!this.editor.selection.get()) return void 0;
+    if (!this.editor.selection.get() || this.editor.state.get(EDITOR_STATE.MOUSE_DOWN)) {
+      return void 0;
+    }
     this.editor.canvas.mask.setCursorState(this.type);
   };
 
@@ -130,24 +130,44 @@ export class ResizeNode extends Node {
     if (!this.isDragging && (Math.abs(x) > SELECT_BIAS || Math.abs(y) > SELECT_BIAS)) {
       this.isDragging = true;
     }
+    let formattedX = x;
+    let formattedY = y;
+    const { width, height } = this.landingRange.rect();
+    const ratio = width / height;
     if (this.isDragging && selection) {
       const { startX, startY, endX, endY } = this.landingRange.flat();
       let latest = Range.from(0, 0);
       switch (this.type) {
         case RESIZE_TYPE.LT: {
-          latest = Range.from(startX + x, startY + y, endX, endY);
+          if (e.shiftKey) {
+            formattedX = formattedY * ratio;
+            formattedY = formattedX / ratio;
+          }
+          latest = Range.from(startX + formattedX, startY + formattedY, endX, endY);
           break;
         }
         case RESIZE_TYPE.RT: {
-          latest = Range.from(startX, startY + y, endX + x, endY);
+          if (e.shiftKey) {
+            formattedX = -formattedY * ratio;
+            formattedY = -formattedX / ratio;
+          }
+          latest = Range.from(startX, startY + formattedY, endX + formattedX, endY);
           break;
         }
         case RESIZE_TYPE.LB: {
-          latest = Range.from(startX + x, startY, endX, endY + y);
+          if (e.shiftKey) {
+            formattedX = -formattedY * ratio;
+            formattedY = -formattedX / ratio;
+          }
+          latest = Range.from(startX + formattedX, startY, endX, endY + formattedY);
           break;
         }
         case RESIZE_TYPE.RB: {
-          latest = Range.from(startX, startY, endX + x, endY + y);
+          if (e.shiftKey) {
+            formattedX = formattedY * ratio;
+            formattedY = formattedX / ratio;
+          }
+          latest = Range.from(startX, startY, endX + formattedX, endY + formattedY);
           break;
         }
         case RESIZE_TYPE.L: {
@@ -168,14 +188,12 @@ export class ResizeNode extends Node {
         }
       }
       this.editor.selection.set(latest);
-      // 重绘拖拽过的最大区域
-      this.draggedRange = this.draggedRange.compose(latest.zoom(RESIZE_OFS));
-      this.editor.canvas.mask.drawingRange(this.draggedRange);
     }
   };
   private onMouseMoveController = throttle(this.onMouseMoveBridge, THE_DELAY, THE_CONFIG);
 
   private onMouseUpController = () => {
+    // TODO: 根据点位调整`Resize`类型
     this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
     this.landing = null;

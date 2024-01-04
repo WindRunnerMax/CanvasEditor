@@ -55,10 +55,11 @@ export class SelectNode extends Node {
     this.editor.logger.info("Selection Change", current);
     const range = current || previous;
     if (range) {
+      // 按需刷新原选区与新选区的位置
       const refresh = range.compose(previous).compose(current);
+      // COMPAT: `Range`需要加入偏移量
       this.editor.canvas.mask.drawingRange(refresh.zoom(RESIZE_OFS));
     }
-    // COMPAT: `Range`需要加入偏移量
   };
 
   private onMouseDownController = (e: globalThis.MouseEvent) => {

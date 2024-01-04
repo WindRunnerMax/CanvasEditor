@@ -1,5 +1,6 @@
 import type { Editor } from "../../editor";
 import type { Range } from "../../selection/range";
+import { EDITOR_STATE } from "../../state/utils/constant";
 import { LIGHT_BLUE } from "../utils/palette";
 import { drawRect } from "../utils/shape";
 import type { MouseEvent } from "./event";
@@ -22,9 +23,10 @@ export class ElementNode extends Node {
 
   protected onMouseEnter = () => {
     this.isHovering = true;
-    if (!this.editor.selection.has(this.id)) {
-      this.editor.canvas.mask.drawingRange(this.range);
+    if (this.editor.selection.has(this.id) || this.editor.state.get(EDITOR_STATE.MOUSE_DOWN)) {
+      return void 0;
     }
+    this.editor.canvas.mask.drawingRange(this.range);
   };
 
   protected onMouseLeave = () => {

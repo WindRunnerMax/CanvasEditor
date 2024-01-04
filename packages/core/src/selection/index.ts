@@ -72,11 +72,12 @@ export class Selection {
       this.set(null);
       return void 0;
     }
-    let range = Range.from(Infinity, Infinity, -Infinity, -Infinity);
+    let range: Range | null = null;
     active.forEach(key => {
       const delta = this.editor.deltaSet.get(key);
       if (!delta) return void 0;
-      range = range.compose(Range.from(delta));
+      const deltaRange = Range.from(delta);
+      range = range ? range.compose(deltaRange) : deltaRange;
     });
     this.set(range);
   }
