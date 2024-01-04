@@ -81,6 +81,11 @@ export class Range {
     return point.in(this);
   }
 
+  isOutside() {
+    const { x, y, width, height } = this.rect();
+    return x < 0 && y < 0 && x + width < 0 && y + height < 0;
+  }
+
   static from(delta: Delta): Range;
   static from(delta: DeltaLike): Range;
   static from(endX: number, endY: number): Range;

@@ -11,7 +11,7 @@ export class ResizeNode extends Node {
   private type: ResizeType;
 
   constructor(private editor: Editor, type: ResizeType, parent: Node) {
-    super(Range.from(0, 0));
+    super(Range.from(-1, -1, -1, -1));
     this.type = type;
     this.setParent(parent);
     this._z = MAX_Z_INDEX - 1;
@@ -19,6 +19,10 @@ export class ResizeNode extends Node {
 
   public setRange = (range: Range) => {
     const { startX, startY, endX, endY } = range.flat();
+    if (range.isOutside()) {
+      super.setRange(range);
+      return void 0;
+    }
     let target = Range.from(0, 0);
     switch (this.type) {
       case RESIZE_TYPE.LT: {

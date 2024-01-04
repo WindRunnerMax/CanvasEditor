@@ -50,9 +50,11 @@ export class SelectNode extends Node {
       this.setRange(current);
       this.children.forEach(node => node.setRange(current));
     } else {
-      this.setRange(Range.from(0, 0));
+      const external = Range.from(-1, -1, -1, -1);
+      this.setRange(external);
+      this.children.forEach(node => node.setRange(external));
     }
-    console.log("current :>> ", current);
+    this.editor.logger.info("Selection Change", current);
     const range = current || previous;
     // COMPAT: `Range`需要加入偏移量
     range && this.editor.canvas.mask.drawingRange(range.zoom(RESIZE_OFS));
