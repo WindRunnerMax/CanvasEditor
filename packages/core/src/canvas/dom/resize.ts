@@ -23,12 +23,14 @@ import { Node } from "./node";
 export class ResizeNode extends Node {
   private type: ResizeType;
   private isDragging: boolean;
+  private latest: Range | null;
   private landing: Point | null;
   private landingRange: Range | null;
 
   constructor(private editor: Editor, type: ResizeType, parent: Node) {
     super(Range.from(-1, -1, -1, -1));
     this.type = type;
+    this.latest = null;
     this.landing = null;
     this.setParent(parent);
     this.isDragging = false;
@@ -187,15 +189,21 @@ export class ResizeNode extends Node {
           break;
         }
       }
-      this.editor.selection.set(latest);
+      this.latest = latest.normalize();
+      this.editor.selection.set(this.latest);
     }
   };
   private onMouseMoveController = throttle(this.onMouseMoveBridge, THE_DELAY, THE_CONFIG);
 
   private onMouseUpController = () => {
-    // TODO: 根据点位调整`Resize`类型
     this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
+    if (this.latest && this.parent) {
+      const latest = this.latest;
+      // 根据点位调整`Resize`节点位置
+      this.parent.children.forEach(node => node.setRange(latest));
+    }
+    this.latest = null;
     this.landing = null;
     this.isDragging = false;
     this.landingRange = null;
