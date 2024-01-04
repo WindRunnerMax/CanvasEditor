@@ -54,8 +54,11 @@ export class SelectNode extends Node {
     }
     this.editor.logger.info("Selection Change", current);
     const range = current || previous;
+    if (range) {
+      const refresh = range.compose(previous).compose(current);
+      this.editor.canvas.mask.drawingRange(refresh.zoom(RESIZE_OFS));
+    }
     // COMPAT: `Range`需要加入偏移量
-    range && this.editor.canvas.mask.drawingRange(range.zoom(RESIZE_OFS));
   };
 
   private onMouseDownController = (e: globalThis.MouseEvent) => {

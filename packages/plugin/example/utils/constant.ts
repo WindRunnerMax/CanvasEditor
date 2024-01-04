@@ -9,7 +9,7 @@ export const EXAMPLE: DeltaSetLike = {
     attrs: {},
     width: 0,
     height: 0,
-    children: ["VSIZD4xTEt"],
+    children: ["VSIZD4xTEt", "test"],
   },
   VSIZD4xTEt: {
     x: 10,
@@ -21,10 +21,10 @@ export const EXAMPLE: DeltaSetLike = {
     height: 100,
     children: [],
   },
-  qwer: {
+  test: {
     x: 100,
     y: 100,
-    id: "qwer",
+    id: "test",
     key: "rect",
     attrs: {},
     width: 100,

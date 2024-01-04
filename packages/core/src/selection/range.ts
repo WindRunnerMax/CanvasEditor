@@ -21,7 +21,8 @@ export class Range {
     });
   }
 
-  compose(range: Range) {
+  compose(range: Range | null) {
+    if (!range) return this;
     const { startX, startY, endX, endY } = range.flat();
     const { startX: startX1, startY: startY1, endX: endX1, endY: endY1 } = this.flat();
     return new Range({
