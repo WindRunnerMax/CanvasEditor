@@ -53,4 +53,20 @@ export class DeltaState {
     }
     return this;
   }
+
+  public resize(range: Range) {
+    const delta = this.delta;
+    const { startX, startY, endX, endY } = range.flatten();
+    const { width, height } = delta.getRect();
+    const offsetX = endX - startX;
+    const offsetY = endY - startY;
+    delta.move(offsetX, offsetY);
+    delta.setWidth(width + offsetX);
+    delta.setHeight(height + offsetY);
+    const node = DELTA_TO_NODE.get(this);
+    if (node) {
+      node.setRange(Range.from(delta));
+    }
+    return this;
+  }
 }

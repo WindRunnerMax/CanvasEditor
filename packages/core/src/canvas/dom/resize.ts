@@ -98,11 +98,11 @@ export class ResizeNode extends Node {
     super.setRange(target);
   };
 
-  protected onMouseEnter = () => {
+  protected onMouseEnter = (e: MouseEvent) => {
     if (!this.editor.selection.get() || this.editor.state.get(EDITOR_STATE.MOUSE_DOWN)) {
       return void 0;
     }
-    this.editor.canvas.mask.setCursorState(this.type);
+    this.setCursorState(Point.from(e.x, e.y));
   };
 
   protected onMouseLeave = () => {
@@ -110,8 +110,8 @@ export class ResizeNode extends Node {
     this.editor.canvas.mask.setCursorState(null);
   };
 
+  private temp = new Map<string, { width: number; height: number; x: number; y: number }>();
   protected onMouseDown = (e: MouseEvent) => {
-    // 这里需要用原生事件绑定 需要在选区完成后再执行 否则交互上就必须要先点选再拖拽
     this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
     const selection = this.editor.selection.get();
@@ -120,6 +120,16 @@ export class ResizeNode extends Node {
     }
     this.landingRange = selection;
     this.landing = Point.from(e.x, e.y);
+    //////
+    const ids = this.editor.selection.getActiveDeltas();
+    ids.forEach(id => {
+      const state = this.editor.state.getDeltaState(id);
+      if (!state) return void 0;
+      const delta = state.delta;
+      const { width, height, x, y } = delta.getRect();
+      this.temp.set(id, { width, height, x, y });
+    });
+    //////
     this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
   };
@@ -132,11 +142,11 @@ export class ResizeNode extends Node {
     if (!this.isDragging && (Math.abs(x) > SELECT_BIAS || Math.abs(y) > SELECT_BIAS)) {
       this.isDragging = true;
     }
-    let formattedX = x;
-    let formattedY = y;
-    const { width, height } = this.landingRange.rect();
-    const ratio = width / height;
     if (this.isDragging && selection) {
+      let formattedX = x;
+      let formattedY = y;
+      const { width, height } = this.landingRange.rect();
+      const ratio = width / height;
       const { startX, startY, endX, endY } = this.landingRange.flat();
       let latest = Range.from(0, 0);
       switch (this.type) {
@@ -191,23 +201,56 @@ export class ResizeNode extends Node {
       }
       this.latest = latest.normalize();
       this.editor.selection.set(this.latest);
+      ///////
+      // 根据位置将选中的图形大小进行调整
+      const ids = this.editor.selection.getActiveDeltas();
+      // 需要根据新旧选区调整包含的每个图形的大小和位置
+      const { width: oldWidth, height: oldHeight, x: oldX, y: oldY } = this.landingRange.rect();
+      const { width: newWidth, height: newHeight } = this.latest.rect();
+      const ratioX = newWidth / oldWidth;
+      const ratioY = newHeight / oldHeight;
+      console.log("ratio :>> ", ratioX, ratioY, newWidth);
+      const temp = this.temp;
+      ids.forEach(id => {
+        const state = this.editor.state.getDeltaState(id);
+        const data = temp.get(id);
+        if (!state || !data) return void 0;
+        const { width, height, x, y } = data;
+        const delta = state.delta;
+        delta.setX((x - oldX) * ratioX + oldX);
+        delta.setY((y - oldY) * ratioY + oldY);
+        delta.setWidth(width * ratioX);
+        delta.setHeight(height * ratioY);
+      });
+      this.editor.canvas.graph.drawingAll();
+      ///////
     }
   };
   private onMouseMoveController = throttle(this.onMouseMoveBridge, THE_DELAY, THE_CONFIG);
 
-  private onMouseUpController = () => {
+  private onMouseUpController = (e: globalThis.MouseEvent) => {
     this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
-    if (this.latest && this.parent) {
+    if (this.isDragging && this.latest && this.parent) {
+      const point = Point.from(e);
       const latest = this.latest;
+      this.editor.canvas.mask.setCursorState(null);
       // 根据点位调整`Resize`节点位置
-      this.parent.children.forEach(node => node.setRange(latest));
+      this.parent.children.forEach(node => {
+        node.setRange(latest);
+        node instanceof ResizeNode && node.setCursorState(point);
+      });
     }
     this.latest = null;
     this.landing = null;
     this.isDragging = false;
     this.landingRange = null;
-    this.editor.canvas.mask.setCursorState(null);
+  };
+
+  public setCursorState = (point: Point) => {
+    if (point.in(this.range)) {
+      this.editor.canvas.mask.setCursorState(this.type);
+    }
   };
 
   public drawingMask = (ctx: CanvasRenderingContext2D) => {

@@ -39,6 +39,16 @@ export abstract class Delta {
     return this;
   }
 
+  public setX(x: number) {
+    this.x = x;
+    return this;
+  }
+
+  public setY(y: number) {
+    this.y = y;
+    return this;
+  }
+
   public setWidth(width: number) {
     this.width = width;
     return this;
