@@ -41,7 +41,7 @@ export class Root extends Node {
     const createElement = (state: DeltaState) => {
       const element = DELTA_TO_NODE.get(state);
       if (element) return element;
-      return new ElementNode(state.id, this.editor, Range.from(state.delta));
+      return new ElementNode(state.id, this.editor, state.toRange());
     };
     while (queue.length) {
       const current = queue.shift();

@@ -1,3 +1,5 @@
+import type { Empty } from "sketching-utils";
+
 import type { Range } from "../../selection/range";
 import type { MouseEvent } from "./event";
 
@@ -62,7 +64,8 @@ export class Node {
   }
 
   // ====== DOM OP ======
-  public append<T extends Node>(node: T) {
+  public append<T extends Node>(node: T | Empty) {
+    if (!node) return void 0;
     // 类似希尔排序 保证`children`有序
     // 如果使用`sort`也可以 `ES`规范添加了`sort`作为稳定排序
     const index = this.children.findIndex(item => item.z > node.z);
@@ -75,7 +78,8 @@ export class Node {
     this.clearFlatNodeOnLink();
   }
 
-  public removeChild<T extends Node>(node: T) {
+  public removeChild<T extends Node>(node: T | Empty) {
+    if (!node) return void 0;
     const index = this.children.indexOf(node);
     if (index > -1) {
       this.children.splice(index, 1);

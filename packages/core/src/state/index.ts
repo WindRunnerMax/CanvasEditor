@@ -6,6 +6,7 @@ import type { Editor } from "../editor";
 import { EntryDelta } from "../editor/delta/entry";
 import { DEFAULT_DELTA_LIKE } from "../editor/utils/constant";
 import { EDITOR_EVENT } from "../event/bus/action";
+import { Range } from "../selection/range";
 import { DeltaState } from "./node/state";
 import type { EDITOR_STATE } from "./utils/constant";
 
@@ -35,10 +36,10 @@ export class EditorState {
         const childState = new DeltaState(this.editor, child);
         this.deltas.set(id, childState);
         state.addChild(childState);
-        dfs(childState.delta);
+        dfs(childState.toDelta());
       });
     };
-    dfs(this.entry.delta);
+    dfs(this.entry.toDelta());
   }
 
   public get(key: keyof typeof EDITOR_STATE) {
@@ -90,6 +91,9 @@ export class EditorState {
         break;
       }
       case OP_TYPE.RESIZE: {
+        const { id, x, y, width, height } = op.payload;
+        const target = this.getDeltaState(id);
+        target && target.resize(Range.from(x, y, x + width, y + height));
         break;
       }
       case OP_TYPE.REVISE: {

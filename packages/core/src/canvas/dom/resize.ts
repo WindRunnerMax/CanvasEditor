@@ -1,3 +1,4 @@
+import { Op, OP_TYPE } from "sketching-delta";
 import { throttle } from "sketching-utils";
 
 import type { Editor } from "../../editor";
@@ -110,7 +111,6 @@ export class ResizeNode extends Node {
     this.editor.canvas.mask.setCursorState(null);
   };
 
-  private temp = new Map<string, { width: number; height: number; x: number; y: number }>();
   protected onMouseDown = (e: MouseEvent) => {
     this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
@@ -120,16 +120,6 @@ export class ResizeNode extends Node {
     }
     this.landingRange = selection;
     this.landing = Point.from(e.x, e.y);
-    //////
-    const ids = this.editor.selection.getActiveDeltas();
-    ids.forEach(id => {
-      const state = this.editor.state.getDeltaState(id);
-      if (!state) return void 0;
-      const delta = state.delta;
-      const { width, height, x, y } = delta.getRect();
-      this.temp.set(id, { width, height, x, y });
-    });
-    //////
     this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
   };
@@ -201,29 +191,6 @@ export class ResizeNode extends Node {
       }
       this.latest = latest.normalize();
       this.editor.selection.set(this.latest);
-      ///////
-      // 根据位置将选中的图形大小进行调整
-      const ids = this.editor.selection.getActiveDeltas();
-      // 需要根据新旧选区调整包含的每个图形的大小和位置
-      const { width: oldWidth, height: oldHeight, x: oldX, y: oldY } = this.landingRange.rect();
-      const { width: newWidth, height: newHeight } = this.latest.rect();
-      const ratioX = newWidth / oldWidth;
-      const ratioY = newHeight / oldHeight;
-      console.log("ratio :>> ", ratioX, ratioY, newWidth);
-      const temp = this.temp;
-      ids.forEach(id => {
-        const state = this.editor.state.getDeltaState(id);
-        const data = temp.get(id);
-        if (!state || !data) return void 0;
-        const { width, height, x, y } = data;
-        const delta = state.delta;
-        delta.setX((x - oldX) * ratioX + oldX);
-        delta.setY((y - oldY) * ratioY + oldY);
-        delta.setWidth(width * ratioX);
-        delta.setHeight(height * ratioY);
-      });
-      this.editor.canvas.graph.drawingAll();
-      ///////
     }
   };
   private onMouseMoveController = throttle(this.onMouseMoveBridge, THE_DELAY, THE_CONFIG);
@@ -231,7 +198,7 @@ export class ResizeNode extends Node {
   private onMouseUpController = (e: globalThis.MouseEvent) => {
     this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
-    if (this.isDragging && this.latest && this.parent) {
+    if (this.isDragging && this.latest && this.parent && this.landingRange) {
       const point = Point.from(e);
       const latest = this.latest;
       this.editor.canvas.mask.setCursorState(null);
@@ -239,6 +206,22 @@ export class ResizeNode extends Node {
       this.parent.children.forEach(node => {
         node.setRange(latest);
         node instanceof ResizeNode && node.setCursorState(point);
+      });
+      // 需要根据新旧选区调整包含的每个图形的大小和位置
+      const nodes = this.editor.selection.getActiveDeltas();
+      const { width: oldWidth, height: oldHeight, x: oldX, y: oldY } = this.landingRange.rect();
+      const { width: newWidth, height: newHeight, x: newX, y: newY } = this.latest.rect();
+      const ratioX = newWidth / oldWidth;
+      const ratioY = newHeight / oldHeight;
+      nodes.forEach(id => {
+        const state = this.editor.state.getDeltaState(id);
+        if (!state) return void 0;
+        const { x: nodeX, y: nodeY, width: nodeWidth, height: nodeHeight } = state.toRange().rect();
+        const x = newX + (nodeX - oldX) * ratioX;
+        const y = newY + (nodeY - oldY) * ratioY;
+        const width = nodeWidth * ratioX;
+        const height = nodeHeight * ratioY;
+        this.editor.state.apply(new Op(OP_TYPE.RESIZE, { id, x, y, width, height }));
       });
     }
     this.latest = null;

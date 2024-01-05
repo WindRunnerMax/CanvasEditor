@@ -1,5 +1,6 @@
 import type { Delta } from "sketching-delta";
 
+import { ElementNode } from "../../canvas/dom/element";
 import { DELTA_TO_NODE } from "../../canvas/state/map";
 import type { Editor } from "../../editor";
 import { Range } from "../../selection/range";
@@ -8,7 +9,7 @@ export class DeltaState {
   public readonly id: string;
   public _parent: DeltaState | null;
   public readonly children: DeltaState[];
-  constructor(private editor: Editor, public readonly delta: Delta) {
+  constructor(private editor: Editor, private readonly delta: Delta) {
     this.id = delta.id;
     this._parent = null;
     this.children = [];
@@ -27,12 +28,24 @@ export class DeltaState {
     this.children.push(child);
   }
 
+  public toRange() {
+    return Range.from(this.delta);
+  }
+
+  public toDelta() {
+    return this.delta;
+  }
+
   public insert(state: DeltaState) {
     const delta = state.delta;
     this.editor.deltaSet.add(delta);
     this.delta.insert(delta);
     state.setParent(this);
     this.children.push(state);
+    const node = DELTA_TO_NODE.get(this);
+    if (node) {
+      node.append(new ElementNode(this.id, this.editor, state.toRange()));
+    }
     return this;
   }
 
@@ -42,6 +55,10 @@ export class DeltaState {
     if (!parent) return this;
     parent.delta.removeChild(this.delta);
     parent.children.splice(parent.children.indexOf(this), 1);
+    const node = DELTA_TO_NODE.get(parent);
+    if (node) {
+      node.removeChild(DELTA_TO_NODE.get(this));
+    }
     return this;
   }
 
@@ -55,17 +72,14 @@ export class DeltaState {
   }
 
   public resize(range: Range) {
-    const delta = this.delta;
-    const { startX, startY, endX, endY } = range.flatten();
-    const { width, height } = delta.getRect();
-    const offsetX = endX - startX;
-    const offsetY = endY - startY;
-    delta.move(offsetX, offsetY);
-    delta.setWidth(width + offsetX);
-    delta.setHeight(height + offsetY);
+    const { x, y, width, height } = range.rect();
+    this.delta.setX(x);
+    this.delta.setY(y);
+    this.delta.setWidth(width);
+    this.delta.setHeight(height);
     const node = DELTA_TO_NODE.get(this);
     if (node) {
-      node.setRange(Range.from(delta));
+      node.setRange(range);
     }
     return this;
   }
