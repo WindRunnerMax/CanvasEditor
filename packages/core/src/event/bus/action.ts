@@ -1,15 +1,9 @@
 import type { NativeEventMap } from "../native/types";
 import { NATIVE_EVENTS } from "../native/types";
-import type {
-  CanvasStateEvent,
-  ContentChangeEvent,
-  PaintEvent,
-  SelectionChangeEvent,
-} from "./types";
+import type { ContentChangeEvent, PaintEvent, SelectionChangeEvent } from "./types";
 
 export const EDITOR_EVENT = {
   CONTENT_CHANGE: "CONTENT_CHANGE",
-  CANVAS_STATE: "CANVAS_STATE",
   SELECTION_CHANGE: "SELECTION_CHANGE",
   PAINT: "PAINT",
   ...NATIVE_EVENTS,
@@ -17,7 +11,6 @@ export const EDITOR_EVENT = {
 
 export type EventMap = {
   [EDITOR_EVENT.PAINT]: PaintEvent;
-  [EDITOR_EVENT.CANVAS_STATE]: CanvasStateEvent;
   [EDITOR_EVENT.CONTENT_CHANGE]: ContentChangeEvent;
   [EDITOR_EVENT.SELECTION_CHANGE]: SelectionChangeEvent;
 } & NativeEventMap;

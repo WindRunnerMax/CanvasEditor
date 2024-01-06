@@ -4,6 +4,7 @@
         "pako",
         "pnpm",
         "TSON",
+        "undoable",
         "webrtc"
     ]
 }

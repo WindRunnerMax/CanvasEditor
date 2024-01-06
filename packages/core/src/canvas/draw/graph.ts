@@ -8,6 +8,7 @@ export class Graph {
   public ctx: CanvasRenderingContext2D;
 
   constructor(private editor: Editor, private engine: Canvas) {
+    // `Graph`绘制的是`State`
     this.canvas = document.createElement("canvas");
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
   }

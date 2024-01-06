@@ -9,6 +9,7 @@ import { EDITOR_EVENT } from "../event/bus/action";
 import { Range } from "../selection/range";
 import { DeltaState } from "./node/state";
 import type { EDITOR_STATE } from "./utils/constant";
+import type { ApplyOptions } from "./utils/types";
 
 export class EditorState {
   public readonly entry: DeltaState;
@@ -60,8 +61,8 @@ export class EditorState {
     return this.deltas.get(deltaId) || null;
   }
 
-  public apply(op: Ops, options: { source?: string } = {}) {
-    const { source = "user" } = options;
+  public apply(op: Ops, applyOptions?: ApplyOptions) {
+    const options = applyOptions || { source: "user", undoable: true };
     const previous = new DeltaSet(this.deltaSet.getDeltas());
     const effect: string[] = [];
 
@@ -105,10 +106,10 @@ export class EditorState {
       this.editor.event.trigger(EDITOR_EVENT.CONTENT_CHANGE, {
         previous,
         current: this.deltaSet,
-        source,
         // TODO: 合并`Op`
         changes: op,
         effect,
+        options,
       });
     });
 

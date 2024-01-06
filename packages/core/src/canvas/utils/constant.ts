@@ -1,6 +1,3 @@
-import type { Point } from "../../selection/point";
-import type { Range } from "../../selection/range";
-
 export const RESIZE_OFS = 5;
 export const RESIZE_LEN = 10;
 export const SELECT_BIAS = 3;
@@ -19,6 +16,7 @@ export const RESIZE_TYPE = {
   LB: "LB",
   RB: "RB",
 } as const;
+export type ResizeType = keyof typeof RESIZE_TYPE;
 
 export const CURSOR_STATE = {
   [RESIZE_TYPE.L]: "ew-resize",
@@ -30,36 +28,3 @@ export const CURSOR_STATE = {
   [RESIZE_TYPE.LB]: "nesw-resize",
   [RESIZE_TYPE.RB]: "nwse-resize",
 } as const;
-
-export const CANVAS_OP = {
-  HOVER: "HOVER",
-  RESIZE: "RESIZE",
-  TRANSLATE: "TRANSLATE",
-  FRAME_SELECT: "FRAME_SELECT",
-} as const;
-
-export const CANVAS_STATE = {
-  OP: "OP",
-  RECT: "RECT",
-  HOVER: "HOVER",
-  RESIZE: "RESIZE",
-  LANDING: "LANDING",
-} as const;
-
-export type CanvasOp = keyof typeof CANVAS_OP;
-export type ResizeType = keyof typeof RESIZE_TYPE;
-export type CanvasStore = {
-  [RESIZE_TYPE.L]?: Range | null;
-  [RESIZE_TYPE.R]?: Range | null;
-  [RESIZE_TYPE.T]?: Range | null;
-  [RESIZE_TYPE.B]?: Range | null;
-  [RESIZE_TYPE.LT]?: Range | null;
-  [RESIZE_TYPE.RT]?: Range | null;
-  [RESIZE_TYPE.LB]?: Range | null;
-  [RESIZE_TYPE.RB]?: Range | null;
-  [CANVAS_STATE.RECT]?: Range | null;
-  [CANVAS_STATE.OP]?: CanvasOp | null;
-  [CANVAS_STATE.HOVER]?: string | null;
-  [CANVAS_STATE.LANDING]?: Point | null;
-  [CANVAS_STATE.RESIZE]?: ResizeType | null;
-};

@@ -12,6 +12,7 @@ export class Mask {
   public ctx: CanvasRenderingContext2D;
 
   constructor(private editor: Editor, private engine: Canvas) {
+    // `Mask`绘制的是`Node`
     this.canvas = document.createElement("canvas");
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
   }
