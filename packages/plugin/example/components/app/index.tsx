@@ -17,6 +17,7 @@ export const App: FC = () => {
     window.editor = editor;
     const el = ref.current;
     el && editor.onMount(el);
+    window.editor = editor;
     return () => {
       editor.destroy();
     };
