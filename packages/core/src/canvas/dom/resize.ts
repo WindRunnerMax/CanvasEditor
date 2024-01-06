@@ -29,7 +29,7 @@ export class ResizeNode extends Node {
   private landingRange: Range | null;
 
   constructor(private editor: Editor, type: ResizeType, parent: Node) {
-    super(Range.empty());
+    super(Range.reset());
     this.type = type;
     this.latest = null;
     this.landing = null;

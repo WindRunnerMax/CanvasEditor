@@ -96,7 +96,7 @@ export class Range {
     return x < 0 && y < 0 && x + width < 0 && y + height < 0;
   }
 
-  static empty() {
+  static reset() {
     return Range.from(-1, -1, -1, -1);
   }
 

@@ -47,6 +47,16 @@ export class Canvas {
     return { width: this.width, height: this.height };
   }
 
+  public isOutside = (range: Range) => {
+    // TODO: 实现拖拽变换后的视口判断
+    // 完全超出`Canvas`的区域不绘制
+    const { x, y, width, height } = range.rect();
+    if (x > this.width || y > this.height || x + width < 0 || y + height < 0) {
+      return true;
+    }
+    return false;
+  };
+
   private resetAllCtx = () => {
     this.mask.resetCtx();
     this.graph.resetCtx();

@@ -98,6 +98,11 @@ export class Node {
     }
   }
 
+  public clearNodes() {
+    this.children.length = 0;
+    this.clearFlatNodeOnLink();
+  }
+
   // ====== Flat Node ======
   public getFlatNode() {
     if (this.flatNodes) return this.flatNodes;

@@ -50,7 +50,6 @@ export class Graph {
     // 增量绘制`range`范围内的节点
     const effects = this.collectEffects(current);
     const { x, y, width, height } = current.rect();
-    const { width: canvasWidth, height: canvasHeight } = this.engine.getRect();
     // 只绘制受影响的节点并且裁剪多余位置
     this.clear(current);
     this.ctx.save();
@@ -58,12 +57,7 @@ export class Graph {
     this.ctx.rect(x, y, width, height);
     this.ctx.clip();
     effects.forEach(state => {
-      const { x, y, width, height } = state.toRange().rect();
-      // TODO: 实现拖拽变换后的视口判断
-      // 完全超出`Canvas`的区域不绘制
-      if (x > canvasWidth || y > canvasHeight || x + width < 0 || y + height < 0) {
-        return void 0;
-      }
+      if (this.engine.isOutside(state.toRange())) return void 0;
       this.ctx.save();
       state.toDelta().drawing(this.ctx);
       this.ctx.restore();

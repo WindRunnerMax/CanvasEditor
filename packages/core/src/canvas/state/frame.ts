@@ -14,15 +14,15 @@ import type { Root } from "./root";
 export class FrameNode extends Node {
   private isDragging: boolean;
   private landing: Point | null;
-  private draggedRange: Range | null;
+  private dragged: Range | null;
   private savedRootMouseDown: (e: MouseEvent) => void;
 
   constructor(private editor: Editor, private root: Root) {
-    super(Range.empty());
+    super(Range.reset());
+    this.dragged = null;
     this.landing = null;
     this._z = MAX_Z_INDEX;
     this.isDragging = false;
-    this.draggedRange = null;
     this.savedRootMouseDown = this.root.onMouseDown || NOOP;
     this.root.onMouseDown = this.onRootMouseDown;
   }
@@ -60,8 +60,8 @@ export class FrameNode extends Node {
       this.editor.selection.setActiveDelta(...effects);
       // 重绘拖拽过的最大区域
       const zoomed = latest.zoom(RESIZE_OFS);
-      this.draggedRange = this.draggedRange ? this.draggedRange.compose(zoomed) : zoomed;
-      this.editor.canvas.mask.drawingEffect(this.draggedRange);
+      this.dragged = this.dragged ? this.dragged.compose(zoomed) : zoomed;
+      this.editor.canvas.mask.drawingEffect(this.dragged);
     }
   };
   private onMouseMoveController = throttle(this.onMouseMoveBridge, THE_DELAY, THE_CONFIG);
@@ -71,12 +71,12 @@ export class FrameNode extends Node {
     this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
     this.setRange(Range.from(0, 0));
     if (this.isDragging) {
-      this.draggedRange && this.editor.canvas.mask.drawingEffect(this.draggedRange);
+      this.dragged && this.editor.canvas.mask.drawingEffect(this.dragged);
     }
     this.landing = null;
     this.isDragging = false;
-    this.draggedRange = null;
-    this.setRange(Range.empty());
+    this.dragged = null;
+    this.setRange(Range.reset());
   };
 
   public drawingMask = (ctx: CanvasRenderingContext2D) => {

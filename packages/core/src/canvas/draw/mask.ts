@@ -48,7 +48,7 @@ export class Mask {
 
   public drawingEffect(range: Range) {
     // COMPAT: 选区范围未能完全覆盖
-    const current = range.zoom(1);
+    const current = range.zoom(this.editor.canvas.devicePixelRatio);
     // 增量绘制`range`范围内的节点
     const effects = this.collectEffects(current);
     const { x, y, width, height } = current.rect();
