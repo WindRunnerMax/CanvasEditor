@@ -58,7 +58,7 @@ export class SelectNode extends Node {
       // 按需刷新原选区与新选区的位置
       const refresh = range.compose(previous).compose(current);
       // COMPAT: `Range`需要加入偏移量
-      this.editor.canvas.mask.drawingRange(refresh.zoom(RESIZE_OFS));
+      this.editor.canvas.mask.drawingEffect(refresh.zoom(RESIZE_OFS));
     }
   };
 
@@ -94,7 +94,7 @@ export class SelectNode extends Node {
       this.setRange(latest);
       // 重绘拖拽过的最大区域
       this.draggedRange = this.draggedRange.compose(latest.zoom(RESIZE_OFS));
-      this.editor.canvas.mask.drawingRange(this.draggedRange);
+      this.editor.canvas.mask.drawingEffect(this.draggedRange);
     }
   };
   private onMouseMoveController = throttle(this.onMouseMoveBridge, THE_DELAY, THE_CONFIG);
@@ -115,7 +115,7 @@ export class SelectNode extends Node {
         );
         this.editor.selection.set(rect);
       }
-      this.editor.canvas.mask.drawingRange(this.draggedRange);
+      this.editor.canvas.mask.drawingEffect(this.draggedRange);
     }
     this.landing = null;
     this.isDragging = false;

@@ -1,4 +1,6 @@
 import type { Editor } from "../../editor";
+import { Range } from "../../selection/range";
+import type { DeltaState } from "../../state/node/state";
 import type { Canvas } from "../index";
 
 export class Graph {
@@ -26,21 +28,46 @@ export class Graph {
 
   public drawingAll() {
     this.clear();
-    const { width: canvasWidth, height: canvasHeight } = this.engine.getRect();
+    const { width, height } = this.engine.getRect();
+    this.drawingEffect(Range.from(width, height));
+  }
+
+  private collectEffects(range: Range) {
+    // 判定`range`范围内影响的节点
+    const effects = new Set<DeltaState>();
     this.editor.state.getDeltas().forEach(state => {
-      const { x, y, width, height } = state.delta.getRect();
-      // No drawing beyond the canvas
+      if (range.intersect(state.toRange())) {
+        effects.add(state);
+      }
+    });
+    return effects;
+  }
+
+  public drawingEffect(range: Range) {
+    // COMPAT: 选区范围未能完全覆盖
+    const current = range.zoom(1);
+    // 增量绘制`range`范围内的节点
+    const effects = this.collectEffects(current);
+    const { x, y, width, height } = current.rect();
+    const { width: canvasWidth, height: canvasHeight } = this.engine.getRect();
+    // 只绘制受影响的节点并且裁剪多余位置
+    this.clear(current);
+    this.ctx.save();
+    this.ctx.beginPath();
+    this.ctx.rect(x, y, width, height);
+    this.ctx.clip();
+    effects.forEach(state => {
+      const { x, y, width, height } = state.toRange().rect();
+      // 完全超出`Canvas`的区域不绘制
       if (x > canvasWidth || y > canvasHeight || x + width < 0 || y + height < 0) {
         return void 0;
       }
       this.ctx.save();
-      state.delta.drawing(this.ctx);
+      state.toDelta().drawing(this.ctx);
       this.ctx.restore();
     });
-  }
-
-  public drawingEffect() {
-    // TODO: 1. 超出画布不绘制 2. 仅绘制`change`部分(构造矩形)
+    this.ctx.closePath();
+    this.ctx.restore();
   }
 
   public resetCtx() {
@@ -48,8 +75,13 @@ export class Graph {
     this.ctx.scale(this.engine.devicePixelRatio, this.engine.devicePixelRatio);
   }
 
-  public clear() {
-    const { width, height } = this.engine.getRect();
-    this.ctx.clearRect(0, 0, width, height);
+  public clear(range?: Range) {
+    if (range) {
+      const { x, y, width, height } = range.rect();
+      this.ctx.clearRect(x, y, width, height);
+    } else {
+      const { width, height } = this.engine.getRect();
+      this.ctx.clearRect(0, 0, width, height);
+    }
   }
 }

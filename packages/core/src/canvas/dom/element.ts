@@ -26,13 +26,13 @@ export class ElementNode extends Node {
     if (this.editor.selection.has(this.id) || this.editor.state.get(EDITOR_STATE.MOUSE_DOWN)) {
       return void 0;
     }
-    this.editor.canvas.mask.drawingRange(this.range);
+    this.editor.canvas.mask.drawingEffect(this.range);
   };
 
   protected onMouseLeave = () => {
     this.isHovering = false;
     if (!this.editor.selection.has(this.id)) {
-      this.editor.canvas.mask.drawingRange(this.range);
+      this.editor.canvas.mask.drawingEffect(this.range);
     }
   };
 

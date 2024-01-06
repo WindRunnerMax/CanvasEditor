@@ -45,7 +45,7 @@ export class Mask {
     return effects;
   }
 
-  public drawingRange(range: Range) {
+  public drawingEffect(range: Range) {
     // COMPAT: 选区范围未能完全覆盖
     const current = range.zoom(1);
     // 增量绘制`range`范围内的节点
