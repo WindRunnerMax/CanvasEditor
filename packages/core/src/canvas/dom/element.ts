@@ -23,7 +23,7 @@ export class ElementNode extends Node {
 
   protected onMouseEnter = () => {
     this.isHovering = true;
-    if (this.editor.selection.has(this.id) || this.editor.state.get(EDITOR_STATE.MOUSE_DOWN)) {
+    if (this.editor.selection.has(this.id)) {
       return void 0;
     }
     this.editor.canvas.mask.drawingEffect(this.range);
@@ -37,7 +37,11 @@ export class ElementNode extends Node {
   };
 
   public drawingMask = (ctx: CanvasRenderingContext2D) => {
-    if (this.isHovering && !this.editor.selection.has(this.id)) {
+    if (
+      this.isHovering &&
+      !this.editor.selection.has(this.id) &&
+      !this.editor.state.get(EDITOR_STATE.MOUSE_DOWN)
+    ) {
       const { x, y, width, height } = this.range.rect();
       drawRect(ctx, {
         x: x,

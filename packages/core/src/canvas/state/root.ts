@@ -18,6 +18,7 @@ export class Root extends Node {
   public hover: ElementNode | ResizeNode | null;
   public readonly frame: FrameNode;
   public readonly select: SelectNode;
+
   constructor(private editor: Editor) {
     super(Range.from(0, 0));
     this.hover = null;

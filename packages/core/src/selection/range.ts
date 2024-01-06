@@ -96,6 +96,10 @@ export class Range {
     return x < 0 && y < 0 && x + width < 0 && y + height < 0;
   }
 
+  static empty() {
+    return Range.from(-1, -1, -1, -1);
+  }
+
   static from(delta: Delta): Range;
   static from(delta: DeltaLike): Range;
   static from(endX: number, endY: number): Range;

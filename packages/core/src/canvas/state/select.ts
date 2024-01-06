@@ -24,6 +24,7 @@ export class SelectNode extends Node {
   private landing: Point | null;
   private draggedRange: Range | null;
   private isDragging: boolean;
+
   constructor(private editor: Editor) {
     super(Range.from(0, 0));
     this.landing = null;
@@ -48,9 +49,9 @@ export class SelectNode extends Node {
       this.setRange(current);
       this.children.forEach(node => node.setRange(current));
     } else {
-      const external = Range.from(-1, -1, -1, -1);
-      this.setRange(external);
-      this.children.forEach(node => node.setRange(external));
+      const empty = Range.empty();
+      this.setRange(empty);
+      this.children.forEach(node => node.setRange(empty));
     }
     this.editor.logger.info("Selection Change", current);
     const range = current || previous;
@@ -104,19 +105,14 @@ export class SelectNode extends Node {
   private onMouseUpController = () => {
     this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
-    if (this.isDragging) {
-      const selection = this.editor.selection.get();
+    const selection = this.editor.selection.get();
+    if (this.isDragging && selection) {
       const rect = this.range;
-      if (selection) {
-        const { startX, startY } = selection.flat();
-        this.editor.state.apply(
-          new Op(OP_TYPE.MOVE, {
-            x: rect.start.x - startX,
-            y: rect.start.y - startY,
-          })
-        );
-        this.editor.selection.set(rect);
-      }
+      const { startX, startY } = selection.flat();
+      this.editor.state.apply(
+        new Op(OP_TYPE.MOVE, { x: rect.start.x - startX, y: rect.start.y - startY })
+      );
+      this.editor.selection.set(rect);
       this.draggedRange && this.editor.canvas.mask.drawingEffect(this.draggedRange);
     }
     this.landing = null;

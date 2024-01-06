@@ -18,7 +18,7 @@ export class FrameNode extends Node {
   private savedRootMouseDown: (e: MouseEvent) => void;
 
   constructor(private editor: Editor, private root: Root) {
-    super(Range.from(0, 0));
+    super(Range.empty());
     this.landing = null;
     this._z = MAX_Z_INDEX;
     this.isDragging = false;
@@ -76,6 +76,7 @@ export class FrameNode extends Node {
     this.landing = null;
     this.isDragging = false;
     this.draggedRange = null;
+    this.setRange(Range.empty());
   };
 
   public drawingMask = (ctx: CanvasRenderingContext2D) => {

@@ -59,6 +59,7 @@ export class Graph {
     this.ctx.clip();
     effects.forEach(state => {
       const { x, y, width, height } = state.toRange().rect();
+      // TODO: 实现拖拽变换后的视口判断
       // 完全超出`Canvas`的区域不绘制
       if (x > canvasWidth || y > canvasHeight || x + width < 0 || y + height < 0) {
         return void 0;

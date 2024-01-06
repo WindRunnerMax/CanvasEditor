@@ -103,7 +103,7 @@ export class Node {
     if (this.flatNodes) return this.flatNodes;
     // 右子树优先后序遍历
     const nodes: Node[] = [];
-    const reverse = this.children.reverse();
+    const reverse = [...this.children].reverse();
     reverse.forEach(node => {
       nodes.push(...node.getFlatNode());
       nodes.push(node);
