@@ -39,6 +39,7 @@ export class FrameNode extends Node {
     const point = Point.from(e);
     const { x, y } = this.landing.diff(point);
     if (!this.isDragging && (Math.abs(x) > SELECT_BIAS || Math.abs(y) > SELECT_BIAS)) {
+      // 拖拽阈值
       this.isDragging = true;
     }
     if (this.isDragging) {
@@ -49,8 +50,16 @@ export class FrameNode extends Node {
         endY: point.y,
       }).normalize();
       this.setRange(latest);
-      const zoomed = latest.zoom(RESIZE_OFS);
+      // 获取获取与选区交叉的所有`State`节点
+      const effects: string[] = [];
+      this.editor.state.getDeltas().forEach(state => {
+        if (latest.intersect(state.toRange())) {
+          effects.push(state.id);
+        }
+      });
+      this.editor.selection.setActiveDelta(...effects);
       // 重绘拖拽过的最大区域
+      const zoomed = latest.zoom(RESIZE_OFS);
       this.draggedRange = this.draggedRange ? this.draggedRange.compose(zoomed) : zoomed;
       this.editor.canvas.mask.drawingEffect(this.draggedRange);
     }

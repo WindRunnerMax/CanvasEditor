@@ -51,10 +51,9 @@ export class Selection {
     this.compose();
   }
 
-  public setActiveDelta(deltaId: string) {
-    if (this.active.size === 1 && this.active.has(deltaId)) return void 0;
+  public setActiveDelta(...deltaIds: string[]) {
     this.active.clear();
-    this.addActiveDelta(deltaId);
+    deltaIds.forEach(id => this.active.add(id));
     this.compose();
   }
 

@@ -6,4 +6,4 @@ export const GRAY = "#999";
 export const DEEP_GRAY = "#666";
 export const LIGHT_GRAY = "#EEE";
 
-export const BLUE_OPACITY = "rgba(22, 93, 255, 0.7)";
+export const BLUE_OPACITY = "rgba(22, 93, 255, 0.06)";
