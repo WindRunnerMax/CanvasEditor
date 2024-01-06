@@ -1,4 +1,4 @@
-export { DEFAULT_PRIORITY, ROOT_DELTA } from "./constant";
+export { DEFAULT_PRIORITY, NOOP, ROOT_DELTA } from "./constant";
 export {
   getUniqueId,
   isArray,

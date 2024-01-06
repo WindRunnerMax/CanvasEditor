@@ -22,14 +22,14 @@ import { drawRect } from "../utils/shape";
 
 export class SelectNode extends Node {
   private landing: Point | null;
-  private draggedRange: Range;
+  private draggedRange: Range | null;
   private isDragging: boolean;
   constructor(private editor: Editor) {
     super(Range.from(0, 0));
     this.landing = null;
     this.isDragging = false;
+    this.draggedRange = null;
     this._z = MAX_Z_INDEX - 2;
-    this.draggedRange = Range.from(0, 0);
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);
     this.editor.event.on(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange, 10);
     Object.keys(RESIZE_TYPE).forEach(key => {
@@ -81,6 +81,7 @@ export class SelectNode extends Node {
     const point = Point.from(e);
     const { x, y } = this.landing.diff(point);
     if (!this.isDragging && (Math.abs(x) > SELECT_BIAS || Math.abs(y) > SELECT_BIAS)) {
+      // 拖拽阈值
       this.isDragging = true;
     }
     if (this.isDragging && selection) {
@@ -92,8 +93,9 @@ export class SelectNode extends Node {
         endY: endY + y,
       });
       this.setRange(latest);
+      const zoomed = latest.zoom(RESIZE_OFS);
       // 重绘拖拽过的最大区域
-      this.draggedRange = this.draggedRange.compose(latest.zoom(RESIZE_OFS));
+      this.draggedRange = this.draggedRange ? this.draggedRange.compose(zoomed) : zoomed;
       this.editor.canvas.mask.drawingEffect(this.draggedRange);
     }
   };
@@ -115,9 +117,10 @@ export class SelectNode extends Node {
         );
         this.editor.selection.set(rect);
       }
-      this.editor.canvas.mask.drawingEffect(this.draggedRange);
+      this.draggedRange && this.editor.canvas.mask.drawingEffect(this.draggedRange);
     }
     this.landing = null;
+    this.draggedRange = null;
     this.isDragging = false;
   };
 

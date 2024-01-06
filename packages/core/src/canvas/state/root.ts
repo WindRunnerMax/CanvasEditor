@@ -10,11 +10,13 @@ import { MouseEvent } from "../dom/event";
 import { Node } from "../dom/node";
 import { ResizeNode } from "../dom/resize";
 import { THE_CONFIG, THE_DELAY } from "../utils/constant";
+import { FrameNode } from "./frame";
 import { DELTA_TO_NODE, NODE_TO_DELTA } from "./map";
 import { SelectNode } from "./select";
 
 export class Root extends Node {
   public hover: ElementNode | ResizeNode | null;
+  public readonly frame: FrameNode;
   public readonly select: SelectNode;
   constructor(private editor: Editor) {
     super(Range.from(0, 0));
@@ -23,6 +25,7 @@ export class Root extends Node {
     this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
     this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     this.select = new SelectNode(this.editor);
+    this.frame = new FrameNode(this.editor, this);
     this.createNodeStateTree();
   }
 
@@ -58,13 +61,14 @@ export class Root extends Node {
       }
     }
     this.append(this.select);
+    this.append(this.frame);
   }
 
   public getFlatNode(): Node[] {
     return [...super.getFlatNode(), this];
   }
 
-  protected onMouseDown = (e: MouseEvent) => {
+  public onMouseDown = (e: MouseEvent) => {
     !e.shiftKey && this.editor.selection.clearActiveDeltas();
   };
 
