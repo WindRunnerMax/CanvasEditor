@@ -60,6 +60,7 @@ export class Mask {
       this.timer = setTimeout(() => {
         const currentRange = this.range || range;
         const currentEffects = this.effects || effects;
+        this.editor.logger.info("Mask Effects", currentEffects);
         const { x, y, width, height } = currentRange.rect();
         // 只绘制受影响的节点并且裁剪多余位置
         this.clear(currentRange);
@@ -73,7 +74,7 @@ export class Mask {
         this.timer = null;
         this.range = null;
         this.effects = null;
-      }, 1000 / 16);
+      }, 16.7);
     }
   }
 

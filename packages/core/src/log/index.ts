@@ -9,25 +9,25 @@ export class Logger {
 
   info(...args: unknown[]) {
     if (this.level <= LOG_LEVEL.INFO) {
-      console.log("Editor Log: ", ...args);
+      console.log("Log: ", ...args);
     }
   }
 
   trace(...args: unknown[]) {
     if (this.level <= LOG_LEVEL.INFO) {
-      console.trace("Editor Trace: ", ...args);
+      console.trace("Trace: ", ...args);
     }
   }
 
   warning(...args: unknown[]) {
     if (this.level <= LOG_LEVEL.WARNING) {
-      console.warn("Editor Warning: ", ...args);
+      console.warn("Warning: ", ...args);
     }
   }
 
   error(...args: unknown[]) {
     if (this.level <= LOG_LEVEL.ERROR) {
-      console.error("Editor Error: ", ...args);
+      console.error("Error: ", ...args);
     }
   }
 }

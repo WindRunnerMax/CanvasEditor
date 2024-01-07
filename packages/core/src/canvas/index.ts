@@ -39,8 +39,8 @@ export class Canvas {
     this.graph.destroy(dom);
   }
 
-  public onResize = () => {
-    // TODO: onResize Callback
+  public resize = () => {
+    // TODO: Resize Event Remount And Draw
   };
 
   public getRect() {

@@ -44,6 +44,11 @@ module.exports = {
     rules: [
       { test: /\.svg$/, type: "asset" },
       {
+        test: /^(?!.*\.module\.scss$)(?!.*\.m\.scss$).*\.scss$/,
+        use: [{ loader: "sass-loader" }],
+        type: "css",
+      },
+      {
         test: /\.(m|module).scss$/,
         use: [{ loader: "sass-loader" }],
         type: "css/module",

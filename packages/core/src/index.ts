@@ -1,8 +1,13 @@
+export { ElementNode } from "./canvas/dom/element";
+export { MouseEvent } from "./canvas/dom/event";
+export { Node } from "./canvas/dom/node";
 export { Editor } from "./editor";
 export type { EventMapKeys } from "./event/bus/action";
 export { EDITOR_EVENT } from "./event/bus/action";
 export type { ContentChangeEvent } from "./event/bus/types";
 export { LOG_LEVEL } from "./log";
+export { Point } from "./selection/point";
+export { Range } from "./selection/range";
 export { EditorState } from "./state/index";
 export { DeltaState } from "./state/node/state";
 export { EDITOR_STATE } from "./state/utils/constant";

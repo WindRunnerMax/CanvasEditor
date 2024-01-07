@@ -1,0 +1,10 @@
+.container {
+  align-items: center;
+  background-color: var(--color-bg-2);
+  border-bottom: 1px solid var(--color-border-2);
+  box-shadow: 0 0 4px var(--color-border-2);
+  box-sizing: border-box;
+  display: flex;
+  height: 50px;
+  justify-content: space-between;
+}

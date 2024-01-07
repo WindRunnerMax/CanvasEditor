@@ -26,9 +26,10 @@ export class ReferNode extends Node {
   }
 
   private addToMap(map: Map<number, number[]>, key: number, value: number[]) {
-    const list = map.get(key) || [];
-    list.push(...value);
-    map.set(key, list);
+    const prev: number[] = map.get(key) || [];
+    // 不标记具体点 只需要取最小值和最大值即可
+    const next: number[] = [Math.min(...value, ...prev), Math.max(...value, ...prev)];
+    map.set(key, next);
   }
 
   private onMouseDownController = () => {

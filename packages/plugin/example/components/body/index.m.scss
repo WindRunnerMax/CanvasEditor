@@ -1,0 +1,7 @@
+@import '../../styles/variable';
+
+.canvas,
+.container {
+  height: calc(100% - 50px);
+  width: 100%;
+}

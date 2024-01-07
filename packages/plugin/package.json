@@ -20,6 +20,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@arco-design/web-react": "^2.58.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "sketching-core": "workspace: *",
@@ -32,6 +33,7 @@
     "@types/react": "17.0.2",
     "@types/react-dom": "17.0.2",
     "copy-webpack-plugin": "5",
+    "less": "^4.2.0",
     "less-loader": "^11.1.4",
     "sass-loader": "^13.3.3"
   }

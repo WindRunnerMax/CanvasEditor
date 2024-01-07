@@ -1,0 +1,16 @@
+@import './variable';
+
+html,
+body {
+  @include full-screen;
+
+  color: var(--color-text-1);
+  margin: 0;
+  padding: 0;
+}
+
+// :global(#root) {}
+/* stylelint-disable-next-line selector-max-id */
+#root {
+  @include full-screen;
+}
