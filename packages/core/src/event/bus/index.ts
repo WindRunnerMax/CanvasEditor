@@ -38,7 +38,7 @@ export class EventBus {
   public off<T extends EventMapKeys>(key: T, listener: Listener<T>) {
     const handler = this.listeners[key];
     if (!handler) return void 0;
-    // COMPAT: 不能直接`splice` 可能会导致事件不能正常触发
+    // COMPAT: 不能直接`splice` 可能会导致`trigger`打断`forEach`
     const next = handler.filter(item => item.listener !== listener);
     (this.listeners[key] as Handler<T>[]) = next;
   }
