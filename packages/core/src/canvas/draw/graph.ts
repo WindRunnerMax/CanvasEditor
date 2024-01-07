@@ -23,8 +23,8 @@ export class Graph {
 
   public drawingAll() {
     this.clear();
-    const { width, height } = this.engine.getRect();
-    this.drawingEffect(Range.from(width, height));
+    const { width, height, offsetX, offsetY } = this.engine.getRect();
+    this.drawingEffect(Range.from(offsetX, offsetY, offsetX + width, offsetY + height));
   }
 
   private collectEffects(range: Range) {

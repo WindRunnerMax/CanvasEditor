@@ -1,5 +1,6 @@
 import { isNumber } from "sketching-utils";
 
+import { Editor } from "../editor";
 import type { Range } from "./range";
 
 export class Point {
@@ -28,10 +29,11 @@ export class Point {
   }
 
   static from(x: number, y: number): Point;
-  static from(event: globalThis.MouseEvent): Point;
-  static from(a: globalThis.MouseEvent | number, b?: number): Point {
-    if (a instanceof MouseEvent) {
-      return new Point(a.offsetX, a.offsetY);
+  static from(event: globalThis.MouseEvent, editor: Editor): Point;
+  static from(a: globalThis.MouseEvent | number, b?: number | Editor): Point {
+    if (a instanceof MouseEvent && b instanceof Editor) {
+      const { offsetX, offsetY } = b.canvas.getRect();
+      return new Point(a.offsetX + offsetX, a.offsetY + offsetY);
     } else if (isNumber(a) && isNumber(b)) {
       return new Point(a, b);
     }

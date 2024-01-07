@@ -40,8 +40,8 @@ export class ResizeNode extends Node {
   }
 
   public setRange = (range: Range) => {
-    const { startX, startY, endX, endY } = range.flat();
-    if (range.isOutside()) {
+    const { startX, startY, endX, endY } = range.flatten();
+    if (this.editor.canvas.isOutside(range)) {
       super.setRange(range);
       return void 0;
     }
@@ -127,7 +127,7 @@ export class ResizeNode extends Node {
   private onMouseMoveBridge = (e: globalThis.MouseEvent) => {
     const selection = this.editor.selection.get();
     if (!this.landing || !selection || !this.landingRange || !this.parent) return void 0;
-    const point = Point.from(e);
+    const point = Point.from(e, this.editor);
     const { x, y } = this.landing.diff(point);
     if (!this.isDragging && (Math.abs(x) > SELECT_BIAS || Math.abs(y) > SELECT_BIAS)) {
       // 拖拽阈值
@@ -200,7 +200,7 @@ export class ResizeNode extends Node {
     this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
     if (this.isDragging && this.latest && this.parent && this.landingRange) {
-      const point = Point.from(e);
+      const point = Point.from(e, this.editor);
       const latest = this.latest;
       this.editor.canvas.mask.setCursorState(null);
       // 根据点位调整`Resize`节点位置

@@ -70,10 +70,13 @@ export class SelectNode extends Node {
   private onMouseDownController = (e: globalThis.MouseEvent) => {
     // 这里需要用原生事件绑定 需要在选区完成后再执行 否则交互上就必须要先点选再拖拽
     // 选区 & 严格点击区域判定
-    if (!this.editor.selection.get() || !this.isInSelectRange(Point.from(e), this.range)) {
+    if (
+      !this.editor.selection.get() ||
+      !this.isInSelectRange(Point.from(e, this.editor), this.range)
+    ) {
       return void 0;
     }
-    this.landing = Point.from(e);
+    this.landing = Point.from(e, this.editor);
     this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
   };
@@ -81,7 +84,7 @@ export class SelectNode extends Node {
   private onMouseMoveBridge = (e: globalThis.MouseEvent) => {
     const selection = this.editor.selection.get();
     if (!this.landing || !selection) return void 0;
-    const point = Point.from(e);
+    const point = Point.from(e, this.editor);
     const { x, y } = this.landing.diff(point);
     if (!this._isDragging && (Math.abs(x) > SELECT_BIAS || Math.abs(y) > SELECT_BIAS)) {
       // 拖拽阈值

@@ -1,3 +1,5 @@
+import type { Editor } from "../../editor";
+
 type EventOptions = { bubble?: boolean; capture?: boolean };
 
 class Event {
@@ -25,16 +27,23 @@ export class MouseEvent extends Event {
 
   constructor(
     event: globalThis.MouseEvent,
+    offsetX: number,
+    offsetY: number,
     // 默认不捕获 默认不冒泡
     options: EventOptions = { bubble: false, capture: false }
   ) {
     super(options);
-    this.x = event.offsetX;
-    this.y = event.offsetY;
+    this.x = event.offsetX + offsetX;
+    this.y = event.offsetY + offsetY;
     this.metaKey = event.metaKey;
     this.ctrlKey = event.ctrlKey;
     this.shiftKey = event.shiftKey;
     this.altKey = event.altKey;
     this.native = event;
+  }
+
+  static from(event: globalThis.MouseEvent, editor: Editor) {
+    const { offsetX, offsetY } = editor.canvas.getRect();
+    return new MouseEvent(event, offsetX, offsetY);
   }
 }

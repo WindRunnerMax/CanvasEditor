@@ -36,7 +36,7 @@ export class FrameNode extends Node {
 
   private onMouseMoveBridge = (e: globalThis.MouseEvent) => {
     if (!this.landing) return void 0;
-    const point = Point.from(e);
+    const point = Point.from(e, this.editor);
     const { x, y } = this.landing.diff(point);
     if (!this.isDragging && (Math.abs(x) > SELECT_BIAS || Math.abs(y) > SELECT_BIAS)) {
       // 拖拽阈值

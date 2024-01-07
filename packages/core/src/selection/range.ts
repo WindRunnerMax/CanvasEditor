@@ -100,11 +100,6 @@ export class Range {
     return point.in(this);
   }
 
-  isOutside() {
-    const { x, y, width, height } = this.rect();
-    return x < 0 && y < 0 && x + width < 0 && y + height < 0;
-  }
-
   static reset() {
     return Range.from(-999999, -999999, -999999, -999999);
   }

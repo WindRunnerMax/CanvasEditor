@@ -110,20 +110,20 @@ export class Root extends Node {
   private onMouseDownController = (e: globalThis.MouseEvent) => {
     const flatNode = this.getFlatNode();
     let hit: Node | null = null;
-    const point = Point.from(e);
+    const point = Point.from(e, this.editor);
     for (const node of flatNode) {
       if (node.range.include(point)) {
         hit = node;
         break;
       }
     }
-    hit && this.emit(hit, "onMouseDown", new MouseEvent(e));
+    hit && this.emit(hit, "onMouseDown", MouseEvent.from(e, this.editor));
   };
 
   private onMouseMoveBridge = (e: globalThis.MouseEvent) => {
     const flatNode = this.getFlatNode();
     let hit: ElementNode | ResizeNode | null = null;
-    const point = Point.from(e);
+    const point = Point.from(e, this.editor);
     for (const node of flatNode) {
       const authorize = node instanceof ElementNode || node instanceof ResizeNode;
       if (authorize && node.range.include(point)) {
@@ -135,8 +135,8 @@ export class Root extends Node {
     if (this.hover !== hit) {
       const prev = this.hover;
       this.hover = hit;
-      prev && this.emit(prev, "onMouseLeave", new MouseEvent(e));
-      hit && this.emit(hit, "onMouseEnter", new MouseEvent(e));
+      prev && this.emit(prev, "onMouseLeave", MouseEvent.from(e, this.editor));
+      hit && this.emit(hit, "onMouseEnter", MouseEvent.from(e, this.editor));
     }
   };
   private onMouseMoveController = throttle(this.onMouseMoveBridge, THE_DELAY, THE_CONFIG);
@@ -144,13 +144,13 @@ export class Root extends Node {
   private onMouseUpController = (e: globalThis.MouseEvent) => {
     const flatNode = this.getFlatNode();
     let hit: Node | null = null;
-    const point = Point.from(e);
+    const point = Point.from(e, this.editor);
     for (const node of flatNode) {
       if (node.range.include(point)) {
         hit = node;
         break;
       }
     }
-    hit && this.emit(hit, "onMouseUp", new MouseEvent(e));
+    hit && this.emit(hit, "onMouseUp", MouseEvent.from(e, this.editor));
   };
 }

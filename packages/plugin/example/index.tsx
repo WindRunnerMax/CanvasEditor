@@ -18,7 +18,7 @@ DeltaSet.register(Rect);
 const App: FC = () => {
   const ref = useRef<HTMLDivElement>(null);
   const editor = useMemo(
-    () => new Editor({ deltaSet: new DeltaSet(EXAMPLE), logLevel: LOG_LEVEL.INFO }),
+    () => new Editor({ deltaSet: new DeltaSet(EXAMPLE), logLevel: LOG_LEVEL.ERROR }),
     []
   );
 
