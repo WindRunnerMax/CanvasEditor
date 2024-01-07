@@ -18,7 +18,7 @@ export class Node {
   protected onMouseLeave?: (event: MouseEvent) => void;
 
   // `Canvas`绘制节点
-  public drawingMaskDispatch?: (ctx: CanvasRenderingContext2D) => void;
+  public drawingMask?: (ctx: CanvasRenderingContext2D) => void;
 
   constructor(range: Range) {
     this._z = 0;

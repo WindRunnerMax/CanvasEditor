@@ -16,7 +16,7 @@ import {
   THE_CONFIG,
   THE_DELAY,
 } from "../utils/constant";
-import { GRAY_7, GRAY_5, WHITE } from "../utils/palette";
+import { GRAY_5, GRAY_7, WHITE } from "../utils/palette";
 import { drawArc, drawRect } from "../utils/shape";
 import type { MouseEvent } from "./event";
 import { Node } from "./node";
@@ -237,7 +237,7 @@ export class ResizeNode extends Node {
     }
   };
 
-  public drawingMaskDispatch = (ctx: CanvasRenderingContext2D) => {
+  public drawingMask = (ctx: CanvasRenderingContext2D) => {
     if (!this.editor.selection.get()) return void 0;
     const range = this.range;
     const { x, y } = range.center();

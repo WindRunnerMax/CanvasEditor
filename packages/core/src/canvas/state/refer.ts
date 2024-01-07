@@ -94,7 +94,7 @@ export class ReferNode extends Node {
     const composeNodeRange = (range: Range) => {
       this.dragged = this.dragged ? this.dragged.compose(range) : range;
       const node = new Node(range);
-      node.drawingMaskDispatch = this.drawingMaskDispatch;
+      node.drawingMask = this.drawingMaskDispatch;
       this.append(node);
     };
     // TODO: 吸附功能(SELECT_BIAS) 暂时只实现绘制参考线(0)

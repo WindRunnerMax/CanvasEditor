@@ -36,7 +36,7 @@ export class ElementNode extends Node {
     }
   };
 
-  public drawingMaskDispatch = (ctx: CanvasRenderingContext2D) => {
+  public drawingMask = (ctx: CanvasRenderingContext2D) => {
     if (
       this.isHovering &&
       !this.editor.selection.has(this.id) &&

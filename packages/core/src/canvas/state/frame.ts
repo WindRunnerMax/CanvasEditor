@@ -79,7 +79,7 @@ export class FrameNode extends Node {
     this.setRange(Range.reset());
   };
 
-  public drawingMaskDispatch = (ctx: CanvasRenderingContext2D) => {
+  public drawingMask = (ctx: CanvasRenderingContext2D) => {
     if (this.isDragging) {
       const { x, y, width, height } = this.range.rect();
       drawRect(ctx, { x, y, width, height, borderColor: BLUE_5, fillColor: BLUE_6_6 });

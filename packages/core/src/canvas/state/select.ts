@@ -122,7 +122,7 @@ export class SelectNode extends Node {
     this._isDragging = false;
   };
 
-  public drawingMaskDispatch = (ctx: CanvasRenderingContext2D) => {
+  public drawingMask = (ctx: CanvasRenderingContext2D) => {
     const selection = this.editor.selection.get();
     if (this._isDragging) {
       const { x, y, width, height } = this.range.rect();
@@ -131,7 +131,7 @@ export class SelectNode extends Node {
     if (selection) {
       const { x, y, width, height } = selection.rect();
       drawRect(ctx, { x, y, width, height, borderColor: BLUE_5 });
-      this.children.forEach(node => node.drawingMaskDispatch?.(ctx));
+      this.children.forEach(node => node.drawingMask?.(ctx));
     }
   };
 
