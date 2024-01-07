@@ -2,8 +2,8 @@ import type { DeltaSetLike } from "sketching-delta";
 
 export const EXAMPLE: DeltaSetLike = {
   ROOT: {
-    x: 0,
-    y: 0,
+    x: -999999,
+    y: -999999,
     id: "ROOT",
     key: "entry",
     attrs: {},

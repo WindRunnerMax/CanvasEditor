@@ -13,6 +13,7 @@ export const NATIVE_EVENTS = {
   MOUSE_DOWN: "mousedown",
   MOUSE_UP: "mouseup",
   MOUSE_MOVE: "mousemove",
+  MOUSE_WHEEL: "wheel",
 } as const;
 
 export type NativeEventMap = {
@@ -30,6 +31,7 @@ export type NativeEventMap = {
   [NATIVE_EVENTS.MOUSE_DOWN]: MouseEvent;
   [NATIVE_EVENTS.MOUSE_UP]: MouseEvent;
   [NATIVE_EVENTS.MOUSE_MOVE]: MouseEvent;
+  [NATIVE_EVENTS.MOUSE_WHEEL]: WheelEvent;
 };
 
 type NativeEventMapType = typeof NATIVE_EVENTS;

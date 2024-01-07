@@ -69,12 +69,14 @@ export class Graph {
     this.canvas.style.height = height + "px";
     this.canvas.style.position = "absolute";
     this.resetCtx();
-    Promise.resolve().then(() => this.drawingAll());
   }
 
   public resetCtx() {
+    const { offsetX, offsetY } = this.engine.getRect();
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
     this.ctx.scale(this.engine.devicePixelRatio, this.engine.devicePixelRatio);
+    this.ctx.translate(-offsetX, -offsetY);
+    Promise.resolve().then(() => this.drawingAll());
   }
 
   public clear(range?: Range) {

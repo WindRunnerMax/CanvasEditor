@@ -68,6 +68,11 @@ export class NativeEvent {
     this.event.trigger(NATIVE_EVENTS.MOUSE_MOVE, e);
   };
 
+  private onMouseWheel = (e: WheelEvent) => {
+    e.preventDefault();
+    this.event.trigger(NATIVE_EVENTS.MOUSE_WHEEL, e);
+  };
+
   public bind() {
     this.unbind();
     const container = this.editor.getContainer();
@@ -85,6 +90,7 @@ export class NativeEvent {
     container.addEventListener(NATIVE_EVENTS.MOUSE_DOWN, this.onMouseDown);
     container.addEventListener(NATIVE_EVENTS.MOUSE_UP, this.onMouseUp);
     container.addEventListener(NATIVE_EVENTS.MOUSE_MOVE, this.onMouseMove);
+    container.addEventListener(NATIVE_EVENTS.MOUSE_WHEEL, this.onMouseWheel);
   }
 
   public unbind() {
@@ -103,5 +109,6 @@ export class NativeEvent {
     container.removeEventListener(NATIVE_EVENTS.MOUSE_DOWN, this.onMouseDown);
     container.removeEventListener(NATIVE_EVENTS.MOUSE_UP, this.onMouseUp);
     container.removeEventListener(NATIVE_EVENTS.MOUSE_MOVE, this.onMouseMove);
+    container.removeEventListener(NATIVE_EVENTS.MOUSE_WHEEL, this.onMouseWheel);
   }
 }

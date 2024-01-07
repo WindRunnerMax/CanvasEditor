@@ -1,4 +1,5 @@
 import ResizeObserver from "resize-observer-polyfill";
+import { throttle } from "sketching-utils";
 
 import type { Editor } from "../editor";
 import { EDITOR_EVENT } from "../event/bus/action";
@@ -6,19 +7,24 @@ import { Range } from "../selection/range";
 import { Graph } from "./draw/graph";
 import { Mask } from "./draw/mask";
 import { Root } from "./state/root";
+import { THE_CONFIG, THE_DELAY } from "./utils/constant";
 
 export class Canvas {
   private width: number;
   private height: number;
-  public readonly devicePixelRatio: number;
+  private offsetX: number;
+  private offsetY: number;
   public readonly mask: Mask;
   public readonly graph: Graph;
   public readonly root: Root;
   private resizeObserver: ResizeObserver;
+  public readonly devicePixelRatio: number;
 
   constructor(protected editor: Editor) {
     this.width = 0;
     this.height = 0;
+    this.offsetX = 0;
+    this.offsetY = 0;
     this.root = new Root(editor);
     this.mask = new Mask(editor, this);
     this.graph = new Graph(editor, this);
@@ -34,6 +40,7 @@ export class Canvas {
     this.graph.onMount(dom);
     this.mask.onMount(dom);
     this.reset();
+    this.editor.event.on(EDITOR_EVENT.MOUSE_WHEEL, this.onTranslateControl);
   }
 
   public destroy() {
@@ -42,12 +49,14 @@ export class Canvas {
     this.root.destroy();
     this.mask.destroy(dom);
     this.graph.destroy(dom);
+    this.editor.event.off(EDITOR_EVENT.MOUSE_WHEEL, this.onTranslateControl);
   }
 
   private reset() {
     this.mask.reset();
     this.graph.reset();
-    this.root.setRange(Range.from(this.width, this.height));
+    const { width, height, offsetX, offsetY } = this.getRect();
+    this.root.setRange(Range.from(offsetX, offsetY, offsetX + width, offsetY + height));
   }
 
   private onResize = (entries: ResizeObserverEntry[]) => {
@@ -60,17 +69,32 @@ export class Canvas {
     this.reset();
   };
 
+  private onTranslate = (e: WheelEvent) => {
+    e.preventDefault();
+    const { deltaX, deltaY } = e;
+    this.offsetX = this.offsetX + deltaX;
+    this.offsetY = this.offsetY + deltaY;
+    this.reset();
+  };
+  private onTranslateControl = throttle(this.onTranslate, THE_DELAY, THE_CONFIG);
+
   public getRect() {
-    return { width: this.width, height: this.height };
+    return {
+      offsetX: this.offsetX,
+      offsetY: this.offsetY,
+      width: this.width,
+      height: this.height,
+    };
   }
 
   public isOutside = (range: Range) => {
-    // TODO: 实现拖拽变换后的视口判断
-    // 完全超出`Canvas`的区域不绘制
-    const { x, y, width, height } = range.rect();
-    if (x > this.width || y > this.height || x + width < 0 || y + height < 0) {
-      return true;
-    }
+    const { offsetX, offsetY, width, height } = this.getRect();
+    // 完全超出视口的区域不绘制
+    const rect = range.rect();
+    if (rect.x + rect.width < offsetX) return true;
+    if (rect.y + rect.height < offsetY) return true;
+    if (rect.x > offsetX + width) return true;
+    if (rect.y > offsetY + height) return true;
     return false;
   };
 }

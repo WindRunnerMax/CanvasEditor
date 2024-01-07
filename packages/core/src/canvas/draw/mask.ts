@@ -39,11 +39,24 @@ export class Mask {
     for (const node of nodes) {
       // 需要排除`root`否则必然导致全量重绘
       if (node === this.engine.root) continue;
-      if (range.intersect(node.range)) {
+      if (range.intersect(node.range) && !this.editor.canvas.isOutside(node.range)) {
         effects.add(node);
       }
     }
     return effects;
+  }
+
+  private drawing(effects: Set<Node>, range: Range) {
+    const { x, y, width, height } = range.rect();
+    // 只绘制受影响的节点并且裁剪多余位置
+    this.clear(range);
+    this.ctx.save();
+    this.ctx.beginPath();
+    this.ctx.rect(x, y, width, height);
+    this.ctx.clip();
+    effects.forEach(node => node.drawingMask?.(this.ctx));
+    this.ctx.closePath();
+    this.ctx.restore();
   }
 
   private batchDrawing(effects: Set<Node>, range: Range) {
@@ -55,16 +68,7 @@ export class Mask {
         const currentRange = this.range || range;
         const currentEffects = this.effects || effects;
         this.editor.logger.info("Mask Effects", currentEffects);
-        const { x, y, width, height } = currentRange.rect();
-        // 只绘制受影响的节点并且裁剪多余位置
-        this.clear(currentRange);
-        this.ctx.save();
-        this.ctx.beginPath();
-        this.ctx.rect(x, y, width, height);
-        this.ctx.clip();
-        currentEffects.forEach(node => node.drawingMask?.(this.ctx));
-        this.ctx.closePath();
-        this.ctx.restore();
+        this.drawing(currentEffects, currentRange);
         this.timer = null;
         this.range = null;
         this.effects = null;
@@ -96,12 +100,20 @@ export class Mask {
     this.canvas.style.height = height + "px";
     this.canvas.style.position = "absolute";
     this.resetCtx();
-    Promise.resolve().then(() => this.drawingEffect(Range.from(width, height)));
   }
 
   public resetCtx() {
+    const { offsetX, offsetY, width, height } = this.engine.getRect();
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
     this.ctx.scale(this.engine.devicePixelRatio, this.engine.devicePixelRatio);
+    this.ctx.translate(-offsetX, -offsetY);
+    Promise.resolve().then(() => {
+      const range = Range.from(offsetX, offsetY, width, height);
+      const current = range.zoom(this.editor.canvas.devicePixelRatio);
+      const effects = this.collectEffects(current);
+      // COMPAT: 需要立即绘制 否则在`wheel`事件中会闪动
+      this.drawing(effects, current);
+    });
   }
 
   public clear(range?: Range) {
