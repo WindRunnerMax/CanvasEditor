@@ -20,3 +20,8 @@ export type SelectionChangeEvent = {
   previous: Range | null;
   current: Range | null;
 };
+
+export type ResizeEvent = {
+  width: number;
+  height: number;
+};

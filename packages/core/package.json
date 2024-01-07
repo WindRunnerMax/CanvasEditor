@@ -17,6 +17,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "resize-observer-polyfill": "1.5.1",
     "sketching-delta": "workspace: *",
     "sketching-utils": "workspace: *"
   },

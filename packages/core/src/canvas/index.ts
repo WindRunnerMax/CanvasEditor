@@ -1,4 +1,7 @@
+import ResizeObserver from "resize-observer-polyfill";
+
 import type { Editor } from "../editor";
+import { EDITOR_EVENT } from "../event/bus/action";
 import { Range } from "../selection/range";
 import { Graph } from "./draw/graph";
 import { Mask } from "./draw/mask";
@@ -11,6 +14,7 @@ export class Canvas {
   public readonly mask: Mask;
   public readonly graph: Graph;
   public readonly root: Root;
+  private resizeObserver: ResizeObserver;
 
   constructor(protected editor: Editor) {
     this.width = 0;
@@ -19,28 +23,41 @@ export class Canvas {
     this.mask = new Mask(editor, this);
     this.graph = new Graph(editor, this);
     this.devicePixelRatio = window.devicePixelRatio || 1;
+    this.resizeObserver = new ResizeObserver(this.onResize);
   }
 
   public onMount() {
     const dom = this.editor.getContainer();
+    this.resizeObserver.observe(dom);
     this.width = dom.clientWidth;
     this.height = dom.clientHeight;
-    this.root.setRange(Range.from(this.width, this.height));
-    this.graph.onMount(dom, this.devicePixelRatio);
-    this.mask.onMount(dom, this.devicePixelRatio);
-    this.resetAllCtx();
-    Promise.resolve().then(() => this.graph.drawingAll());
+    this.graph.onMount(dom);
+    this.mask.onMount(dom);
+    this.reset();
   }
 
   public destroy() {
     const dom = this.editor.getContainer();
+    this.resizeObserver.unobserve(dom);
     this.root.destroy();
     this.mask.destroy(dom);
     this.graph.destroy(dom);
   }
 
-  public resize = () => {
-    // TODO: Resize Event Remount And Draw
+  private reset() {
+    this.mask.reset();
+    this.graph.reset();
+    this.root.setRange(Range.from(this.width, this.height));
+  }
+
+  private onResize = (entries: ResizeObserverEntry[]) => {
+    const [entry] = entries;
+    if (!entry) return void 0;
+    const { width, height } = entry.contentRect;
+    this.editor.event.trigger(EDITOR_EVENT.RESIZE, { width, height });
+    this.width = width;
+    this.height = height;
+    this.reset();
   };
 
   public getRect() {
@@ -55,10 +72,5 @@ export class Canvas {
       return true;
     }
     return false;
-  };
-
-  private resetAllCtx = () => {
-    this.mask.resetCtx();
-    this.graph.resetCtx();
   };
 }

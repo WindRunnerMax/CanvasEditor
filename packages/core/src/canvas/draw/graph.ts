@@ -13,13 +13,7 @@ export class Graph {
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
   }
 
-  public onMount(dom: HTMLDivElement, ratio: number) {
-    const { width, height } = this.engine.getRect();
-    this.canvas.width = width * ratio;
-    this.canvas.height = height * ratio;
-    this.canvas.style.width = width + "px";
-    this.canvas.style.height = height + "px";
-    this.canvas.style.position = "absolute";
+  public onMount(dom: HTMLDivElement) {
     dom.appendChild(this.canvas);
   }
 
@@ -64,6 +58,18 @@ export class Graph {
     });
     this.ctx.closePath();
     this.ctx.restore();
+  }
+
+  public reset() {
+    const { width, height } = this.engine.getRect();
+    const ratio = this.engine.devicePixelRatio;
+    this.canvas.width = width * ratio;
+    this.canvas.height = height * ratio;
+    this.canvas.style.width = width + "px";
+    this.canvas.style.height = height + "px";
+    this.canvas.style.position = "absolute";
+    this.resetCtx();
+    Promise.resolve().then(() => this.drawingAll());
   }
 
   public resetCtx() {

@@ -1,7 +1,7 @@
 import { isEmptyValue } from "sketching-utils";
 
 import type { Editor } from "../../editor";
-import type { Range } from "../../selection/range";
+import { Range } from "../../selection/range";
 import type { Node } from "../dom/node";
 import type { Canvas } from "../index";
 import type { ResizeType } from "../utils/constant";
@@ -23,13 +23,7 @@ export class Mask {
     this.effects = null;
   }
 
-  public onMount(dom: HTMLDivElement, ratio: number) {
-    const { width, height } = this.engine.getRect();
-    this.canvas.width = width * ratio;
-    this.canvas.height = height * ratio;
-    this.canvas.style.width = width + "px";
-    this.canvas.style.height = height + "px";
-    this.canvas.style.position = "absolute";
+  public onMount(dom: HTMLDivElement) {
     dom.appendChild(this.canvas);
   }
 
@@ -93,6 +87,18 @@ export class Mask {
   }
 
   // ====== Canvas Actions ======
+  public reset() {
+    const { width, height } = this.engine.getRect();
+    const ratio = this.engine.devicePixelRatio;
+    this.canvas.width = width * ratio;
+    this.canvas.height = height * ratio;
+    this.canvas.style.width = width + "px";
+    this.canvas.style.height = height + "px";
+    this.canvas.style.position = "absolute";
+    this.resetCtx();
+    Promise.resolve().then(() => this.drawingEffect(Range.from(width, height)));
+  }
+
   public resetCtx() {
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
     this.ctx.scale(this.engine.devicePixelRatio, this.engine.devicePixelRatio);

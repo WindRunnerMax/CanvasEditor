@@ -2,3 +2,28 @@
   height: 100%;
   width: 100%;
 }
+
+@mixin flex-center {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+@mixin flex-align-center {
+  align-items: center;
+  display: flex;
+}
+
+@mixin flex-justify-center {
+  display: flex;
+  justify-content: center;
+}
+
+@mixin flex-justify-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+@mixin border-radius-3 {
+  border-radius: 3px;
+}
