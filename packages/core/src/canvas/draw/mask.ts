@@ -67,13 +67,13 @@ export class Mask {
         this.ctx.beginPath();
         this.ctx.rect(x, y, width, height);
         this.ctx.clip();
-        currentEffects.forEach(node => node.drawingMask?.(this.ctx));
+        currentEffects.forEach(node => node.drawingMaskDispatch?.(this.ctx));
         this.ctx.closePath();
         this.ctx.restore();
         this.timer = null;
         this.range = null;
         this.effects = null;
-      }, 16);
+      }, 1000 / 16);
     }
   }
 

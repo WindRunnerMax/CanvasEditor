@@ -97,7 +97,7 @@ export class Range {
   }
 
   static reset() {
-    return Range.from(-1, -1, -1, -1);
+    return Range.from(-999999, -999999, -999999, -999999);
   }
 
   static from(delta: Delta): Range;

@@ -17,11 +17,11 @@ import {
   THE_CONFIG,
   THE_DELAY,
 } from "../utils/constant";
-import { BLUE } from "../utils/palette";
+import { BLUE_5 } from "../utils/palette";
 import { drawRect } from "../utils/shape";
 
 export class SelectNode extends Node {
-  private isDragging: boolean;
+  private _isDragging: boolean;
   private landing: Point | null;
   private dragged: Range | null;
 
@@ -29,7 +29,7 @@ export class SelectNode extends Node {
     super(Range.from(0, 0));
     this.landing = null;
     this.dragged = null;
-    this.isDragging = false;
+    this._isDragging = false;
     this._z = MAX_Z_INDEX - 2;
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);
     this.editor.event.on(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange, 10);
@@ -41,6 +41,10 @@ export class SelectNode extends Node {
   destroy() {
     this.editor.event.off(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);
     this.editor.event.off(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange);
+  }
+
+  public get isDragging() {
+    return this._isDragging;
   }
 
   protected onSelectionChange = (e: SelectionChangeEvent) => {
@@ -79,11 +83,11 @@ export class SelectNode extends Node {
     if (!this.landing || !selection) return void 0;
     const point = Point.from(e);
     const { x, y } = this.landing.diff(point);
-    if (!this.isDragging && (Math.abs(x) > SELECT_BIAS || Math.abs(y) > SELECT_BIAS)) {
+    if (!this._isDragging && (Math.abs(x) > SELECT_BIAS || Math.abs(y) > SELECT_BIAS)) {
       // 拖拽阈值
-      this.isDragging = true;
+      this._isDragging = true;
     }
-    if (this.isDragging && selection) {
+    if (this._isDragging && selection) {
       const { startX, startY, endX, endY } = selection.flat();
       const latest = new Range({
         startX: startX + x,
@@ -104,7 +108,7 @@ export class SelectNode extends Node {
     this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
     const selection = this.editor.selection.get();
-    if (this.isDragging && selection) {
+    if (this._isDragging && selection) {
       const rect = this.range;
       const { startX, startY } = selection.flat();
       this.editor.state.apply(
@@ -115,19 +119,19 @@ export class SelectNode extends Node {
     }
     this.landing = null;
     this.dragged = null;
-    this.isDragging = false;
+    this._isDragging = false;
   };
 
-  public drawingMask = (ctx: CanvasRenderingContext2D) => {
+  public drawingMaskDispatch = (ctx: CanvasRenderingContext2D) => {
     const selection = this.editor.selection.get();
-    if (this.isDragging) {
+    if (this._isDragging) {
       const { x, y, width, height } = this.range.rect();
-      drawRect(ctx, { x, y, width, height, borderColor: BLUE });
+      drawRect(ctx, { x, y, width, height, borderColor: BLUE_5 });
     }
     if (selection) {
       const { x, y, width, height } = selection.rect();
-      drawRect(ctx, { x, y, width, height, borderColor: BLUE });
-      this.children.forEach(node => node.drawingMask?.(ctx));
+      drawRect(ctx, { x, y, width, height, borderColor: BLUE_5 });
+      this.children.forEach(node => node.drawingMaskDispatch?.(ctx));
     }
   };
 

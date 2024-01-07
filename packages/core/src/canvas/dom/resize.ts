@@ -16,7 +16,7 @@ import {
   THE_CONFIG,
   THE_DELAY,
 } from "../utils/constant";
-import { DEEP_GRAY, GRAY, WHITE } from "../utils/palette";
+import { GRAY_7, GRAY_5, WHITE } from "../utils/palette";
 import { drawArc, drawRect } from "../utils/shape";
 import type { MouseEvent } from "./event";
 import { Node } from "./node";
@@ -237,7 +237,7 @@ export class ResizeNode extends Node {
     }
   };
 
-  public drawingMask = (ctx: CanvasRenderingContext2D) => {
+  public drawingMaskDispatch = (ctx: CanvasRenderingContext2D) => {
     if (!this.editor.selection.get()) return void 0;
     const range = this.range;
     const { x, y } = range.center();
@@ -249,13 +249,13 @@ export class ResizeNode extends Node {
       case RESIZE_TYPE.LT:
       case RESIZE_TYPE.RB:
       case RESIZE_TYPE.RT:
-        drawArc(ctx, { x, y, borderColor: DEEP_GRAY, fillColor, radius, borderWidth });
+        drawArc(ctx, { x, y, borderColor: GRAY_7, fillColor, radius, borderWidth });
         break;
       case RESIZE_TYPE.B:
       case RESIZE_TYPE.R:
       case RESIZE_TYPE.T:
       case RESIZE_TYPE.L:
-        drawRect(ctx, { ...range.rect(), fillColor, borderColor: GRAY, borderWidth });
+        drawRect(ctx, { ...range.rect(), fillColor, borderColor: GRAY_5, borderWidth });
         break;
     }
   };

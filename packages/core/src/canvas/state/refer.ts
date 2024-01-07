@@ -5,11 +5,10 @@ import { EDITOR_EVENT } from "../../event/bus/action";
 import { Range } from "../../selection/range";
 import { Node } from "../dom/node";
 import { THE_CONFIG, THE_DELAY } from "../utils/constant";
-import { BLUE } from "../utils/palette";
+import { ORANGE_5 } from "../utils/palette";
 import { drawRect } from "../utils/shape";
 
 export class ReferNode extends Node {
-  private isDragging: boolean;
   private dragged: Range | null;
   private sortedX: number[] = [];
   private sortedY: number[] = [];
@@ -19,7 +18,6 @@ export class ReferNode extends Node {
   constructor(private editor: Editor) {
     super(Range.reset());
     this.dragged = null;
-    this.isDragging = false;
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController, 101);
   }
 
@@ -36,7 +34,6 @@ export class ReferNode extends Node {
   private onMouseDownController = () => {
     const active = this.editor.selection.getActiveDeltas();
     if (!active) return void 0;
-    this.isDragging = true;
     const xLineMap = this.xLineMap;
     const yLineMap = this.yLineMap;
     const deltas = this.editor.state.getDeltas();
@@ -70,16 +67,20 @@ export class ReferNode extends Node {
     this.clearNodes();
     // COMPAT: 选区非实时更新 需要取得`SelectNode`选区
     const selection = this.editor.canvas.root.select.range;
-    if (!selection || !this.isDragging) return void 0;
-    const { startX, endX, startY, endY } = selection.flat();
+    if (!selection || !this.editor.canvas.root.select.isDragging) return void 0;
+    // 选中的节点候选`5`个点
+    // *       *
+    //     *
+    // *       *
+    const { startX, endX, startY, endY } = selection.flatten();
     const { x: midX, y: midY } = selection.center();
-    // 分别找到目标图形的最近垂直参照线
+    // 分别找到目标图形的最近的参考线
     const closestMinX = this.getClosestVal(this.sortedX, startX);
     const closestMidX = this.getClosestVal(this.sortedX, midX);
     const closestMaxX = this.getClosestVal(this.sortedX, endX);
-    const closestMinY = this.getClosestVal(this.sortedY, startX);
-    const closestMidY = this.getClosestVal(this.sortedY, midX);
-    const closestMaxY = this.getClosestVal(this.sortedY, endX);
+    const closestMinY = this.getClosestVal(this.sortedY, startY);
+    const closestMidY = this.getClosestVal(this.sortedY, midY);
+    const closestMaxY = this.getClosestVal(this.sortedY, endY);
     // 分别计算出距离
     const distMinX = Math.abs(closestMinX - startX);
     const distMidX = Math.abs(closestMidX - midX);
@@ -90,17 +91,68 @@ export class ReferNode extends Node {
     // 找到最近距离
     const closestXDist = Math.min(distMinX, distMidX, distMaxX);
     const closestYDist = Math.min(distMinY, distMidY, distMaxY);
-    const range = Range.from(closestXDist, closestYDist);
-    this.dragged = this.dragged ? this.dragged.compose(range) : range;
-    this.append(new Node(range));
-    this.editor.canvas.mask.drawingEffect(this.dragged);
+    const composeNodeRange = (range: Range) => {
+      this.dragged = this.dragged ? this.dragged.compose(range) : range;
+      const node = new Node(range);
+      node.drawingMaskDispatch = this.drawingMaskDispatch;
+      this.append(node);
+    };
+    // TODO: 吸附功能(SELECT_BIAS) 暂时只实现绘制参考线(0)
+    if (closestXDist === 0) {
+      // 垂直参考线 同`X`
+      if (distMinX === 0 && this.xLineMap.has(closestMinX)) {
+        const ys = this.xLineMap.get(closestMinX) || [-1];
+        const minY = Math.min(...ys, startY);
+        const maxY = Math.max(...ys, endY);
+        const range = Range.from(startX, minY, startX, maxY);
+        composeNodeRange(range);
+      }
+      if (distMidX === 0 && this.xLineMap.has(closestMidX)) {
+        const ys = this.xLineMap.get(closestMidX) || [-1];
+        const minY = Math.min(...ys, startY);
+        const maxY = Math.max(...ys, endY);
+        const range = Range.from(midX, minY, midX, maxY);
+        composeNodeRange(range);
+      }
+      if (distMaxX === 0 && this.xLineMap.has(closestMaxX)) {
+        const ys = this.xLineMap.get(closestMaxX) || [-1];
+        const minY = Math.min(...ys, startY);
+        const maxY = Math.max(...ys, endY);
+        const range = Range.from(endX, minY, endX, maxY);
+        composeNodeRange(range);
+      }
+    }
+    if (closestYDist === 0) {
+      // 水平参考线 同`Y`
+      if (distMinY === 0 && this.yLineMap.has(closestMinY)) {
+        const xs = this.yLineMap.get(closestMinY) || [-1];
+        const minX = Math.min(...xs, startX);
+        const maxX = Math.max(...xs, endX);
+        const range = Range.from(minX, startY, maxX, startY);
+        composeNodeRange(range);
+      }
+      if (distMidY === 0 && this.yLineMap.has(closestMidY)) {
+        const xs = this.yLineMap.get(closestMidY) || [-1];
+        const minX = Math.min(...xs, startX);
+        const maxX = Math.max(...xs, endX);
+        const range = Range.from(minX, midY, maxX, midY);
+        composeNodeRange(range);
+      }
+      if (distMaxY === 0 && this.yLineMap.has(closestMaxY)) {
+        const xs = this.yLineMap.get(closestMaxY) || [-1];
+        const minX = Math.min(...xs, startX);
+        const maxX = Math.max(...xs, endX);
+        const range = Range.from(minX, endY, maxX, endY);
+        composeNodeRange(range);
+      }
+    }
+    this.dragged && this.editor.canvas.mask.drawingEffect(this.dragged);
   };
   private onMouseMoveController = throttle(this.onMouseMoveBridge, THE_DELAY, THE_CONFIG);
 
   private onMouseUpController = () => {
     this.clear();
     this.clearNodes();
-    this.isDragging = false;
     this.dragged && this.editor.canvas.mask.drawingEffect(this.dragged);
     this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
@@ -137,11 +189,11 @@ export class ReferNode extends Node {
     this.yLineMap.clear();
   }
 
-  public drawingMask = (ctx: CanvasRenderingContext2D) => {
-    if (!this.isDragging) return void 0;
+  public drawingMaskDispatch = (ctx: CanvasRenderingContext2D) => {
+    if (!this.editor.canvas.root.select.isDragging) return void 0;
     this.children.forEach(node => {
       const { x, y, width, height } = node.range.rect();
-      drawRect(ctx, { x, y, width, height, borderColor: BLUE });
+      drawRect(ctx, { x, y, width, height, borderColor: ORANGE_5 });
     });
   };
 }

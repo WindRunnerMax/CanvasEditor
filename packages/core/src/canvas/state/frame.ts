@@ -7,7 +7,7 @@ import { Range } from "../../selection/range";
 import type { MouseEvent } from "../dom/event";
 import { Node } from "../dom/node";
 import { MAX_Z_INDEX, RESIZE_OFS, SELECT_BIAS, THE_CONFIG, THE_DELAY } from "../utils/constant";
-import { BLUE, BLUE_OPACITY } from "../utils/palette";
+import { BLUE_5, BLUE_6_6 } from "../utils/palette";
 import { drawRect } from "../utils/shape";
 import type { Root } from "./root";
 
@@ -79,10 +79,10 @@ export class FrameNode extends Node {
     this.setRange(Range.reset());
   };
 
-  public drawingMask = (ctx: CanvasRenderingContext2D) => {
+  public drawingMaskDispatch = (ctx: CanvasRenderingContext2D) => {
     if (this.isDragging) {
       const { x, y, width, height } = this.range.rect();
-      drawRect(ctx, { x, y, width, height, borderColor: BLUE, fillColor: BLUE_OPACITY });
+      drawRect(ctx, { x, y, width, height, borderColor: BLUE_5, fillColor: BLUE_6_6 });
     }
   };
 }

@@ -1,7 +1,7 @@
 import type { Editor } from "../../editor";
 import type { Range } from "../../selection/range";
 import { EDITOR_STATE } from "../../state/utils/constant";
-import { LIGHT_BLUE } from "../utils/palette";
+import { BLUE_3 } from "../utils/palette";
 import { drawRect } from "../utils/shape";
 import type { MouseEvent } from "./event";
 import { Node } from "./node";
@@ -36,7 +36,7 @@ export class ElementNode extends Node {
     }
   };
 
-  public drawingMask = (ctx: CanvasRenderingContext2D) => {
+  public drawingMaskDispatch = (ctx: CanvasRenderingContext2D) => {
     if (
       this.isHovering &&
       !this.editor.selection.has(this.id) &&
@@ -48,7 +48,7 @@ export class ElementNode extends Node {
         y: y,
         width: width,
         height: height,
-        borderColor: LIGHT_BLUE,
+        borderColor: BLUE_3,
         borderWidth: 1,
       });
     }
