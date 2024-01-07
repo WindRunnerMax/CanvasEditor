@@ -1,10 +1,10 @@
-import { throttle } from "sketching-utils";
+import { isEmptyValue, ROOT_DELTA, throttle } from "sketching-utils";
 
 import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
 import { Range } from "../../selection/range";
 import { Node } from "../dom/node";
-import { THE_CONFIG, THE_DELAY } from "../utils/constant";
+import { REFER_BIAS, THE_CONFIG, THE_DELAY } from "../utils/constant";
 import { ORANGE_5 } from "../utils/palette";
 import { drawRect } from "../utils/shape";
 
@@ -39,7 +39,7 @@ export class ReferNode extends Node {
     const deltas = this.editor.state.getDeltas();
     deltas.forEach(state => {
       const range = state.toRange().normalize();
-      if (active.has(state.id) || this.editor.canvas.isOutside(range)) {
+      if (active.has(state.id) || this.editor.canvas.isOutside(range) || state.id === ROOT_DELTA) {
         return void 0;
       }
       const { startX, endX, startY, endY } = range.flat();
@@ -68,6 +68,10 @@ export class ReferNode extends Node {
     // COMPAT: 选区非实时更新 需要取得`SelectNode`选区
     const selection = this.editor.canvas.root.select.range;
     if (!selection || !this.editor.canvas.root.select.isDragging) return void 0;
+    if (this.sortedX.length === 0 && this.sortedY.length === 0) {
+      this.onMouseUpController(); // 取消所有状态
+      return void 0;
+    }
     // 选中的节点候选`5`个点
     // *       *
     //     *
@@ -91,58 +95,89 @@ export class ReferNode extends Node {
     // 找到最近距离
     const closestXDist = Math.min(distMinX, distMidX, distMaxX);
     const closestYDist = Math.min(distMinY, distMidY, distMaxY);
+    // 吸附偏移 偏移区间为`REFER_BIAS`
+    let offsetX: number | null = null;
+    let offsetY: number | null = null;
+    if (closestXDist < REFER_BIAS) {
+      if (this.isNear(closestXDist, distMinX)) {
+        offsetX = closestMinX - startX;
+      } else if (this.isNear(closestXDist, distMidX)) {
+        offsetX = closestMidX - midX;
+      } else if (this.isNear(closestXDist, distMaxX)) {
+        offsetX = closestMaxX - endX;
+      }
+    }
+    if (closestYDist < REFER_BIAS) {
+      if (this.isNear(closestYDist, distMinY)) {
+        offsetY = closestMinY - startY;
+      } else if (this.isNear(closestYDist, distMidY)) {
+        offsetY = closestMidY - midY;
+      } else if (this.isNear(closestYDist, distMaxY)) {
+        offsetY = closestMaxY - endY;
+      }
+    }
+    if (isEmptyValue(offsetX) && isEmptyValue(offsetY)) {
+      // 未命中参考线需要清理
+      this.dragged && this.editor.canvas.mask.drawingEffect(this.dragged);
+      return void 0;
+    }
+    const nextSelection = selection.offset(offsetX || 0, offsetY || 0).normalize();
+    this.editor.canvas.root.select.setRange(nextSelection);
+    // 参考线绘制
     const composeNodeRange = (range: Range) => {
-      this.dragged = this.dragged ? this.dragged.compose(range) : range;
+      this.dragged = nextSelection.compose(this.dragged).compose(range);
       const node = new Node(range);
       node.drawingMask = this.drawingMaskDispatch;
       this.append(node);
     };
-    // TODO: 吸附功能(SELECT_BIAS) 暂时只实现绘制参考线(0)
-    if (closestXDist === 0) {
+    // 吸附功能
+    const next = nextSelection;
+    const nextMid = next.center();
+    if (!isEmptyValue(offsetX)) {
       // 垂直参考线 同`X`
-      if (distMinX === 0 && this.xLineMap.has(closestMinX)) {
+      if (this.isNear(offsetX, closestMinX - startX) && this.xLineMap.has(closestMinX)) {
         const ys = this.xLineMap.get(closestMinX) || [-1];
-        const minY = Math.min(...ys, startY);
-        const maxY = Math.max(...ys, endY);
-        const range = Range.from(startX, minY, startX, maxY);
+        const minY = Math.min(...ys, next.start.y);
+        const maxY = Math.max(...ys, next.end.y);
+        const range = Range.from(next.start.x, minY, next.start.x, maxY);
         composeNodeRange(range);
       }
-      if (distMidX === 0 && this.xLineMap.has(closestMidX)) {
+      if (this.isNear(offsetX, closestMidX - midX) && this.xLineMap.has(closestMidX)) {
         const ys = this.xLineMap.get(closestMidX) || [-1];
-        const minY = Math.min(...ys, startY);
-        const maxY = Math.max(...ys, endY);
-        const range = Range.from(midX, minY, midX, maxY);
+        const minY = Math.min(...ys, next.start.y);
+        const maxY = Math.max(...ys, next.end.y);
+        const range = Range.from(nextMid.x, minY, nextMid.x, maxY);
         composeNodeRange(range);
       }
-      if (distMaxX === 0 && this.xLineMap.has(closestMaxX)) {
+      if (this.isNear(offsetX, closestMaxX - endX) && this.xLineMap.has(closestMaxX)) {
         const ys = this.xLineMap.get(closestMaxX) || [-1];
-        const minY = Math.min(...ys, startY);
-        const maxY = Math.max(...ys, endY);
-        const range = Range.from(endX, minY, endX, maxY);
+        const minY = Math.min(...ys, next.start.y);
+        const maxY = Math.max(...ys, next.end.y);
+        const range = Range.from(next.end.x, minY, next.end.x, maxY);
         composeNodeRange(range);
       }
     }
-    if (closestYDist === 0) {
+    if (!isEmptyValue(offsetY)) {
       // 水平参考线 同`Y`
-      if (distMinY === 0 && this.yLineMap.has(closestMinY)) {
+      if (this.isNear(offsetY, closestMinY - startY) && this.yLineMap.has(closestMinY)) {
         const xs = this.yLineMap.get(closestMinY) || [-1];
-        const minX = Math.min(...xs, startX);
-        const maxX = Math.max(...xs, endX);
-        const range = Range.from(minX, startY, maxX, startY);
+        const minX = Math.min(...xs, next.start.x);
+        const maxX = Math.max(...xs, next.end.x);
+        const range = Range.from(minX, next.start.y, maxX, next.start.y);
         composeNodeRange(range);
       }
-      if (distMidY === 0 && this.yLineMap.has(closestMidY)) {
+      if (this.isNear(offsetY, closestMidY - midY) && this.yLineMap.has(closestMidY)) {
         const xs = this.yLineMap.get(closestMidY) || [-1];
-        const minX = Math.min(...xs, startX);
-        const maxX = Math.max(...xs, endX);
-        const range = Range.from(minX, midY, maxX, midY);
+        const minX = Math.min(...xs, next.start.x);
+        const maxX = Math.max(...xs, next.end.x);
+        const range = Range.from(minX, nextMid.y, maxX, nextMid.y);
         composeNodeRange(range);
       }
-      if (distMaxY === 0 && this.yLineMap.has(closestMaxY)) {
+      if (this.isNear(offsetY, closestMaxY - endY) && this.yLineMap.has(closestMaxY)) {
         const xs = this.yLineMap.get(closestMaxY) || [-1];
-        const minX = Math.min(...xs, startX);
-        const maxX = Math.max(...xs, endX);
-        const range = Range.from(minX, endY, maxX, endY);
+        const minX = Math.min(...xs, next.start.x);
+        const maxX = Math.max(...xs, next.end.x);
+        const range = Range.from(minX, next.end.y, maxX, next.end.y);
         composeNodeRange(range);
       }
     }
@@ -161,7 +196,7 @@ export class ReferNode extends Node {
 
   private getClosestVal = (sorted: number[], target: number) => {
     // 二分查找
-    if (sorted.length === 0) return -1;
+    if (sorted.length === 0) return 999;
     if (sorted.length === 1) return sorted[0];
     let left = 0;
     let right = sorted.length - 1;
@@ -181,6 +216,8 @@ export class ReferNode extends Node {
       ? sorted[right]
       : sorted[left];
   };
+
+  private isNear = (a: number, b: number) => Math.abs(a - b) < 0.00001;
 
   private clear() {
     this.sortedX = [];

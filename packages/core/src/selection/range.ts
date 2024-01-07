@@ -42,6 +42,15 @@ export class Range {
     });
   }
 
+  offset(x: number, y: number) {
+    return new Range({
+      startX: this.start.x + x,
+      startY: this.start.y + y,
+      endX: this.end.x + x,
+      endY: this.end.y + y,
+    });
+  }
+
   clone() {
     return new Range({ ...this.flat() });
   }
