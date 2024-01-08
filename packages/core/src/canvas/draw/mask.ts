@@ -2,7 +2,7 @@ import { isEmptyValue } from "sketching-utils";
 
 import type { Editor } from "../../editor";
 import { Range } from "../../selection/range";
-import type { Node } from "../dom/node";
+import type { Node } from "../basis/node";
 import type { Canvas } from "../index";
 import type { ResizeType } from "../utils/constant";
 import { CURSOR_STATE } from "../utils/constant";

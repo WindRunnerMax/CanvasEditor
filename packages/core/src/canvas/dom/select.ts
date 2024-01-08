@@ -6,6 +6,7 @@ import { EDITOR_EVENT } from "../../event/bus/action";
 import type { SelectionChangeEvent } from "../../event/bus/types";
 import { Point } from "../../selection/point";
 import { Range } from "../../selection/range";
+import { Node } from "../basis/node";
 import type { ResizeType } from "../utils/constant";
 import {
   MAX_Z_INDEX,
@@ -17,7 +18,6 @@ import {
 } from "../utils/constant";
 import { BLUE_5 } from "../utils/palette";
 import { drawRect } from "../utils/shape";
-import { Node } from "./node";
 import { ResizeNode } from "./resize";
 
 export class SelectNode extends Node {

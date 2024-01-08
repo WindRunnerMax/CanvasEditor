@@ -6,6 +6,8 @@ import { EDITOR_EVENT } from "../../event/bus/action";
 import { Point } from "../../selection/point";
 import { Range } from "../../selection/range";
 import { EDITOR_STATE } from "../../state/utils/constant";
+import type { MouseEvent } from "../basis/event";
+import { Node } from "../basis/node";
 import type { ResizeType } from "../utils/constant";
 import {
   MAX_Z_INDEX,
@@ -18,8 +20,6 @@ import {
 } from "../utils/constant";
 import { GRAY_5, GRAY_7, WHITE } from "../utils/palette";
 import { drawArc, drawRect } from "../utils/shape";
-import type { MouseEvent } from "./event";
-import { Node } from "./node";
 
 export class ResizeNode extends Node {
   private type: ResizeType;
