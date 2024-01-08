@@ -77,6 +77,8 @@ export class Mask {
   }
 
   public drawingEffect(range: Range) {
+    // 拖拽模式下不需要绘制
+    if (this.engine.dragState.dragMode) return void 0;
     // COMPAT: 选区范围未能完全覆盖
     const current = range.zoom(this.editor.canvas.devicePixelRatio);
     // 增量绘制`range`范围内的节点
@@ -121,8 +123,8 @@ export class Mask {
       const { x, y, width, height } = range.rect();
       this.ctx.clearRect(x, y, width, height);
     } else {
-      const { width, height } = this.engine.getRect();
-      this.ctx.clearRect(0, 0, width, height);
+      const { width, height, offsetX, offsetY } = this.engine.getRect();
+      this.ctx.clearRect(offsetX, offsetY, width, height);
     }
   }
 }

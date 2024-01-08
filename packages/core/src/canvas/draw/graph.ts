@@ -84,8 +84,8 @@ export class Graph {
       const { x, y, width, height } = range.rect();
       this.ctx.clearRect(x, y, width, height);
     } else {
-      const { width, height } = this.engine.getRect();
-      this.ctx.clearRect(0, 0, width, height);
+      const { width, height, offsetX, offsetY } = this.engine.getRect();
+      this.ctx.clearRect(offsetX, offsetY, width, height);
     }
   }
 }

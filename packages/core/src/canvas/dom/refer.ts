@@ -3,10 +3,10 @@ import { isEmptyValue, ROOT_DELTA, throttle } from "sketching-utils";
 import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
 import { Range } from "../../selection/range";
-import { Node } from "../dom/node";
 import { REFER_BIAS, THE_CONFIG, THE_DELAY } from "../utils/constant";
 import { ORANGE_5 } from "../utils/palette";
 import { drawRect } from "../utils/shape";
+import { Node } from "./node";
 
 export class ReferNode extends Node {
   private dragged: Range | null;

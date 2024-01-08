@@ -69,7 +69,6 @@ export class NativeEvent {
   };
 
   private onMouseWheel = (e: WheelEvent) => {
-    e.preventDefault();
     this.event.trigger(NATIVE_EVENTS.MOUSE_WHEEL, e);
   };
 

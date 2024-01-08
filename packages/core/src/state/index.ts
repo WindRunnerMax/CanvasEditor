@@ -46,6 +46,7 @@ export class EditorState {
   public get(key: keyof typeof EDITOR_STATE) {
     return this.status.get(key);
   }
+
   public set(key: keyof typeof EDITOR_STATE, value: boolean) {
     this.status.set(key, value);
     return this;

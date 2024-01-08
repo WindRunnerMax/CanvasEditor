@@ -7,13 +7,14 @@ import { Range } from "../../selection/range";
 import type { DeltaState } from "../../state/node/state";
 import { ElementNode } from "../dom/element";
 import { MouseEvent } from "../dom/event";
+import { FrameNode } from "../dom/frame";
 import { Node } from "../dom/node";
+import { ReferNode } from "../dom/refer";
 import { ResizeNode } from "../dom/resize";
+import { SelectNode } from "../dom/select";
+import type { Canvas } from "../index";
 import { THE_CONFIG, THE_DELAY } from "../utils/constant";
-import { FrameNode } from "./frame";
-import { DELTA_TO_NODE, NODE_TO_DELTA } from "./map";
-import { ReferNode } from "./refer";
-import { SelectNode } from "./select";
+import { DELTA_TO_NODE, NODE_TO_DELTA } from "../utils/map";
 
 export class Root extends Node {
   public hover: ElementNode | ResizeNode | null;
@@ -21,7 +22,7 @@ export class Root extends Node {
   public readonly frame: FrameNode;
   public readonly select: SelectNode;
 
-  constructor(private editor: Editor) {
+  constructor(private editor: Editor, private engine: Canvas) {
     super(Range.from(0, 0));
     this.hover = null;
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);
@@ -71,6 +72,8 @@ export class Root extends Node {
   }
 
   public getFlatNode(): Node[] {
+    // 拖拽状态下不需要匹配
+    if (this.engine.dragState.dragMode) return [];
     return [...super.getFlatNode(), this];
   }
 

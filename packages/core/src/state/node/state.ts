@@ -1,7 +1,7 @@
 import type { Delta } from "sketching-delta";
 
 import { ElementNode } from "../../canvas/dom/element";
-import { DELTA_TO_NODE } from "../../canvas/state/map";
+import { DELTA_TO_NODE } from "../../canvas/utils/map";
 import type { Editor } from "../../editor";
 import { Range } from "../../selection/range";
 

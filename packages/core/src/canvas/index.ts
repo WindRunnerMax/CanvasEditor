@@ -6,6 +6,7 @@ import { EDITOR_EVENT } from "../event/bus/action";
 import { Range } from "../selection/range";
 import { Graph } from "./draw/graph";
 import { Mask } from "./draw/mask";
+import { DragState } from "./state/drag";
 import { Root } from "./state/root";
 import { THE_CONFIG, THE_DELAY } from "./utils/constant";
 
@@ -14,9 +15,10 @@ export class Canvas {
   private height: number;
   private offsetX: number;
   private offsetY: number;
+  public readonly root: Root;
   public readonly mask: Mask;
   public readonly graph: Graph;
-  public readonly root: Root;
+  public readonly dragState: DragState;
   private resizeObserver: ResizeObserver;
   public readonly devicePixelRatio: number;
 
@@ -25,11 +27,12 @@ export class Canvas {
     this.height = 0;
     this.offsetX = 0;
     this.offsetY = 0;
-    this.root = new Root(editor);
+    this.root = new Root(editor, this);
     this.mask = new Mask(editor, this);
     this.graph = new Graph(editor, this);
     this.devicePixelRatio = window.devicePixelRatio || 1;
     this.resizeObserver = new ResizeObserver(this.onResize);
+    this.dragState = new DragState(this.editor, this);
   }
 
   public onMount() {
@@ -40,7 +43,7 @@ export class Canvas {
     this.graph.onMount(dom);
     this.mask.onMount(dom);
     this.reset();
-    this.editor.event.on(EDITOR_EVENT.MOUSE_WHEEL, this.onTranslateControl);
+    this.editor.event.on(EDITOR_EVENT.MOUSE_WHEEL, this.onTranslate);
   }
 
   public destroy() {
@@ -49,7 +52,7 @@ export class Canvas {
     this.root.destroy();
     this.mask.destroy(dom);
     this.graph.destroy(dom);
-    this.editor.event.off(EDITOR_EVENT.MOUSE_WHEEL, this.onTranslateControl);
+    this.editor.event.off(EDITOR_EVENT.MOUSE_WHEEL, this.onTranslate);
   }
 
   private reset() {
@@ -72,11 +75,15 @@ export class Canvas {
   private onTranslate = (e: WheelEvent) => {
     e.preventDefault();
     const { deltaX, deltaY } = e;
-    this.offsetX = this.offsetX + deltaX;
-    this.offsetY = this.offsetY + deltaY;
+    this.translate(deltaX, deltaY);
+  };
+
+  public translateImmediately = (x: number, y: number) => {
+    this.offsetX = this.offsetX + x;
+    this.offsetY = this.offsetY + y;
     this.reset();
   };
-  private onTranslateControl = throttle(this.onTranslate, THE_DELAY, THE_CONFIG);
+  public translate = throttle(this.translateImmediately, THE_DELAY, THE_CONFIG);
 
   public getRect() {
     return {
