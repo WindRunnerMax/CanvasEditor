@@ -1,6 +1,5 @@
 import { Op, OP_TYPE } from "sketching-delta";
 import { throttle } from "sketching-utils";
-import { findSetEffects } from "sketching-utils";
 
 import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
@@ -17,7 +16,6 @@ import {
   THE_CONFIG,
   THE_DELAY,
 } from "../utils/constant";
-import { DELTA_TO_NODE } from "../utils/map";
 import { BLUE_5 } from "../utils/palette";
 import { drawRect } from "../utils/shape";
 import { ResizeNode } from "./resize";
@@ -26,17 +24,13 @@ export class SelectNode extends Node {
   private _isDragging: boolean;
   private landing: Point | null;
   private dragged: Range | null;
-  private landingRange: Range | null;
-  private prevSelectIds: Set<string>;
 
   constructor(private editor: Editor) {
     super(Range.from(0, 0));
     this.landing = null;
     this.dragged = null;
-    this.landingRange = null;
     this._isDragging = false;
     this._z = MAX_Z_INDEX - 2;
-    this.prevSelectIds = new Set();
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);
     this.editor.event.on(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange, 10);
     Object.keys(RESIZE_TYPE).forEach(key => {
@@ -54,10 +48,6 @@ export class SelectNode extends Node {
   }
 
   protected onSelectionChange = (e: SelectionChangeEvent) => {
-    const currentSelectIds = this.editor.selection.getActiveDeltas();
-    const diff = findSetEffects(this.prevSelectIds, currentSelectIds);
-    this.prevSelectIds = new Set(currentSelectIds);
-
     const { current, previous } = e;
     if (current) {
       this.setRange(current);
@@ -69,55 +59,40 @@ export class SelectNode extends Node {
     }
     this.editor.logger.info("Selection Change", current);
     const range = current || previous;
-    // COMPAT: 涉及到选区元素变化即元素交换绘制时需要立即执行
-    const immediately = diff.effects.length > 0;
-    if (range && immediately) {
+    if (range) {
       // 按需刷新原选区与新选区的位置
       const refresh = range.compose(previous).compose(current);
       // COMPAT: `Range`需要加入偏移量
-      this.editor.canvas.mask.drawingEffect(refresh.zoom(RESIZE_OFS), immediately);
-      // 选区内的元素由`Mask`绘制
-      immediately && this.editor.canvas.graph.drawingEffect(refresh);
+      this.editor.canvas.mask.drawingEffect(refresh.zoom(RESIZE_OFS));
     }
   };
 
   private onMouseDownController = (e: globalThis.MouseEvent) => {
-    const selection = this.editor.selection.get();
     // 这里需要用原生事件绑定 需要在选区完成后再执行 否则交互上就必须要先点选再拖拽
     // 选区 & 严格点击区域判定
-    if (!selection || !this.isInSelectRange(Point.from(e, this.editor), this.range)) {
+    if (
+      !this.editor.selection.get() ||
+      !this.isInSelectRange(Point.from(e, this.editor), this.range)
+    ) {
       return void 0;
     }
-    this.landingRange = selection;
-    this.dragged = selection.zoom(RESIZE_OFS);
     this.landing = Point.from(e, this.editor);
     this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
   };
 
   private onMouseMoveBridge = (e: globalThis.MouseEvent) => {
-    const landingRange = this.landingRange;
-    if (!this.landing || !landingRange) return void 0;
+    const selection = this.editor.selection.get();
+    if (!this.landing || !selection) return void 0;
     const point = Point.from(e, this.editor);
     const { x, y } = this.landing.diff(point);
     if (!this._isDragging && (Math.abs(x) > SELECT_BIAS || Math.abs(y) > SELECT_BIAS)) {
       // 拖拽阈值
       this._isDragging = true;
     }
-    if (this._isDragging) {
-      // 计算最新位置
-      const latest = landingRange.move(x, y);
-      const ids = this.editor.selection.getActiveDeltas();
-      ids.forEach(id => {
-        const state = this.editor.state.getDeltaState(id);
-        if (state) {
-          const node = DELTA_TO_NODE.get(state);
-          const range = state.toRange();
-          const next = range.move(x, y);
-          node && node.setRange(next);
-        }
-      });
-      this.editor.selection.set(latest);
+    if (this._isDragging && selection) {
+      const latest = selection.move(x, y);
+      this.setRange(latest);
       const zoomed = latest.zoom(RESIZE_OFS);
       // 重绘拖拽过的最大区域
       this.dragged = this.dragged ? this.dragged.compose(zoomed) : zoomed;
@@ -129,10 +104,10 @@ export class SelectNode extends Node {
   private onMouseUpController = () => {
     this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
     this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
-    const landingRange = this.landingRange;
-    if (this._isDragging && landingRange) {
+    const selection = this.editor.selection.get();
+    if (this._isDragging && selection) {
       const rect = this.range;
-      const { startX, startY } = landingRange.flat();
+      const { startX, startY } = selection.flat();
       this.editor.state.apply(
         new Op(OP_TYPE.MOVE, { x: rect.start.x - startX, y: rect.start.y - startY })
       );
@@ -141,12 +116,15 @@ export class SelectNode extends Node {
     }
     this.landing = null;
     this.dragged = null;
-    this.landingRange = null;
     this._isDragging = false;
   };
 
   public drawingMask = (ctx: CanvasRenderingContext2D) => {
     const selection = this.editor.selection.get();
+    if (this._isDragging) {
+      const { x, y, width, height } = this.range.rect();
+      drawRect(ctx, { x, y, width, height, borderColor: BLUE_5 });
+    }
     if (selection) {
       const { x, y, width, height } = selection.rect();
       drawRect(ctx, { x, y, width, height, borderColor: BLUE_5 });

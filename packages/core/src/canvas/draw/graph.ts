@@ -51,8 +51,8 @@ export class Graph {
     this.ctx.rect(x, y, width, height);
     this.ctx.clip();
     effects.forEach(state => {
-      // 画布范围外的元素不绘制
-      if (this.engine.isOutside(state.toRange()) || this.editor.selection.has(state.id)) {
+      // 画布范围外的元素不绘制 可通过交替绘制来优化交互
+      if (this.engine.isOutside(state.toRange())) {
         return void 0;
       }
       this.ctx.save();

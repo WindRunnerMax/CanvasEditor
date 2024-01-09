@@ -65,8 +65,12 @@ export class ReferNode extends Node {
   };
 
   private onMouseMoveBridge = () => {
+    // TODO: 考虑作为`SelectNode`的子元素`Node`
+    //       基于父元素的事件调用链执行当前的事件绑定
+    //       避免多次对父元素的`Range`修改来保证值唯一
     this.clearNodes();
-    const selection = this.editor.selection.get();
+    // COMPAT: 选区非实时更新 需要取得`SelectNode`选区
+    const selection = this.editor.canvas.root.select.range;
     if (!selection || !this.editor.canvas.root.select.isDragging) return void 0;
     if (this.sortedX.length === 0 && this.sortedY.length === 0) {
       this.onMouseUpController(); // 取消所有状态
@@ -122,7 +126,7 @@ export class ReferNode extends Node {
       return void 0;
     }
     const nextSelection = selection.offset(offsetX || 0, offsetY || 0).normalize();
-    this.editor.selection.set(nextSelection);
+    this.editor.canvas.root.select.setRange(nextSelection);
     // 参考线绘制
     const composeNodeRange = (range: Range) => {
       this.dragged = nextSelection.compose(this.dragged).compose(range);

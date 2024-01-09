@@ -37,18 +37,6 @@ export class ElementNode extends Node {
   };
 
   public drawingMask = (ctx: CanvasRenderingContext2D) => {
-    if (this.editor.selection.has(this.id)) {
-      const state = this.editor.state.getDeltaState(this.id);
-      if (state) {
-        const { x, y, width, height } = this.range.rect();
-        const delta = state.toDelta().clone();
-        delta.setX(x);
-        delta.setY(y);
-        delta.setWidth(width);
-        delta.setHeight(height);
-        delta.drawing(ctx);
-      }
-    }
     if (
       this.isHovering &&
       !this.editor.selection.has(this.id) &&
