@@ -113,10 +113,8 @@ export class Mask {
     this.ctx.translate(-offsetX, -offsetY);
     Promise.resolve().then(() => {
       const range = Range.from(offsetX, offsetY, width, height);
-      const current = range.zoom(this.editor.canvas.devicePixelRatio);
-      const effects = this.collectEffects(current);
       // COMPAT: 需要立即绘制 否则在`wheel`事件中会闪动
-      this.drawing(effects, current);
+      this.drawingEffect(range, true);
     });
   }
 

@@ -23,6 +23,7 @@ export class DragState {
     if (this._dragMode) return void 0;
     this._dragMode = true;
     this.engine.mask.clear();
+    this.editor.selection.clearActiveDeltas();
     this.engine.mask.setCursorState(RESIZE_TYPE.GRAB);
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDown);
   }
