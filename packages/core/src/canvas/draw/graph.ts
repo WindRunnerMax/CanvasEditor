@@ -51,9 +51,12 @@ export class Graph {
     this.ctx.rect(x, y, width, height);
     this.ctx.clip();
     effects.forEach(state => {
-      if (this.engine.isOutside(state.toRange())) return void 0;
+      // 画布范围外的元素不绘制
+      if (this.engine.isOutside(state.toRange())) {
+        return void 0;
+      }
       this.ctx.save();
-      state.toDelta().drawing(this.ctx);
+      state.drawing(this.ctx);
       this.ctx.restore();
     });
     this.ctx.closePath();

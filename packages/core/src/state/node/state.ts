@@ -36,6 +36,10 @@ export class DeltaState {
     return this.delta;
   }
 
+  public drawing(ctx: CanvasRenderingContext2D) {
+    this.delta.drawing(ctx);
+  }
+
   public insert(state: DeltaState) {
     const delta = state.delta;
     this.editor.deltaSet.add(delta);
