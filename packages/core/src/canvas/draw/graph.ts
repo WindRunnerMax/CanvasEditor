@@ -52,7 +52,7 @@ export class Graph {
     this.ctx.clip();
     effects.forEach(state => {
       // 画布范围外的元素不绘制
-      if (this.engine.isOutside(state.toRange())) {
+      if (this.engine.isOutside(state.toRange()) || this.editor.selection.has(state.id)) {
         return void 0;
       }
       this.ctx.save();

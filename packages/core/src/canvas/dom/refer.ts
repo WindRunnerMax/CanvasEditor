@@ -66,8 +66,7 @@ export class ReferNode extends Node {
 
   private onMouseMoveBridge = () => {
     this.clearNodes();
-    // COMPAT: 选区非实时更新 需要取得`SelectNode`选区
-    const selection = this.editor.canvas.root.select.range;
+    const selection = this.editor.selection.get();
     if (!selection || !this.editor.canvas.root.select.isDragging) return void 0;
     if (this.sortedX.length === 0 && this.sortedY.length === 0) {
       this.onMouseUpController(); // 取消所有状态
@@ -123,7 +122,7 @@ export class ReferNode extends Node {
       return void 0;
     }
     const nextSelection = selection.offset(offsetX || 0, offsetY || 0).normalize();
-    this.editor.canvas.root.select.setRange(nextSelection);
+    this.editor.selection.set(nextSelection);
     // 参考线绘制
     const composeNodeRange = (range: Range) => {
       this.dragged = nextSelection.compose(this.dragged).compose(range);

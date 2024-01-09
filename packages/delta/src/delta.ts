@@ -96,7 +96,7 @@ export abstract class Delta {
     return { x: this.x, y: this.y, width: this.width, height: this.height };
   }
 
-  public clone() {
+  public clone(): this {
     // @ts-expect-error constructor type
     return new this.constructor(this.toJSON());
   }

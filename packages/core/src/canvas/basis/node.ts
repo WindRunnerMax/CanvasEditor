@@ -66,7 +66,7 @@ export class Node {
   // ====== DOM OP ======
   public append<T extends Node>(node: T | Empty) {
     if (!node) return void 0;
-    // 类似希尔排序 保证`children`有序
+    // 类似希尔排序 保证`children`有序 `zIndex`升序
     // 如果使用`sort`也可以 `ES`规范添加了`sort`作为稳定排序
     const index = this.children.findIndex(item => item.z > node.z);
     if (index > -1) {
@@ -106,7 +106,7 @@ export class Node {
   // ====== Flat Node ======
   public getFlatNode() {
     if (this.flatNodes) return this.flatNodes;
-    // 右子树优先后序遍历
+    // 右子树优先后序遍历 保证事件调用的顺序
     const nodes: Node[] = [];
     const reverse = [...this.children].reverse();
     reverse.forEach(node => {

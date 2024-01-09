@@ -36,7 +36,9 @@ export class Mask {
     // 判定`range`范围内影响的节点
     const effects = new Set<Node>();
     const nodes: Node[] = this.engine.root.getFlatNode();
-    for (const node of nodes) {
+    // 渲染顺序和事件调用顺序相反
+    for (let i = nodes.length - 1; i >= 0; i--) {
+      const node = nodes[i];
       // 需要排除`root`否则必然导致全量重绘
       if (node === this.engine.root) continue;
       if (range.intersect(node.range) && !this.editor.canvas.isOutside(node.range)) {
@@ -76,14 +78,14 @@ export class Mask {
     }
   }
 
-  public drawingEffect(range: Range) {
+  public drawingEffect(range: Range, immediately = false) {
     // 拖拽模式下不需要绘制
     if (this.engine.dragState.dragMode) return void 0;
     // COMPAT: 选区范围未能完全覆盖
     const current = range.zoom(this.editor.canvas.devicePixelRatio);
     // 增量绘制`range`范围内的节点
     const effects = this.collectEffects(current);
-    this.batchDrawing(effects, current);
+    immediately ? this.drawing(effects, current) : this.batchDrawing(effects, current);
   }
 
   // ====== Cursor State ======
