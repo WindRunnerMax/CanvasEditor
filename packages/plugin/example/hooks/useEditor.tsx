@@ -12,5 +12,5 @@ export const useEditor = () => {
   if (!editor) {
     throw new Error("UseEditor must be used within a Sketching Editor Context");
   }
-  return editor;
+  return { editor };
 };

@@ -24,6 +24,10 @@
       width: 23px;
 
       &:hover {
+        background-color: var(--color-fill-1);
+      }
+
+      &.active {
         background-color: var(--color-fill-2);
       }
     }
