@@ -6,7 +6,7 @@ import { EDITOR_EVENT } from "../event/bus/action";
 import { Range } from "../selection/range";
 import { Graph } from "./draw/graph";
 import { Mask } from "./draw/mask";
-import { DragState } from "./state/drag";
+import { Grab } from "./state/grab";
 import { Root } from "./state/root";
 import { THE_CONFIG, THE_DELAY } from "./utils/constant";
 
@@ -16,9 +16,9 @@ export class Canvas {
   private offsetX: number;
   private offsetY: number;
   public readonly root: Root;
+  public readonly grab: Grab;
   public readonly mask: Mask;
   public readonly graph: Graph;
-  public readonly dragState: DragState;
   private resizeObserver: ResizeObserver;
   public readonly devicePixelRatio: number;
 
@@ -32,7 +32,7 @@ export class Canvas {
     this.graph = new Graph(editor, this);
     this.devicePixelRatio = window.devicePixelRatio || 1;
     this.resizeObserver = new ResizeObserver(this.onResize);
-    this.dragState = new DragState(this.editor, this);
+    this.grab = new Grab(this.editor, this);
   }
 
   public onMount() {

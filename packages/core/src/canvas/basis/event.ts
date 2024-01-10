@@ -19,6 +19,8 @@ class Event {
 export class MouseEvent extends Event {
   public readonly x: number;
   public readonly y: number;
+  public readonly clientX: number;
+  public readonly clientY: number;
   public readonly metaKey: boolean;
   public readonly ctrlKey: boolean;
   public readonly shiftKey: boolean;
@@ -40,6 +42,8 @@ export class MouseEvent extends Event {
     this.shiftKey = event.shiftKey;
     this.altKey = event.altKey;
     this.native = event;
+    this.clientX = event.clientX;
+    this.clientY = event.clientY;
   }
 
   static from(event: globalThis.MouseEvent, editor: Editor) {

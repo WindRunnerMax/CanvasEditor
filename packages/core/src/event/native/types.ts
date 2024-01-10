@@ -14,6 +14,8 @@ export const NATIVE_EVENTS = {
   MOUSE_UP: "mouseup",
   MOUSE_MOVE: "mousemove",
   MOUSE_WHEEL: "wheel",
+  MOUSE_UP_GLOBAL: "mouseup-global",
+  MOUSE_MOVE_GLOBAL: "mousemove-global",
 } as const;
 
 export type NativeEventMap = {
@@ -29,9 +31,11 @@ export type NativeEventMap = {
   [NATIVE_EVENTS.FOCUS]: FocusEvent;
   [NATIVE_EVENTS.BLUR]: FocusEvent;
   [NATIVE_EVENTS.MOUSE_DOWN]: MouseEvent;
-  [NATIVE_EVENTS.MOUSE_UP]: MouseEvent;
   [NATIVE_EVENTS.MOUSE_MOVE]: MouseEvent;
+  [NATIVE_EVENTS.MOUSE_UP]: MouseEvent;
   [NATIVE_EVENTS.MOUSE_WHEEL]: WheelEvent;
+  [NATIVE_EVENTS.MOUSE_MOVE_GLOBAL]: MouseEvent;
+  [NATIVE_EVENTS.MOUSE_UP_GLOBAL]: MouseEvent;
 };
 
 type NativeEventMapType = typeof NATIVE_EVENTS;

@@ -73,7 +73,7 @@ export class Root extends Node {
 
   public getFlatNode(): Node[] {
     // 拖拽状态下不需要匹配
-    if (this.engine.dragState.dragMode) return [];
+    if (this.engine.grab.grabMode) return [];
     return [...super.getFlatNode(), this];
   }
 

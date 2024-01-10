@@ -25,3 +25,11 @@ export type ResizeEvent = {
   width: number;
   height: number;
 };
+
+export type GrabEvent = {
+  state: boolean;
+};
+
+export type InsertEvent = {
+  state: boolean;
+};

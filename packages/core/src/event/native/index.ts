@@ -59,17 +59,26 @@ export class NativeEvent {
     this.event.trigger(NATIVE_EVENTS.MOUSE_DOWN, e);
   };
 
+  private onMouseMove = (e: MouseEvent) => {
+    this.event.trigger(NATIVE_EVENTS.MOUSE_MOVE, e);
+  };
+
   private onMouseUp = (e: MouseEvent) => {
     this.editor.state.set(EDITOR_STATE.MOUSE_DOWN, false);
     this.event.trigger(NATIVE_EVENTS.MOUSE_UP, e);
   };
 
-  private onMouseMove = (e: MouseEvent) => {
-    this.event.trigger(NATIVE_EVENTS.MOUSE_MOVE, e);
-  };
-
   private onMouseWheel = (e: WheelEvent) => {
     this.event.trigger(NATIVE_EVENTS.MOUSE_WHEEL, e);
+  };
+
+  private onMouseMoveGlobal = (e: MouseEvent) => {
+    this.event.trigger(NATIVE_EVENTS.MOUSE_MOVE_GLOBAL, e);
+  };
+
+  private onMouseUpGlobal = (e: MouseEvent) => {
+    this.editor.state.set(EDITOR_STATE.MOUSE_DOWN, false);
+    this.event.trigger(NATIVE_EVENTS.MOUSE_UP_GLOBAL, e);
   };
 
   public bind() {
@@ -87,9 +96,11 @@ export class NativeEvent {
     container.addEventListener(NATIVE_EVENTS.FOCUS, this.onFocus);
     container.addEventListener(NATIVE_EVENTS.BLUR, this.onBlur);
     container.addEventListener(NATIVE_EVENTS.MOUSE_DOWN, this.onMouseDown);
-    container.addEventListener(NATIVE_EVENTS.MOUSE_UP, this.onMouseUp);
     container.addEventListener(NATIVE_EVENTS.MOUSE_MOVE, this.onMouseMove);
+    container.addEventListener(NATIVE_EVENTS.MOUSE_UP, this.onMouseUp);
     container.addEventListener(NATIVE_EVENTS.MOUSE_WHEEL, this.onMouseWheel);
+    document.addEventListener(NATIVE_EVENTS.MOUSE_MOVE, this.onMouseMoveGlobal);
+    document.addEventListener(NATIVE_EVENTS.MOUSE_UP, this.onMouseUpGlobal);
   }
 
   public unbind() {
@@ -109,5 +120,7 @@ export class NativeEvent {
     container.removeEventListener(NATIVE_EVENTS.MOUSE_UP, this.onMouseUp);
     container.removeEventListener(NATIVE_EVENTS.MOUSE_MOVE, this.onMouseMove);
     container.removeEventListener(NATIVE_EVENTS.MOUSE_WHEEL, this.onMouseWheel);
+    document.removeEventListener(NATIVE_EVENTS.MOUSE_MOVE, this.onMouseMoveGlobal);
+    document.removeEventListener(NATIVE_EVENTS.MOUSE_UP, this.onMouseUpGlobal);
   }
 }

@@ -6,33 +6,35 @@ import { Point } from "../../selection/point";
 import type { Canvas } from "../index";
 import { RESIZE_TYPE, THE_CONFIG, THE_DELAY } from "../utils/constant";
 
-export class DragState {
-  private _dragMode: boolean;
+export class Grab {
+  private _grab: boolean;
   private landing: Point | null;
 
   constructor(private editor: Editor, private engine: Canvas) {
     this.landing = null;
-    this._dragMode = false;
+    this._grab = false;
   }
 
-  public get dragMode() {
-    return this._dragMode;
+  public get grabMode() {
+    return this._grab;
   }
 
-  public startDragMode() {
-    if (this._dragMode) return void 0;
-    this._dragMode = true;
+  public start() {
+    if (this._grab) return void 0;
+    this._grab = true;
     this.engine.mask.clear();
     this.editor.selection.clearActiveDeltas();
     this.engine.mask.setCursorState(RESIZE_TYPE.GRAB);
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDown);
+    this.editor.event.trigger(EDITOR_EVENT.GRAB_STATE, { state: true });
   }
 
-  public closeDragMode() {
-    if (!this._dragMode) return void 0;
-    this._dragMode = false;
+  public close() {
+    if (!this._grab) return void 0;
+    this._grab = false;
     this.engine.mask.setCursorState(null);
     this.editor.event.off(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDown);
+    this.editor.event.trigger(EDITOR_EVENT.GRAB_STATE, { state: false });
   }
 
   private onMouseDown = (event: MouseEvent) => {

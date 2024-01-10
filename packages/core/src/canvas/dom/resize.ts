@@ -111,23 +111,31 @@ export class ResizeNode extends Node {
     this.editor.canvas.mask.setCursorState(null);
   };
 
+  private bindOpEvents = () => {
+    this.editor.event.on(EDITOR_EVENT.MOUSE_UP_GLOBAL, this.onMouseUpController);
+    this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE_GLOBAL, this.onMouseMoveController);
+  };
+
+  private unbindOpEvents = () => {
+    this.editor.event.off(EDITOR_EVENT.MOUSE_UP_GLOBAL, this.onMouseUpController);
+    this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE_GLOBAL, this.onMouseMoveController);
+  };
+
   protected onMouseDown = (e: MouseEvent) => {
-    this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
-    this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
+    this.unbindOpEvents();
     const selection = this.editor.selection.get();
     if (!selection || !this.parent) {
       return void 0;
     }
     this.landingRange = selection;
-    this.landing = Point.from(e.x, e.y);
-    this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
-    this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
+    this.landing = Point.from(e.clientX, e.clientY);
+    this.bindOpEvents();
   };
 
   private onMouseMoveBridge = (e: globalThis.MouseEvent) => {
     const selection = this.editor.selection.get();
     if (!this.landing || !selection || !this.landingRange || !this.parent) return void 0;
-    const point = Point.from(e, this.editor);
+    const point = Point.from(e.clientX, e.clientY);
     const { x, y } = this.landing.diff(point);
     if (!this.isDragging && (Math.abs(x) > SELECT_BIAS || Math.abs(y) > SELECT_BIAS)) {
       // 拖拽阈值
@@ -197,10 +205,9 @@ export class ResizeNode extends Node {
   private onMouseMoveController = throttle(this.onMouseMoveBridge, THE_DELAY, THE_CONFIG);
 
   private onMouseUpController = (e: globalThis.MouseEvent) => {
-    this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
-    this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
+    this.unbindOpEvents();
     if (this.isDragging && this.latest && this.parent && this.landingRange) {
-      const point = Point.from(e, this.editor);
+      const point = Point.from(e.clientX, e.clientY);
       const latest = this.latest;
       this.editor.canvas.mask.setCursorState(null);
       // 根据点位调整`Resize`节点位置
