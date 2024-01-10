@@ -18,19 +18,22 @@ import {
 } from "../utils/constant";
 import { BLUE_5 } from "../utils/palette";
 import { drawRect } from "../utils/shape";
+import { ReferNode } from "./refer";
 import { ResizeNode } from "./resize";
 
 export class SelectNode extends Node {
   private _isDragging: boolean;
   private landing: Point | null;
   private dragged: Range | null;
+  public readonly refer: ReferNode;
 
   constructor(private editor: Editor) {
-    super(Range.from(0, 0));
+    super(Range.reset());
     this.landing = null;
     this.dragged = null;
     this._isDragging = false;
     this._z = MAX_Z_INDEX - 2;
+    this.refer = new ReferNode(this.editor);
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);
     this.editor.event.on(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange, 10);
     Object.keys(RESIZE_TYPE).forEach(key => {
@@ -88,6 +91,7 @@ export class SelectNode extends Node {
     this.dragged = selection;
     this.landing = Point.from(e.clientX, e.clientY);
     this.bindOpEvents();
+    this.refer.onMouseDownController();
   };
 
   private onMouseMoveBridge = (e: globalThis.MouseEvent) => {
@@ -101,17 +105,19 @@ export class SelectNode extends Node {
     }
     if (this._isDragging && selection) {
       const latest = selection.move(x, y);
-      this.setRange(latest);
       const zoomed = latest.zoom(RESIZE_OFS);
       // 重绘拖拽过的最大区域
       this.dragged = this.dragged ? this.dragged.compose(zoomed) : zoomed;
       this.editor.canvas.mask.drawingEffect(this.dragged);
+      const offset = this.refer.onMouseMoveController(latest);
+      this.setRange(offset ? latest.move(offset.x, offset.y) : latest);
     }
   };
   private onMouseMoveController = throttle(this.onMouseMoveBridge, THE_DELAY, THE_CONFIG);
 
   private onMouseUpController = () => {
     this.unbindOpEvents();
+    this.refer.onMouseUpController();
     const selection = this.editor.selection.get();
     if (this._isDragging && selection) {
       const rect = this.range;

@@ -9,7 +9,6 @@ import { ElementNode } from "../basis/element";
 import { MouseEvent } from "../basis/event";
 import { Node } from "../basis/node";
 import { FrameNode } from "../dom/frame";
-import { ReferNode } from "../dom/refer";
 import { ResizeNode } from "../dom/resize";
 import { SelectNode } from "../dom/select";
 import type { Canvas } from "../index";
@@ -18,7 +17,6 @@ import { DELTA_TO_NODE, NODE_TO_DELTA } from "../utils/map";
 
 export class Root extends Node {
   public hover: ElementNode | ResizeNode | null;
-  public readonly refer: ReferNode;
   public readonly frame: FrameNode;
   public readonly select: SelectNode;
 
@@ -28,14 +26,12 @@ export class Root extends Node {
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);
     this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
     this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
-    this.refer = new ReferNode(this.editor);
     this.select = new SelectNode(this.editor);
     this.frame = new FrameNode(this.editor, this);
     this.createNodeStateTree();
   }
 
   destroy() {
-    this.refer.destroy();
     this.select.destroy();
     this.editor.event.off(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);
     this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
@@ -66,9 +62,9 @@ export class Root extends Node {
         parent.append(node);
       }
     }
-    this.append(this.refer);
     this.append(this.select);
     this.append(this.frame);
+    this.append(this.select.refer);
   }
 
   public getFlatNode(): Node[] {

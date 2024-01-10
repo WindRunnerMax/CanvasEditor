@@ -1,5 +1,4 @@
 import ResizeObserver from "resize-observer-polyfill";
-import { throttle } from "sketching-utils";
 
 import type { Editor } from "../editor";
 import { EDITOR_EVENT } from "../event/bus/action";
@@ -8,7 +7,6 @@ import { Graph } from "./draw/graph";
 import { Mask } from "./draw/mask";
 import { Grab } from "./state/grab";
 import { Root } from "./state/root";
-import { THE_CONFIG, THE_DELAY } from "./utils/constant";
 
 export class Canvas {
   private width: number;
@@ -43,7 +41,6 @@ export class Canvas {
     this.graph.onMount(dom);
     this.mask.onMount(dom);
     this.reset();
-    this.editor.event.on(EDITOR_EVENT.MOUSE_WHEEL, this.onTranslate);
   }
 
   public destroy() {
@@ -52,10 +49,10 @@ export class Canvas {
     this.root.destroy();
     this.mask.destroy(dom);
     this.graph.destroy(dom);
-    this.editor.event.off(EDITOR_EVENT.MOUSE_WHEEL, this.onTranslate);
+    this.grab.destroy();
   }
 
-  private reset() {
+  public reset() {
     this.mask.reset();
     this.graph.reset();
     const { width, height, offsetX, offsetY } = this.getRect();
@@ -72,18 +69,10 @@ export class Canvas {
     this.reset();
   };
 
-  private onTranslate = (e: WheelEvent) => {
-    e.preventDefault();
-    const { deltaX, deltaY } = e;
-    this.translate(deltaX, deltaY);
-  };
-
-  public translateImmediately = (x: number, y: number) => {
-    this.offsetX = this.offsetX + x;
-    this.offsetY = this.offsetY + y;
-    this.reset();
-  };
-  public translate = throttle(this.translateImmediately, THE_DELAY, THE_CONFIG);
+  public setOffset(x: number, y: number) {
+    this.offsetX = x;
+    this.offsetY = y;
+  }
 
   public getRect() {
     return {

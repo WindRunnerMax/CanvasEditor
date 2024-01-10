@@ -51,7 +51,7 @@ export class Node {
     return this._z;
   }
 
-  public setZIndex(z: number) {
+  public setZ(z: number) {
     if (this.z !== z) {
       const parent = this._parent;
       if (parent) {

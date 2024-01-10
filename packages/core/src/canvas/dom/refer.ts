@@ -1,10 +1,9 @@
-import { isEmptyValue, ROOT_DELTA, throttle } from "sketching-utils";
+import { isEmptyValue, ROOT_DELTA } from "sketching-utils";
 
 import type { Editor } from "../../editor";
-import { EDITOR_EVENT } from "../../event/bus/action";
 import { Range } from "../../selection/range";
 import { Node } from "../basis/node";
-import { REFER_BIAS, THE_CONFIG, THE_DELAY } from "../utils/constant";
+import { MAX_Z_INDEX, REFER_BIAS } from "../utils/constant";
 import { ORANGE_5 } from "../utils/palette";
 import { drawRect } from "../utils/shape";
 
@@ -18,11 +17,7 @@ export class ReferNode extends Node {
   constructor(private editor: Editor) {
     super(Range.reset());
     this.dragged = null;
-    this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController, 101);
-  }
-
-  destroy() {
-    this.editor.event.off(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);
+    this.setZ(MAX_Z_INDEX - 1);
   }
 
   private addToMap(map: Map<number, number[]>, key: number, value: number[]) {
@@ -32,7 +27,7 @@ export class ReferNode extends Node {
     map.set(key, next);
   }
 
-  private onMouseDownController = () => {
+  public onMouseDownController = () => {
     const active = this.editor.selection.getActiveDeltas();
     if (!active) return void 0;
     const xLineMap = this.xLineMap;
@@ -60,18 +55,14 @@ export class ReferNode extends Node {
     });
     this.sortedX = Array.from(xLineMap.keys()).sort((a, b) => a - b);
     this.sortedY = Array.from(yLineMap.keys()).sort((a, b) => a - b);
-    this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController, 101);
-    this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController, 101);
   };
 
-  private onMouseMoveBridge = () => {
-    // TODO: 考虑作为`SelectNode`的子元素`Node`
-    //       基于父元素的事件调用链执行当前的事件绑定
-    //       避免多次对父元素的`Range`修改来保证值唯一
+  public onMouseMoveController = (latest: Range) => {
+    // COMPAT: 作为`SelectNode`的子元素`Node`事件
+    //         基于父元素的事件调用链执行当前的事件绑定
+    //         避免多次对父元素的`Range`修改来保证值唯一
     this.clearNodes();
-    // COMPAT: 选区非实时更新 需要取得`SelectNode`选区
-    const selection = this.editor.canvas.root.select.range;
-    if (!selection || !this.editor.canvas.root.select.isDragging) return void 0;
+    if (!latest || !this.editor.canvas.root.select.isDragging) return void 0;
     if (this.sortedX.length === 0 && this.sortedY.length === 0) {
       this.onMouseUpController(); // 取消所有状态
       return void 0;
@@ -80,8 +71,8 @@ export class ReferNode extends Node {
     // *       *
     //     *
     // *       *
-    const { startX, endX, startY, endY } = selection.flatten();
-    const { x: midX, y: midY } = selection.center();
+    const { startX, endX, startY, endY } = latest.flatten();
+    const { x: midX, y: midY } = latest.center();
     // 分别找到目标图形的最近的参考线
     const closestMinX = this.getClosestVal(this.sortedX, startX);
     const closestMidX = this.getClosestVal(this.sortedX, midX);
@@ -125,8 +116,7 @@ export class ReferNode extends Node {
       this.dragged && this.editor.canvas.mask.drawingEffect(this.dragged);
       return void 0;
     }
-    const nextSelection = selection.offset(offsetX || 0, offsetY || 0).normalize();
-    this.editor.canvas.root.select.setRange(nextSelection);
+    const nextSelection = latest.move(offsetX || 0, offsetY || 0).normalize();
     // 参考线绘制
     const composeNodeRange = (range: Range) => {
       this.dragged = nextSelection.compose(this.dragged).compose(range);
@@ -186,15 +176,13 @@ export class ReferNode extends Node {
       }
     }
     this.dragged && this.editor.canvas.mask.drawingEffect(this.dragged);
+    return { x: offsetX || 0, y: offsetY || 0 };
   };
-  private onMouseMoveController = throttle(this.onMouseMoveBridge, THE_DELAY, THE_CONFIG);
 
-  private onMouseUpController = () => {
+  public onMouseUpController = () => {
     this.clear();
     this.clearNodes();
     this.dragged && this.editor.canvas.mask.drawingEffect(this.dragged);
-    this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
-    this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
     this.dragged = null;
   };
 
