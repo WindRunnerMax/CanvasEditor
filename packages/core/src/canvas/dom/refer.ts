@@ -1,7 +1,7 @@
 import { isEmptyValue, ROOT_DELTA } from "sketching-utils";
 
 import type { Editor } from "../../editor";
-import { Range } from "../../selection/range";
+import { Range } from "../../selection/modules/range";
 import { Node } from "../basis/node";
 import { MAX_Z_INDEX, REFER_BIAS } from "../utils/constant";
 import { ORANGE_5 } from "../utils/palette";

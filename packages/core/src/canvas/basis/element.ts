@@ -1,5 +1,5 @@
 import type { Editor } from "../../editor";
-import type { Range } from "../../selection/range";
+import type { Range } from "../../selection/modules/range";
 import { EDITOR_STATE } from "../../state/utils/constant";
 import { BLUE_3 } from "../utils/palette";
 import { drawRect } from "../utils/shape";

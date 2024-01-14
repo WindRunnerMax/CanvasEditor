@@ -2,7 +2,7 @@ import ResizeObserver from "resize-observer-polyfill";
 
 import type { Editor } from "../editor";
 import { EDITOR_EVENT } from "../event/bus/action";
-import { Range } from "../selection/range";
+import { Range } from "../selection/modules/range";
 import { Graph } from "./draw/graph";
 import { Mask } from "./draw/mask";
 import { Grab } from "./state/grab";

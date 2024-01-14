@@ -1,6 +1,6 @@
 import type { Editor } from "../editor";
 import { EDITOR_EVENT } from "../event/bus/action";
-import { Range } from "./range";
+import { Range } from "./modules/range";
 
 export class Selection {
   private current: Range | null;

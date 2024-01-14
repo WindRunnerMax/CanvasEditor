@@ -7,4 +7,8 @@ export class Op<T extends OpType> {
     this.type = type;
     this.payload = payload;
   }
+
+  static from<T extends OpType>(type: T, payload: OpPayload[T]) {
+    return new Op(type, payload);
+  }
 }

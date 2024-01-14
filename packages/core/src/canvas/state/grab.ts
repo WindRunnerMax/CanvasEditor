@@ -2,7 +2,7 @@ import { throttle } from "sketching-utils";
 
 import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
-import { Point } from "../../selection/point";
+import { Point } from "../../selection/modules/point";
 import type { Canvas } from "../index";
 import { RESIZE_TYPE, THE_CONFIG, THE_DELAY } from "../utils/constant";
 

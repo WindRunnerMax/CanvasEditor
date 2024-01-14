@@ -2,9 +2,10 @@ import { throttle } from "sketching-utils";
 
 import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
-import { Point } from "../../selection/point";
-import { Range } from "../../selection/range";
-import type { DeltaState } from "../../state/node/state";
+import { Point } from "../../selection/modules/point";
+import { Range } from "../../selection/modules/range";
+import { NSBridge } from "../../state/modules/bridge";
+import type { DeltaState } from "../../state/modules/node";
 import { ElementNode } from "../basis/element";
 import { MouseEvent } from "../basis/event";
 import { Node } from "../basis/node";
@@ -13,7 +14,6 @@ import { ResizeNode } from "../dom/resize";
 import { SelectNode } from "../dom/select";
 import type { Canvas } from "../index";
 import { THE_CONFIG, THE_DELAY } from "../utils/constant";
-import { DELTA_TO_NODE, NODE_TO_DELTA } from "../utils/map";
 
 export class Root extends Node {
   public hover: ElementNode | ResizeNode | null;
@@ -42,9 +42,9 @@ export class Root extends Node {
     // 初始化构建整个`Node`状态树
     const queue: DeltaState[] = [];
     queue.push(this.editor.state.entry);
-    DELTA_TO_NODE.set(this.editor.state.entry, this);
+    NSBridge.set(this.editor.state.entry, this);
     const createElement = (state: DeltaState) => {
-      const element = DELTA_TO_NODE.get(state);
+      const element = NSBridge.get(state);
       if (element) return element;
       return new ElementNode(state.id, this.editor, state.toRange());
     };
@@ -52,13 +52,11 @@ export class Root extends Node {
       const current = queue.shift();
       if (!current) break;
       const parent = createElement(current);
-      DELTA_TO_NODE.set(current, parent);
-      NODE_TO_DELTA.set(parent, current);
+      NSBridge.set(current, parent);
       for (const state of current.children) {
         queue.push(state);
         const node = createElement(state);
-        DELTA_TO_NODE.set(state, node);
-        NODE_TO_DELTA.set(node, state);
+        NSBridge.set(state, node);
         parent.append(node);
       }
     }

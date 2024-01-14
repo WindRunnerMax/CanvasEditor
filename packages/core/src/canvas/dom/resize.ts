@@ -3,8 +3,8 @@ import { throttle } from "sketching-utils";
 
 import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
-import { Point } from "../../selection/point";
-import { Range } from "../../selection/range";
+import { Point } from "../../selection/modules/point";
+import { Range } from "../../selection/modules/range";
 import { EDITOR_STATE } from "../../state/utils/constant";
 import type { MouseEvent } from "../basis/event";
 import { Node } from "../basis/node";

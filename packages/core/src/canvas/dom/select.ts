@@ -4,8 +4,8 @@ import { throttle } from "sketching-utils";
 import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
 import type { SelectionChangeEvent } from "../../event/bus/types";
-import { Point } from "../../selection/point";
-import { Range } from "../../selection/range";
+import { Point } from "../../selection/modules/point";
+import { Range } from "../../selection/modules/range";
 import { Node } from "../basis/node";
 import type { ResizeType } from "../utils/constant";
 import {

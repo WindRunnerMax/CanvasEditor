@@ -1,6 +1,6 @@
 import { isNumber } from "sketching-utils";
 
-import { Editor } from "../editor";
+import { Editor } from "../../editor";
 import type { Range } from "./range";
 
 export class Point {

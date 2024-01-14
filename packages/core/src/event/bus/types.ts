@@ -1,6 +1,6 @@
 import type { DeltaSet } from "sketching-delta";
 
-import type { Range } from "../../selection/range";
+import type { Range } from "../../selection/modules/range";
 import type { ApplyOptions } from "../../state/utils/types";
 
 export type ContentChangeEvent = {

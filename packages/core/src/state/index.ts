@@ -6,8 +6,8 @@ import type { Editor } from "../editor";
 import { EntryDelta } from "../editor/delta/entry";
 import { DEFAULT_DELTA_LIKE } from "../editor/utils/constant";
 import { EDITOR_EVENT } from "../event/bus/action";
-import { Range } from "../selection/range";
-import { DeltaState } from "./node/state";
+import { Range } from "../selection/modules/range";
+import { DeltaState } from "./modules/node";
 import type { EDITOR_STATE } from "./utils/constant";
 import type { ApplyOptions } from "./utils/types";
 

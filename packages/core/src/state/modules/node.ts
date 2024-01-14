@@ -1,9 +1,9 @@
 import type { Delta } from "sketching-delta";
 
 import { ElementNode } from "../../canvas/basis/element";
-import { DELTA_TO_NODE } from "../../canvas/utils/map";
 import type { Editor } from "../../editor";
-import { Range } from "../../selection/range";
+import { Range } from "../../selection/modules/range";
+import { NSBridge } from "./bridge";
 
 export class DeltaState {
   public readonly id: string;
@@ -46,7 +46,7 @@ export class DeltaState {
     this.delta.insert(delta);
     state.setParent(this);
     this.children.push(state);
-    const node = DELTA_TO_NODE.get(this);
+    const node = NSBridge.get(this);
     if (node) {
       node.append(new ElementNode(this.id, this.editor, state.toRange()));
     }
@@ -59,16 +59,16 @@ export class DeltaState {
     if (!parent) return this;
     parent.delta.removeChild(this.delta);
     parent.children.splice(parent.children.indexOf(this), 1);
-    const node = DELTA_TO_NODE.get(parent);
+    const node = NSBridge.get(parent);
     if (node) {
-      node.removeChild(DELTA_TO_NODE.get(this));
+      node.removeChild(NSBridge.get(this));
     }
     return this;
   }
 
   public move(x: number, y: number) {
     this.delta.move(x, y);
-    const node = DELTA_TO_NODE.get(this);
+    const node = NSBridge.get(this);
     if (node) {
       node.setRange(Range.from(this.delta));
     }
@@ -81,7 +81,7 @@ export class DeltaState {
     this.delta.setY(y);
     this.delta.setWidth(width);
     this.delta.setHeight(height);
-    const node = DELTA_TO_NODE.get(this);
+    const node = NSBridge.get(this);
     if (node) {
       node.setRange(range);
     }

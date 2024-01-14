@@ -1,7 +1,7 @@
 import { isEmptyValue } from "sketching-utils";
 
 import type { Editor } from "../../editor";
-import { Range } from "../../selection/range";
+import { Range } from "../../selection/modules/range";
 import type { Node } from "../basis/node";
 import type { Canvas } from "../index";
 import type { ResizeType } from "../utils/constant";

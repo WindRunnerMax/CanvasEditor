@@ -1,6 +1,6 @@
 import type { Editor } from "../../editor";
-import { Range } from "../../selection/range";
-import type { DeltaState } from "../../state/node/state";
+import { Range } from "../../selection/modules/range";
+import type { DeltaState } from "../../state/modules/node";
 import type { Canvas } from "../index";
 
 export class Graph {
