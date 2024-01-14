@@ -83,7 +83,7 @@ export class Canvas {
     };
   }
 
-  public isOutside = (range: Range) => {
+  public isOutside(range: Range) {
     const { offsetX, offsetY, width, height } = this.getRect();
     // 完全超出视口的区域不绘制
     const rect = range.rect();
@@ -92,5 +92,9 @@ export class Canvas {
     if (rect.x > offsetX + width) return true;
     if (rect.y > offsetY + height) return true;
     return false;
-  };
+  }
+
+  public isActive() {
+    return this.mask.isActive() || this.graph.isActive();
+  }
 }

@@ -7,12 +7,12 @@ import type { Canvas } from "../index";
 import { RESIZE_TYPE, THE_CONFIG, THE_DELAY } from "../utils/constant";
 
 export class Grab {
-  private _grab: boolean;
+  private _on: boolean;
   private landing: Point | null;
 
   constructor(private editor: Editor, private engine: Canvas) {
     this.landing = null;
-    this._grab = false;
+    this._on = false;
     this.editor.event.on(EDITOR_EVENT.MOUSE_WHEEL, this.onTranslate);
   }
 
@@ -20,13 +20,13 @@ export class Grab {
     this.editor.event.off(EDITOR_EVENT.MOUSE_WHEEL, this.onTranslate);
   }
 
-  public get grabMode() {
-    return this._grab;
+  public get on() {
+    return this._on;
   }
 
   public start() {
-    if (this._grab) return void 0;
-    this._grab = true;
+    if (this._on) return void 0;
+    this._on = true;
     this.engine.mask.clear();
     this.editor.selection.clearActiveDeltas();
     this.engine.mask.setCursorState(RESIZE_TYPE.GRAB);
@@ -35,8 +35,8 @@ export class Grab {
   }
 
   public close() {
-    if (!this._grab) return void 0;
-    this._grab = false;
+    if (!this._on) return void 0;
+    this._on = false;
     this.engine.mask.setCursorState(null);
     this.editor.event.off(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDown);
     this.editor.event.trigger(EDITOR_EVENT.GRAB_STATE, { state: false });
@@ -57,13 +57,13 @@ export class Grab {
 
   private onMouseDown = (event: MouseEvent) => {
     this.engine.mask.setCursorState(RESIZE_TYPE.GRABBING);
-    this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMove);
-    this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUp);
-    this.landing = Point.from(event.offsetX, event.offsetY);
+    this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE_GLOBAL, this.onMouseMove);
+    this.editor.event.on(EDITOR_EVENT.MOUSE_UP_GLOBAL, this.onMouseUp);
+    this.landing = Point.from(event.clientX, event.clientY);
   };
 
   private onMouseMoveBasic = (event: MouseEvent) => {
-    const point = Point.from(event.offsetX, event.offsetY);
+    const point = Point.from(event.clientX, event.clientY);
     if (!this.landing) {
       this.landing = point;
       return void 0;
@@ -76,7 +76,7 @@ export class Grab {
 
   private onMouseUp = () => {
     this.engine.mask.setCursorState(RESIZE_TYPE.GRAB);
-    this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMove);
-    this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUp);
+    this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE_GLOBAL, this.onMouseMove);
+    this.editor.event.off(EDITOR_EVENT.MOUSE_UP_GLOBAL, this.onMouseUp);
   };
 }

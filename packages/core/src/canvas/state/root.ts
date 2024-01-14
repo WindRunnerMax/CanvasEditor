@@ -64,12 +64,12 @@ export class Root extends Node {
     }
     this.append(this.select);
     this.append(this.frame);
-    this.append(this.select.refer);
   }
 
   public getFlatNode(): Node[] {
     // 拖拽状态下不需要匹配
-    if (this.engine.grab.grabMode) return [];
+    if (this.engine.grab.on) return [];
+    // 事件调用实际顺序 // 渲染顺序则相反
     return [...super.getFlatNode(), this];
   }
 

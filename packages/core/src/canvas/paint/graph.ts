@@ -14,6 +14,7 @@ export class Graph {
   }
 
   public onMount(dom: HTMLDivElement) {
+    this.canvas.tabIndex = -1;
     dom.appendChild(this.canvas);
   }
 
@@ -61,6 +62,10 @@ export class Graph {
     });
     this.ctx.closePath();
     this.ctx.restore();
+  }
+
+  public isActive() {
+    return this.canvas === document.activeElement;
   }
 
   public reset() {

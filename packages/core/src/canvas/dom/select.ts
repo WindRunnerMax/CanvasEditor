@@ -22,10 +22,10 @@ import { ReferNode } from "./refer";
 import { ResizeNode } from "./resize";
 
 export class SelectNode extends Node {
+  private refer: ReferNode;
   private _isDragging: boolean;
   private landing: Point | null;
   private dragged: Range | null;
-  public readonly refer: ReferNode;
 
   constructor(private editor: Editor) {
     super(Range.reset());
@@ -39,6 +39,7 @@ export class SelectNode extends Node {
     Object.keys(RESIZE_TYPE).forEach(key => {
       this.append(new ResizeNode(this.editor, key as ResizeType, this));
     });
+    this.append(this.refer);
   }
 
   destroy() {

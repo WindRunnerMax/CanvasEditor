@@ -21,26 +21,32 @@ export class NativeEvent {
   };
 
   private onCopy = (e: ClipboardEvent) => {
+    if (!this.editor.canvas.isActive()) return void 0;
     this.event.trigger(NATIVE_EVENTS.COPY, e);
   };
 
   private onCut = (e: ClipboardEvent) => {
+    if (!this.editor.canvas.isActive()) return void 0;
     this.event.trigger(NATIVE_EVENTS.CUT, e);
   };
 
   private onPaste = (e: ClipboardEvent) => {
+    if (!this.editor.canvas.isActive()) return void 0;
     this.event.trigger(NATIVE_EVENTS.PASTE, e);
   };
 
   private onKeydown = (e: KeyboardEvent) => {
+    if (!this.editor.canvas.isActive()) return void 0;
     this.event.trigger(NATIVE_EVENTS.KEY_DOWN, e);
   };
 
   private onKeypress = (e: KeyboardEvent) => {
+    if (!this.editor.canvas.isActive()) return void 0;
     this.event.trigger(NATIVE_EVENTS.KEY_PRESS, e);
   };
 
   private onKeyup = (e: KeyboardEvent) => {
+    if (!this.editor.canvas.isActive()) return void 0;
     this.event.trigger(NATIVE_EVENTS.KEY_UP, e);
   };
 
@@ -87,18 +93,18 @@ export class NativeEvent {
     container.addEventListener(NATIVE_EVENTS.COMPOSITION_START, this.onCompositionStart);
     container.addEventListener(NATIVE_EVENTS.COMPOSITION_UPDATE, this.onCompositionUpdate);
     container.addEventListener(NATIVE_EVENTS.COMPOSITION_END, this.onCompositionEnd);
-    container.addEventListener(NATIVE_EVENTS.COPY, this.onCopy);
-    container.addEventListener(NATIVE_EVENTS.CUT, this.onCut);
-    container.addEventListener(NATIVE_EVENTS.PASTE, this.onPaste);
-    container.addEventListener(NATIVE_EVENTS.KEY_DOWN, this.onKeydown);
-    container.addEventListener(NATIVE_EVENTS.KEY_PRESS, this.onKeypress);
-    container.addEventListener(NATIVE_EVENTS.KEY_UP, this.onKeyup);
     container.addEventListener(NATIVE_EVENTS.FOCUS, this.onFocus);
     container.addEventListener(NATIVE_EVENTS.BLUR, this.onBlur);
     container.addEventListener(NATIVE_EVENTS.MOUSE_DOWN, this.onMouseDown);
     container.addEventListener(NATIVE_EVENTS.MOUSE_MOVE, this.onMouseMove);
     container.addEventListener(NATIVE_EVENTS.MOUSE_UP, this.onMouseUp);
     container.addEventListener(NATIVE_EVENTS.MOUSE_WHEEL, this.onMouseWheel);
+    document.addEventListener(NATIVE_EVENTS.COPY, this.onCopy);
+    document.addEventListener(NATIVE_EVENTS.CUT, this.onCut);
+    document.addEventListener(NATIVE_EVENTS.PASTE, this.onPaste);
+    document.addEventListener(NATIVE_EVENTS.KEY_DOWN, this.onKeydown);
+    document.addEventListener(NATIVE_EVENTS.KEY_PRESS, this.onKeypress);
+    document.addEventListener(NATIVE_EVENTS.KEY_UP, this.onKeyup);
     document.addEventListener(NATIVE_EVENTS.MOUSE_MOVE, this.onMouseMoveGlobal);
     document.addEventListener(NATIVE_EVENTS.MOUSE_UP, this.onMouseUpGlobal);
   }
@@ -108,18 +114,18 @@ export class NativeEvent {
     container.removeEventListener(NATIVE_EVENTS.COMPOSITION_START, this.onCompositionStart);
     container.removeEventListener(NATIVE_EVENTS.COMPOSITION_UPDATE, this.onCompositionUpdate);
     container.removeEventListener(NATIVE_EVENTS.COMPOSITION_END, this.onCompositionEnd);
-    container.removeEventListener(NATIVE_EVENTS.KEY_PRESS, this.onKeypress);
-    container.removeEventListener(NATIVE_EVENTS.COPY, this.onCopy);
-    container.removeEventListener(NATIVE_EVENTS.CUT, this.onCut);
-    container.removeEventListener(NATIVE_EVENTS.PASTE, this.onPaste);
-    container.removeEventListener(NATIVE_EVENTS.KEY_DOWN, this.onKeydown);
-    container.removeEventListener(NATIVE_EVENTS.KEY_UP, this.onKeyup);
     container.removeEventListener(NATIVE_EVENTS.FOCUS, this.onFocus);
     container.removeEventListener(NATIVE_EVENTS.BLUR, this.onBlur);
     container.removeEventListener(NATIVE_EVENTS.MOUSE_DOWN, this.onMouseDown);
     container.removeEventListener(NATIVE_EVENTS.MOUSE_UP, this.onMouseUp);
     container.removeEventListener(NATIVE_EVENTS.MOUSE_MOVE, this.onMouseMove);
     container.removeEventListener(NATIVE_EVENTS.MOUSE_WHEEL, this.onMouseWheel);
+    document.removeEventListener(NATIVE_EVENTS.COPY, this.onCopy);
+    document.removeEventListener(NATIVE_EVENTS.CUT, this.onCut);
+    document.removeEventListener(NATIVE_EVENTS.PASTE, this.onPaste);
+    document.removeEventListener(NATIVE_EVENTS.KEY_DOWN, this.onKeydown);
+    document.removeEventListener(NATIVE_EVENTS.KEY_PRESS, this.onKeypress);
+    document.removeEventListener(NATIVE_EVENTS.KEY_UP, this.onKeyup);
     document.removeEventListener(NATIVE_EVENTS.MOUSE_MOVE, this.onMouseMoveGlobal);
     document.removeEventListener(NATIVE_EVENTS.MOUSE_UP, this.onMouseUpGlobal);
   }
