@@ -16,10 +16,13 @@ export const RESIZE_TYPE = {
   RT: "RT",
   LB: "LB",
   RB: "RB",
-  GRAB: "GRAB",
-  GRABBING: "GRABBING",
 } as const;
 export type ResizeType = keyof typeof RESIZE_TYPE;
+
+export const CURSOR_TYPE = {
+  GRAB: "GRAB",
+  GRABBING: "GRABBING",
+};
 
 export const CURSOR_STATE = {
   [RESIZE_TYPE.L]: "ew-resize",
@@ -30,6 +33,6 @@ export const CURSOR_STATE = {
   [RESIZE_TYPE.RT]: "nesw-resize",
   [RESIZE_TYPE.LB]: "nesw-resize",
   [RESIZE_TYPE.RB]: "nwse-resize",
-  [RESIZE_TYPE.GRAB]: "grab",
-  [RESIZE_TYPE.GRABBING]: "grabbing",
+  [CURSOR_TYPE.GRAB]: "grab",
+  [CURSOR_TYPE.GRABBING]: "grabbing",
 } as const;

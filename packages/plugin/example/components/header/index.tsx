@@ -5,6 +5,7 @@ import { cs } from "sketching-utils";
 import { useEditor } from "../../hooks/useEditor";
 import { CursorIcon } from "../../static/cursor";
 import { GrabIcon } from "../../static/grab";
+import { RectIcon } from "../../static/rect";
 import styles from "./index.m.scss";
 import { NAV_ENUM } from "./types";
 
@@ -36,6 +37,13 @@ export const Header: FC = () => {
           onClick={() => switchIndex(NAV_ENUM.GRAB)}
         >
           {GrabIcon}
+        </div>
+        <div
+          draggable
+          className={cs(styles.op, active === NAV_ENUM.RECT && styles.active)}
+          onClick={() => switchIndex(NAV_ENUM.RECT)}
+        >
+          {RectIcon}
         </div>
       </div>
     </div>

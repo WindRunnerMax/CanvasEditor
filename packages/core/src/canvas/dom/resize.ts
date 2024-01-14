@@ -23,7 +23,7 @@ import { Node } from "./node";
 
 export class ResizeNode extends Node {
   private type: ResizeType;
-  private isDragging: boolean;
+  private isResizing: boolean;
   private latest: Range | null;
   private landing: Point | null;
   private landingRange: Range | null;
@@ -34,7 +34,7 @@ export class ResizeNode extends Node {
     this.latest = null;
     this.landing = null;
     this.setParent(parent);
-    this.isDragging = false;
+    this.isResizing = false;
     this.landingRange = null;
     this._z = MAX_Z_INDEX - 1;
   }
@@ -137,11 +137,11 @@ export class ResizeNode extends Node {
     if (!this.landing || !selection || !this.landingRange || !this.parent) return void 0;
     const point = Point.from(e.clientX, e.clientY);
     const { x, y } = this.landing.diff(point);
-    if (!this.isDragging && (Math.abs(x) > SELECT_BIAS || Math.abs(y) > SELECT_BIAS)) {
+    if (!this.isResizing && (Math.abs(x) > SELECT_BIAS || Math.abs(y) > SELECT_BIAS)) {
       // 拖拽阈值
-      this.isDragging = true;
+      this.isResizing = true;
     }
-    if (this.isDragging && selection) {
+    if (this.isResizing && selection) {
       let formattedX = x;
       let formattedY = y;
       const { width, height } = this.landingRange.rect();
@@ -206,8 +206,8 @@ export class ResizeNode extends Node {
 
   private onMouseUpController = (e: globalThis.MouseEvent) => {
     this.unbindOpEvents();
-    if (this.isDragging && this.latest && this.parent && this.landingRange) {
-      const point = Point.from(e.clientX, e.clientY);
+    if (this.isResizing && this.latest && this.parent && this.landingRange) {
+      const point = Point.from(e, this.editor);
       const latest = this.latest;
       this.editor.canvas.mask.setCursorState(null);
       // 根据点位调整`Resize`节点位置
@@ -234,7 +234,7 @@ export class ResizeNode extends Node {
     }
     this.latest = null;
     this.landing = null;
-    this.isDragging = false;
+    this.isResizing = false;
     this.landingRange = null;
   };
 

@@ -31,5 +31,5 @@ export type GrabEvent = {
 };
 
 export type InsertEvent = {
-  state: boolean;
+  done: boolean;
 };

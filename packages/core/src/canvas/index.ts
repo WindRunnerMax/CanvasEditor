@@ -35,6 +35,8 @@ export class Canvas {
 
   public onMount() {
     const dom = this.editor.getContainer();
+    // COMPAT: 不存在则`draggable`元素会导致白屏
+    dom.style.position = "relative";
     this.resizeObserver.observe(dom);
     this.width = dom.clientWidth;
     this.height = dom.clientHeight;
@@ -62,11 +64,14 @@ export class Canvas {
   private onResize = (entries: ResizeObserverEntry[]) => {
     const [entry] = entries;
     if (!entry) return void 0;
-    const { width, height } = entry.contentRect;
-    this.editor.event.trigger(EDITOR_EVENT.RESIZE, { width, height });
-    this.width = width;
-    this.height = height;
-    this.reset();
+    // 置宏任务队列
+    setTimeout(() => {
+      const { width, height } = entry.contentRect;
+      this.width = width;
+      this.height = height;
+      this.reset();
+      this.editor.event.trigger(EDITOR_EVENT.RESIZE, { width, height });
+    }, 0);
   };
 
   public setOffset(x: number, y: number) {

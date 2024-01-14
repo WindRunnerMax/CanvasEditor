@@ -4,7 +4,7 @@ import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
 import { Point } from "../../selection/modules/point";
 import type { Canvas } from "../index";
-import { RESIZE_TYPE, THE_CONFIG, THE_DELAY } from "../utils/constant";
+import { CURSOR_TYPE, THE_CONFIG, THE_DELAY } from "../utils/constant";
 
 export class Grab {
   private _on: boolean;
@@ -29,7 +29,7 @@ export class Grab {
     this._on = true;
     this.engine.mask.clear();
     this.editor.selection.clearActiveDeltas();
-    this.engine.mask.setCursorState(RESIZE_TYPE.GRAB);
+    this.engine.mask.setCursorState(CURSOR_TYPE.GRAB);
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDown);
     this.editor.event.trigger(EDITOR_EVENT.GRAB_STATE, { state: true });
   }
@@ -56,7 +56,7 @@ export class Grab {
   public translate = throttle(this.translateImmediately, THE_DELAY, THE_CONFIG);
 
   private onMouseDown = (event: MouseEvent) => {
-    this.engine.mask.setCursorState(RESIZE_TYPE.GRABBING);
+    this.engine.mask.setCursorState(CURSOR_TYPE.GRABBING);
     this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE_GLOBAL, this.onMouseMove);
     this.editor.event.on(EDITOR_EVENT.MOUSE_UP_GLOBAL, this.onMouseUp);
     this.landing = Point.from(event.clientX, event.clientY);
@@ -75,7 +75,7 @@ export class Grab {
   private onMouseMove = throttle(this.onMouseMoveBasic, THE_DELAY, THE_CONFIG);
 
   private onMouseUp = () => {
-    this.engine.mask.setCursorState(RESIZE_TYPE.GRAB);
+    this.engine.mask.setCursorState(CURSOR_TYPE.GRAB);
     this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE_GLOBAL, this.onMouseMove);
     this.editor.event.off(EDITOR_EVENT.MOUSE_UP_GLOBAL, this.onMouseUp);
   };

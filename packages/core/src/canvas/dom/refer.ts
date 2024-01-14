@@ -20,6 +20,9 @@ export class ReferNode extends Node {
     this.setZ(MAX_Z_INDEX - 1);
   }
 
+  // COMPAT: 避免`Range`变换
+  public setRange() {}
+
   private addToMap(map: Map<number, number[]>, key: number, value: number[]) {
     const prev: number[] = map.get(key) || [];
     // 不标记具体点 只需要取最小值和最大值即可

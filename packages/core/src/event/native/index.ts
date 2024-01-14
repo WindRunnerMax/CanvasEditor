@@ -87,6 +87,15 @@ export class NativeEvent {
     this.event.trigger(NATIVE_EVENTS.MOUSE_UP_GLOBAL, e);
   };
 
+  private onDrop = (e: DragEvent) => {
+    e.preventDefault();
+    this.event.trigger(NATIVE_EVENTS.DROP, e);
+  };
+
+  private onDropOver = (e: DragEvent) => {
+    e.preventDefault();
+  };
+
   public bind() {
     this.unbind();
     const container = this.editor.getContainer();
@@ -99,6 +108,8 @@ export class NativeEvent {
     container.addEventListener(NATIVE_EVENTS.MOUSE_MOVE, this.onMouseMove);
     container.addEventListener(NATIVE_EVENTS.MOUSE_UP, this.onMouseUp);
     container.addEventListener(NATIVE_EVENTS.MOUSE_WHEEL, this.onMouseWheel);
+    container.addEventListener(NATIVE_EVENTS.DROP, this.onDrop);
+    container.addEventListener(NATIVE_EVENTS.DROP_OVER, this.onDropOver);
     document.addEventListener(NATIVE_EVENTS.COPY, this.onCopy);
     document.addEventListener(NATIVE_EVENTS.CUT, this.onCut);
     document.addEventListener(NATIVE_EVENTS.PASTE, this.onPaste);
@@ -120,6 +131,8 @@ export class NativeEvent {
     container.removeEventListener(NATIVE_EVENTS.MOUSE_UP, this.onMouseUp);
     container.removeEventListener(NATIVE_EVENTS.MOUSE_MOVE, this.onMouseMove);
     container.removeEventListener(NATIVE_EVENTS.MOUSE_WHEEL, this.onMouseWheel);
+    container.removeEventListener(NATIVE_EVENTS.DROP, this.onDrop);
+    container.removeEventListener(NATIVE_EVENTS.DROP_OVER, this.onDropOver);
     document.removeEventListener(NATIVE_EVENTS.COPY, this.onCopy);
     document.removeEventListener(NATIVE_EVENTS.CUT, this.onCut);
     document.removeEventListener(NATIVE_EVENTS.PASTE, this.onPaste);

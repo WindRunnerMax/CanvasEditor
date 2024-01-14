@@ -4,7 +4,6 @@ import type { Editor } from "../../editor";
 import { Range } from "../../selection/modules/range";
 import type { Node } from "../dom/node";
 import type { Canvas } from "../index";
-import type { ResizeType } from "../utils/constant";
 import { CURSOR_STATE } from "../utils/constant";
 
 export class Mask {
@@ -90,7 +89,7 @@ export class Mask {
   }
 
   // ====== State ======
-  public setCursorState(type: ResizeType | null) {
+  public setCursorState(type: keyof typeof CURSOR_STATE | null) {
     this.canvas.style.cursor = isEmptyValue(type) ? "" : CURSOR_STATE[type];
     return this;
   }
