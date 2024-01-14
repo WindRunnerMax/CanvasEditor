@@ -1,4 +1,4 @@
-import { Node } from "../../canvas/basis/node";
+import { Node } from "../../canvas/dom/node";
 import { DeltaState } from "./node";
 
 const NODE_TO_STATE = new WeakMap<Node, DeltaState>();

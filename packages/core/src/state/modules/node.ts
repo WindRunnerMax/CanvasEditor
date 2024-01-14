@@ -1,6 +1,6 @@
 import type { Delta } from "sketching-delta";
 
-import { ElementNode } from "../../canvas/basis/element";
+import { ElementNode } from "../../canvas/dom/element";
 import type { Editor } from "../../editor";
 import { Range } from "../../selection/modules/range";
 import { NSBridge } from "./bridge";

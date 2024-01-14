@@ -1,7 +1,7 @@
 import type { Empty } from "sketching-utils";
 
 import type { Range } from "../../selection/modules/range";
-import type { MouseEvent } from "./event";
+import type { MouseEvent } from "../event/mouse";
 
 export class Node {
   protected _z: number;

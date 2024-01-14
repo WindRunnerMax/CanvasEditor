@@ -2,10 +2,10 @@ import { isEmptyValue, ROOT_DELTA } from "sketching-utils";
 
 import type { Editor } from "../../editor";
 import { Range } from "../../selection/modules/range";
-import { Node } from "../basis/node";
 import { MAX_Z_INDEX, REFER_BIAS } from "../utils/constant";
 import { ORANGE_5 } from "../utils/palette";
 import { drawRect } from "../utils/shape";
+import { Node } from "./node";
 
 export class ReferNode extends Node {
   private dragged: Range | null;

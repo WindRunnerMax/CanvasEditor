@@ -6,8 +6,7 @@ import { EDITOR_EVENT } from "../../event/bus/action";
 import { Point } from "../../selection/modules/point";
 import { Range } from "../../selection/modules/range";
 import { EDITOR_STATE } from "../../state/utils/constant";
-import type { MouseEvent } from "../basis/event";
-import { Node } from "../basis/node";
+import type { MouseEvent } from "../event/mouse";
 import type { ResizeType } from "../utils/constant";
 import {
   MAX_Z_INDEX,
@@ -20,6 +19,7 @@ import {
 } from "../utils/constant";
 import { GRAY_5, GRAY_7, WHITE } from "../utils/palette";
 import { drawArc, drawRect } from "../utils/shape";
+import { Node } from "./node";
 
 export class ResizeNode extends Node {
   private type: ResizeType;
@@ -132,7 +132,7 @@ export class ResizeNode extends Node {
     this.bindOpEvents();
   };
 
-  private onMouseMoveBridge = (e: globalThis.MouseEvent) => {
+  private onMouseMoveBasic = (e: globalThis.MouseEvent) => {
     const selection = this.editor.selection.get();
     if (!this.landing || !selection || !this.landingRange || !this.parent) return void 0;
     const point = Point.from(e.clientX, e.clientY);
@@ -202,7 +202,7 @@ export class ResizeNode extends Node {
       this.editor.selection.set(this.latest);
     }
   };
-  private onMouseMoveController = throttle(this.onMouseMoveBridge, THE_DELAY, THE_CONFIG);
+  private onMouseMoveController = throttle(this.onMouseMoveBasic, THE_DELAY, THE_CONFIG);
 
   private onMouseUpController = (e: globalThis.MouseEvent) => {
     this.unbindOpEvents();

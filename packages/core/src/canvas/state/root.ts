@@ -6,12 +6,14 @@ import { Point } from "../../selection/modules/point";
 import { Range } from "../../selection/modules/range";
 import { NSBridge } from "../../state/modules/bridge";
 import type { DeltaState } from "../../state/modules/node";
-import { ElementNode } from "../basis/element";
-import { MouseEvent } from "../basis/event";
-import { Node } from "../basis/node";
+import { ElementNode } from "../dom/element";
 import { FrameNode } from "../dom/frame";
+import { Node } from "../dom/node";
 import { ResizeNode } from "../dom/resize";
 import { SelectNode } from "../dom/select";
+import { MouseEvent } from "../event/mouse";
+import type { NodeEvent } from "../event/types";
+import { NODE_EVENT } from "../event/types";
 import type { Canvas } from "../index";
 import { THE_CONFIG, THE_DELAY } from "../utils/constant";
 
@@ -75,12 +77,7 @@ export class Root extends Node {
     !e.shiftKey && this.editor.selection.clearActiveDeltas();
   };
 
-  private emit(
-    target: Node,
-    // TODO: 抽象一下事件和类型对应关系
-    type: "onMouseDown" | "onMouseUp" | "onMouseEnter" | "onMouseLeave",
-    event: MouseEvent
-  ) {
+  private emit<T extends keyof NodeEvent>(target: Node, type: T, event: NodeEvent[T]) {
     const stack: Node[] = [];
     let node: Node | null = target.parent;
     while (node) {
@@ -90,16 +87,16 @@ export class Root extends Node {
     // 捕获阶段执行的事件
     for (const node of stack.reverse()) {
       if (!event.capture) break;
-      const eventFn = node[type];
+      const eventFn = node[type as keyof NodeEvent];
       eventFn && eventFn(event);
     }
     // 节点本身 执行即可
-    const eventFn = target[type];
+    const eventFn = target[type as keyof NodeEvent];
     eventFn && eventFn(event);
     // 冒泡阶段执行的事件
     for (const node of stack) {
       if (!event.bubble) break;
-      const eventFn = node[type];
+      const eventFn = node[type as keyof NodeEvent];
       eventFn && eventFn(event);
     }
   }
@@ -114,10 +111,10 @@ export class Root extends Node {
         break;
       }
     }
-    hit && this.emit(hit, "onMouseDown", MouseEvent.from(e, this.editor));
+    hit && this.emit(hit, NODE_EVENT.MOUSE_DOWN, MouseEvent.from(e, this.editor));
   };
 
-  private onMouseMoveBridge = (e: globalThis.MouseEvent) => {
+  private onMouseMoveBasic = (e: globalThis.MouseEvent) => {
     const flatNode = this.getFlatNode();
     let hit: ElementNode | ResizeNode | null = null;
     const point = Point.from(e, this.editor);
@@ -132,11 +129,11 @@ export class Root extends Node {
     if (this.hover !== hit) {
       const prev = this.hover;
       this.hover = hit;
-      prev && this.emit(prev, "onMouseLeave", MouseEvent.from(e, this.editor));
-      hit && this.emit(hit, "onMouseEnter", MouseEvent.from(e, this.editor));
+      prev && this.emit(prev, NODE_EVENT.MOUSE_LEAVE, MouseEvent.from(e, this.editor));
+      hit && this.emit(hit, NODE_EVENT.MOUSE_ENTER, MouseEvent.from(e, this.editor));
     }
   };
-  private onMouseMoveController = throttle(this.onMouseMoveBridge, THE_DELAY, THE_CONFIG);
+  private onMouseMoveController = throttle(this.onMouseMoveBasic, THE_DELAY, THE_CONFIG);
 
   private onMouseUpController = (e: globalThis.MouseEvent) => {
     const flatNode = this.getFlatNode();
@@ -148,6 +145,6 @@ export class Root extends Node {
         break;
       }
     }
-    hit && this.emit(hit, "onMouseUp", MouseEvent.from(e, this.editor));
+    hit && this.emit(hit, NODE_EVENT.MOUSE_UP, MouseEvent.from(e, this.editor));
   };
 }

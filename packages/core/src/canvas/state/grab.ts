@@ -62,7 +62,7 @@ export class Grab {
     this.landing = Point.from(event.offsetX, event.offsetY);
   };
 
-  private onMouseMoveController = (event: MouseEvent) => {
+  private onMouseMoveBasic = (event: MouseEvent) => {
     const point = Point.from(event.offsetX, event.offsetY);
     if (!this.landing) {
       this.landing = point;
@@ -72,7 +72,7 @@ export class Grab {
     this.landing = point;
     this.translateImmediately(x, y);
   };
-  private onMouseMove = throttle(this.onMouseMoveController, THE_DELAY, THE_CONFIG);
+  private onMouseMove = throttle(this.onMouseMoveBasic, THE_DELAY, THE_CONFIG);
 
   private onMouseUp = () => {
     this.engine.mask.setCursorState(RESIZE_TYPE.GRAB);

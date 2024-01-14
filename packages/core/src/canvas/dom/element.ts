@@ -1,9 +1,9 @@
 import type { Editor } from "../../editor";
 import type { Range } from "../../selection/modules/range";
 import { EDITOR_STATE } from "../../state/utils/constant";
+import type { MouseEvent } from "../event/mouse";
 import { BLUE_3 } from "../utils/palette";
 import { drawRect } from "../utils/shape";
-import type { MouseEvent } from "./event";
 import { Node } from "./node";
 
 export class ElementNode extends Node {

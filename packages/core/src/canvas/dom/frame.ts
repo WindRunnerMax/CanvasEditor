@@ -4,12 +4,12 @@ import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
 import { Point } from "../../selection/modules/point";
 import { Range } from "../../selection/modules/range";
-import type { MouseEvent } from "../basis/event";
-import { Node } from "../basis/node";
+import type { MouseEvent } from "../event/mouse";
 import type { Root } from "../state/root";
 import { MAX_Z_INDEX, RESIZE_OFS, SELECT_BIAS, THE_CONFIG, THE_DELAY } from "../utils/constant";
 import { BLUE_5, BLUE_6_6 } from "../utils/palette";
 import { drawRect } from "../utils/shape";
+import { Node } from "./node";
 
 export class FrameNode extends Node {
   private isDragging: boolean;

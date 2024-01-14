@@ -3,8 +3,8 @@ import ResizeObserver from "resize-observer-polyfill";
 import type { Editor } from "../editor";
 import { EDITOR_EVENT } from "../event/bus/action";
 import { Range } from "../selection/modules/range";
-import { Graph } from "./draw/graph";
-import { Mask } from "./draw/mask";
+import { Graph } from "./paint/graph";
+import { Mask } from "./paint/mask";
 import { Grab } from "./state/grab";
 import { Root } from "./state/root";
 

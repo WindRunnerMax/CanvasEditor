@@ -1,6 +1,6 @@
-export { ElementNode } from "./canvas/basis/element";
-export { MouseEvent } from "./canvas/basis/event";
-export { Node } from "./canvas/basis/node";
+export { ElementNode } from "./canvas/dom/element";
+export { Node } from "./canvas/dom/node";
+export { MouseEvent } from "./canvas/event/mouse";
 export { Editor } from "./editor";
 export type { EventMapKeys } from "./event/bus/action";
 export { EDITOR_EVENT } from "./event/bus/action";
