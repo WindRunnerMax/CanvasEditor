@@ -48,7 +48,9 @@ export class DeltaState {
     this.children.push(state);
     const node = NSBridge.get(this);
     if (node) {
-      node.append(new ElementNode(this.id, this.editor, state.toRange()));
+      const element = new ElementNode(delta.id, this.editor, state.toRange());
+      node.append(element);
+      NSBridge.set(state, element);
     }
     return this;
   }
