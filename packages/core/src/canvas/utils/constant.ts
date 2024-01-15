@@ -5,7 +5,6 @@ export const REFER_BIAS = 5;
 
 export const THE_DELAY = 30;
 export const MAX_Z_INDEX = 999999;
-export const THE_CONFIG = { trailing: true };
 
 export const RESIZE_TYPE = {
   L: "L",

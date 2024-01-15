@@ -1,5 +1,5 @@
 export const NAV_ENUM = {
-  DEFAULT: 0,
-  GRAB: 1,
-  RECT: 2,
+  DEFAULT: "default",
+  GRAB: "grab",
+  RECT: "rect",
 };

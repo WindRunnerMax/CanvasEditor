@@ -7,14 +7,7 @@ import type { SelectionChangeEvent } from "../../event/bus/types";
 import { Point } from "../../selection/modules/point";
 import { Range } from "../../selection/modules/range";
 import type { ResizeType } from "../utils/constant";
-import {
-  MAX_Z_INDEX,
-  RESIZE_OFS,
-  RESIZE_TYPE,
-  SELECT_BIAS,
-  THE_CONFIG,
-  THE_DELAY,
-} from "../utils/constant";
+import { MAX_Z_INDEX, RESIZE_OFS, RESIZE_TYPE, SELECT_BIAS, THE_DELAY } from "../utils/constant";
 import { BLUE_5 } from "../utils/palette";
 import { drawRect } from "../utils/shape";
 import { Node } from "./node";
@@ -114,7 +107,7 @@ export class SelectNode extends Node {
       this.setRange(offset ? latest.move(offset.x, offset.y) : latest);
     }
   };
-  private onMouseMoveController = throttle(this.onMouseMoveBasic, THE_DELAY, THE_CONFIG);
+  private onMouseMoveController = throttle(this.onMouseMoveBasic, THE_DELAY);
 
   private onMouseUpController = () => {
     this.unbindOpEvents();

@@ -13,7 +13,7 @@ export const Header: FC = () => {
   const { editor } = useEditor();
   const [active, setActive] = useState(NAV_ENUM.DEFAULT);
 
-  const switchIndex = (index: number) => {
+  const switchIndex = (index: string) => {
     if (index === active) return void 0;
     if (index === NAV_ENUM.GRAB) {
       editor.canvas.grab.start();
@@ -21,6 +21,14 @@ export const Header: FC = () => {
       editor.canvas.grab.close();
     }
     setActive(index);
+  };
+
+  const onDragStart = (e: React.DragEvent<HTMLDivElement>, key: string) => {
+    e.dataTransfer.setData("key", key);
+  };
+
+  const onDragEnd = () => {
+    setActive(NAV_ENUM.DEFAULT);
   };
 
   return (
@@ -40,6 +48,8 @@ export const Header: FC = () => {
         </div>
         <div
           draggable
+          onDragStart={e => onDragStart(e, NAV_ENUM.RECT)}
+          onDragEnd={onDragEnd}
           className={cs(styles.op, active === NAV_ENUM.RECT && styles.active)}
           onClick={() => switchIndex(NAV_ENUM.RECT)}
         >

@@ -48,7 +48,7 @@ export class DeltaSet {
     delete this.deltas[id];
     if (from) {
       const delta = this.get(from);
-      delta && delta.remove(delta);
+      delta && delta.removeChild(delta);
     }
     return this;
   }

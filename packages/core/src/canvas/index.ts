@@ -6,6 +6,7 @@ import { Range } from "../selection/modules/range";
 import { Graph } from "./paint/graph";
 import { Mask } from "./paint/mask";
 import { Grab } from "./state/grab";
+import { Insert } from "./state/insert";
 import { Root } from "./state/root";
 
 export class Canvas {
@@ -17,6 +18,7 @@ export class Canvas {
   public readonly grab: Grab;
   public readonly mask: Mask;
   public readonly graph: Graph;
+  public readonly insert: Insert;
   private resizeObserver: ResizeObserver;
   public readonly devicePixelRatio: number;
 
@@ -31,6 +33,7 @@ export class Canvas {
     this.devicePixelRatio = window.devicePixelRatio || 1;
     this.resizeObserver = new ResizeObserver(this.onResize);
     this.grab = new Grab(this.editor, this);
+    this.insert = new Insert(this.editor, this);
   }
 
   public onMount() {
@@ -52,6 +55,7 @@ export class Canvas {
     this.mask.destroy(dom);
     this.graph.destroy(dom);
     this.grab.destroy();
+    this.insert.destroy();
   }
 
   public reset() {

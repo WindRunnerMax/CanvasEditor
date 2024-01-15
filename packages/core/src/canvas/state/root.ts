@@ -15,7 +15,7 @@ import { MouseEvent } from "../event/mouse";
 import type { NodeEvent } from "../event/types";
 import { NODE_EVENT } from "../event/types";
 import type { Canvas } from "../index";
-import { THE_CONFIG, THE_DELAY } from "../utils/constant";
+import { THE_DELAY } from "../utils/constant";
 
 export class Root extends Node {
   public hover: ElementNode | ResizeNode | null;
@@ -133,7 +133,7 @@ export class Root extends Node {
       hit && this.emit(hit, NODE_EVENT.MOUSE_ENTER, MouseEvent.from(e, this.editor));
     }
   };
-  private onMouseMoveController = throttle(this.onMouseMoveBasic, THE_DELAY, THE_CONFIG);
+  private onMouseMoveController = throttle(this.onMouseMoveBasic, THE_DELAY);
 
   private onMouseUpController = (e: globalThis.MouseEvent) => {
     const flatNode = this.getFlatNode();
