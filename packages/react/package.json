@@ -1,0 +1,39 @@
+{
+  "name": "sketching-react",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "sideEffects": [
+    "**/*.css",
+    "**/*.scss"
+  ],
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "rspack serve --config ./rspack.config.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@arco-design/web-react": "2.58.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "sketching-core": "workspace: *",
+    "sketching-plugin": "workspace: *",
+    "sketching-delta": "workspace: *",
+    "sketching-utils": "workspace: *"
+  },
+  "devDependencies": {
+    "@rspack/cli": "0.2.5",
+    "@rspack/plugin-html": "0.2.5",
+    "@types/react": "17.0.2",
+    "@types/react-dom": "17.0.2",
+    "copy-webpack-plugin": "5",
+    "less": "^4.2.0",
+    "less-loader": "^11.1.4",
+    "sass-loader": "^13.3.3"
+  }
+}

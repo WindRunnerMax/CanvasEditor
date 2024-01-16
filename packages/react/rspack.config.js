@@ -10,13 +10,13 @@ const isDev = process.env.NODE_ENV === "development";
 module.exports = {
   context: __dirname,
   entry: {
-    index: "./example/index.tsx",
+    index: "./src/index.tsx",
   },
   plugins: [
-    new CopyPlugin([{ from: "./example/public", to: "." }]),
+    new CopyPlugin([{ from: "./public", to: "." }]),
     new HtmlPlugin({
       filename: "index.html",
-      template: "./example/public/index.html",
+      template: "./public/index.html",
     }),
   ],
   resolve: {
@@ -24,6 +24,7 @@ module.exports = {
       "@": path.resolve(__dirname, "./src"),
       "sketching-core": path.resolve(__dirname, "../core/src"),
       "sketching-delta": path.resolve(__dirname, "../delta/src"),
+      "sketching-plugin": path.resolve(__dirname, "../plugin/src"),
       "sketching-utils": path.resolve(__dirname, "../utils/src"),
     },
   },

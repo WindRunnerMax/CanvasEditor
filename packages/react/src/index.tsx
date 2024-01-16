@@ -6,8 +6,8 @@ import { useLayoutEffect, useMemo, useRef } from "react";
 import ReactDOM from "react-dom";
 import { Editor, LOG_LEVEL } from "sketching-core";
 import { DeltaSet } from "sketching-delta";
+import { Rect } from "sketching-plugin";
 
-import { Rect } from "../src/rect";
 import { Body } from "./components/body";
 import { Header } from "./components/header";
 import { WithEditor } from "./hooks/useEditor";

@@ -2,7 +2,7 @@
   "name": "cv-sketching",
   "version": "1.0.0",
   "scripts": {
-    "dev:react": "pnpm --filter sketching-plugin run dev"
+    "dev:react": "pnpm --filter sketching-react run dev"
   },
   "repository": {
     "type": "git",
