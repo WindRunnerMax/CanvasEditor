@@ -51,6 +51,8 @@ export class DeltaState {
       const element = new ElementNode(delta.id, this.editor, state.toRange());
       node.append(element);
       NSBridge.set(state, element);
+    } else {
+      this.editor.logger.warning(`Node Not Found - ${this.delta.id}`);
     }
     return this;
   }
@@ -64,6 +66,8 @@ export class DeltaState {
     const node = NSBridge.get(parent);
     if (node) {
       node.removeChild(NSBridge.get(this));
+    } else {
+      this.editor.logger.warning(`Node Not Found - ${this.delta.id}`);
     }
     return this;
   }
@@ -73,6 +77,8 @@ export class DeltaState {
     const node = NSBridge.get(this);
     if (node) {
       node.setRange(Range.from(this.delta));
+    } else {
+      this.editor.logger.warning(`Node Not Found - ${this.delta.id}`);
     }
     return this;
   }
@@ -86,6 +92,8 @@ export class DeltaState {
     const node = NSBridge.get(this);
     if (node) {
       node.setRange(range);
+    } else {
+      this.editor.logger.warning(`Node Not Found - ${this.delta.id}`);
     }
     return this;
   }

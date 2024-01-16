@@ -69,7 +69,7 @@ export class Mask {
       this.timer = setTimeout(() => {
         const currentRange = this.range || range;
         const currentEffects = this.effects || effects;
-        this.editor.logger.info("Mask Effects", currentEffects);
+        this.editor.logger.debug("Mask Effects", currentEffects);
         this.drawing(currentEffects, currentRange);
         this.timer = null;
         this.range = null;
