@@ -1,12 +1,11 @@
 import type { DeltaLike } from "sketching-delta";
 import { DeltaSet, Op, OP_TYPE } from "sketching-delta";
+import { TSON } from "sketching-utils";
 
 import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
 import { Point } from "../../selection/modules/point";
 import type { Canvas } from "../index";
-
-const DEFAULT_RECT = { width: 200, height: 100 } as const;
 
 export class Insert {
   constructor(private editor: Editor, private engine: Canvas) {
@@ -19,14 +18,14 @@ export class Insert {
 
   public onDrop = (e: DragEvent) => {
     const point = Point.from(e, this.editor);
-    const key = e.dataTransfer?.getData("key");
-    if (!key) return void 0;
+    const payload = e.dataTransfer?.getData("data");
+    if (!payload) return void 0;
+    const data = TSON.decode<DeltaLike>(payload);
+    if (!data) return void 0;
     const deltaLike: DeltaLike = {
-      key,
+      ...data,
       x: point.x,
       y: point.y,
-      width: DEFAULT_RECT.width,
-      height: DEFAULT_RECT.height,
     };
     const delta = DeltaSet.create(deltaLike);
     delta && this.editor.state.apply(Op.from(OP_TYPE.INSERT, { delta }));

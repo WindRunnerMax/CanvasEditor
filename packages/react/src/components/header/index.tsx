@@ -1,6 +1,7 @@
 import type { FC } from "react";
 import { useState } from "react";
-import { cs } from "sketching-utils";
+import type { DeltaLike } from "sketching-delta";
+import { cs, TSON } from "sketching-utils";
 
 import { useEditor } from "../../hooks/useEditor";
 import { CursorIcon } from "../../static/cursor";
@@ -23,8 +24,15 @@ export const Header: FC = () => {
     setActive(index);
   };
 
-  const onDragStart = (e: React.DragEvent<HTMLDivElement>, key: string) => {
-    e.dataTransfer.setData("key", key);
+  const onDragRect = (e: React.DragEvent<HTMLDivElement>) => {
+    const deltaLike: DeltaLike = {
+      key: NAV_ENUM.RECT,
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 50,
+    };
+    e.dataTransfer.setData("data", TSON.encode(deltaLike) || "");
   };
 
   const onDragEnd = () => {
@@ -48,7 +56,7 @@ export const Header: FC = () => {
         </div>
         <div
           draggable
-          onDragStart={e => onDragStart(e, NAV_ENUM.RECT)}
+          onDragStart={e => onDragRect(e)}
           onDragEnd={onDragEnd}
           className={cs(styles.op, active === NAV_ENUM.RECT && styles.active)}
           onClick={() => switchIndex(NAV_ENUM.RECT)}

@@ -16,7 +16,6 @@ export const RESIZE_TYPE = {
   LB: "LB",
   RB: "RB",
 } as const;
-export type ResizeType = keyof typeof RESIZE_TYPE;
 
 export const CURSOR_TYPE = {
   GRAB: "GRAB",
@@ -35,3 +34,5 @@ export const CURSOR_STATE = {
   [CURSOR_TYPE.GRAB]: "grab",
   [CURSOR_TYPE.GRABBING]: "grabbing",
 } as const;
+
+export type ResizeType = keyof typeof RESIZE_TYPE;
