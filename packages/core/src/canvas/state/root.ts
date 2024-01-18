@@ -102,6 +102,9 @@ export class Root extends Node {
   }
 
   private onMouseDownController = (e: globalThis.MouseEvent) => {
+    // 非默认状态下不执行事件
+    if (!this.engine.isDefaultMode()) return void 0;
+    // 按事件顺序获取节点
     const flatNode = this.getFlatNode();
     let hit: Node | null = null;
     const point = Point.from(e, this.editor);
@@ -115,6 +118,9 @@ export class Root extends Node {
   };
 
   private onMouseMoveBasic = (e: globalThis.MouseEvent) => {
+    // 非默认状态下不执行事件
+    if (!this.engine.isDefaultMode()) return void 0;
+    // 按事件顺序获取节点
     const flatNode = this.getFlatNode();
     let hit: ElementNode | ResizeNode | null = null;
     const point = Point.from(e, this.editor);
@@ -136,6 +142,9 @@ export class Root extends Node {
   private onMouseMoveController = throttle(this.onMouseMoveBasic, THE_DELAY);
 
   private onMouseUpController = (e: globalThis.MouseEvent) => {
+    // 非默认状态下不执行事件
+    if (!this.engine.isDefaultMode()) return void 0;
+    // 按事件顺序获取节点
     const flatNode = this.getFlatNode();
     let hit: Node | null = null;
     const point = Point.from(e, this.editor);

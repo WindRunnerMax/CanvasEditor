@@ -75,6 +75,9 @@ export class SelectNode extends Node {
   };
 
   private onMouseDownController = (e: globalThis.MouseEvent) => {
+    // 非默认状态下不执行事件
+    if (!this.editor.canvas.isDefaultMode()) return void 0;
+    // 取消已有事件绑定
     this.unbindOpEvents();
     const selection = this.editor.selection.get();
     // 这里需要用原生事件绑定 需要在选区完成后再执行 否则交互上就必须要先点选再拖拽
