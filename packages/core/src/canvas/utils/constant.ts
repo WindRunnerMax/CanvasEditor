@@ -6,6 +6,8 @@ export const REFER_BIAS = 5;
 export const THE_DELAY = 30;
 export const MAX_Z_INDEX = 999999;
 
+export const DRAG_KEY = "DATA";
+
 export const RESIZE_TYPE = {
   L: "L",
   R: "R",
@@ -16,12 +18,12 @@ export const RESIZE_TYPE = {
   LB: "LB",
   RB: "RB",
 } as const;
+export type ResizeType = keyof typeof RESIZE_TYPE;
 
 export const CURSOR_TYPE = {
   GRAB: "GRAB",
   GRABBING: "GRABBING",
 };
-
 export const CURSOR_STATE = {
   [RESIZE_TYPE.L]: "ew-resize",
   [RESIZE_TYPE.R]: "ew-resize",
@@ -34,5 +36,3 @@ export const CURSOR_STATE = {
   [CURSOR_TYPE.GRAB]: "grab",
   [CURSOR_TYPE.GRABBING]: "grabbing",
 } as const;
-
-export type ResizeType = keyof typeof RESIZE_TYPE;

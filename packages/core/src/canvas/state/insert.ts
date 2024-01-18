@@ -6,6 +6,7 @@ import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
 import { Point } from "../../selection/modules/point";
 import type { Canvas } from "../index";
+import { DRAG_KEY } from "../utils/constant";
 
 export class Insert {
   constructor(private editor: Editor, private engine: Canvas) {
@@ -18,7 +19,7 @@ export class Insert {
 
   public onDrop = (e: DragEvent) => {
     const point = Point.from(e, this.editor);
-    const payload = e.dataTransfer?.getData("data");
+    const payload = e.dataTransfer && e.dataTransfer.getData(DRAG_KEY);
     if (!payload) return void 0;
     const data = TSON.decode<DeltaLike>(payload);
     if (!data) return void 0;

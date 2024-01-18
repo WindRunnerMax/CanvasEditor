@@ -1,5 +1,6 @@
 import type { FC } from "react";
 import { useState } from "react";
+import { DRAG_KEY } from "sketching-core";
 import type { DeltaLike } from "sketching-delta";
 import { cs, TSON } from "sketching-utils";
 
@@ -25,6 +26,7 @@ export const Header: FC = () => {
   };
 
   const onDragRect = (e: React.DragEvent<HTMLDivElement>) => {
+    if (active !== NAV_ENUM.DEFAULT) return void 0;
     const deltaLike: DeltaLike = {
       key: NAV_ENUM.RECT,
       x: 0,
@@ -32,7 +34,7 @@ export const Header: FC = () => {
       width: 100,
       height: 50,
     };
-    e.dataTransfer.setData("data", TSON.encode(deltaLike) || "");
+    e.dataTransfer.setData(DRAG_KEY, TSON.encode(deltaLike) || "");
   };
 
   const onDragEnd = () => {
