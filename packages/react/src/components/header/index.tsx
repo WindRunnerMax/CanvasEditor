@@ -17,16 +17,16 @@ export const Header: FC = () => {
 
   const switchIndex = (index: string) => {
     if (index === active) return void 0;
-    if (index === NAV_ENUM.GRAB) {
-      editor.canvas.grab.start();
-    } else {
-      editor.canvas.grab.close();
-    }
     if (index === NAV_ENUM.DEFAULT) {
       editor.canvas.insert.close();
+      editor.canvas.grab.close();
     }
+    if (index === NAV_ENUM.GRAB) {
+      editor.canvas.grab.start();
+    }
+    const empty = { x: 0, y: 0, width: 0, height: 0 };
     if (index === NAV_ENUM.RECT) {
-      const deltaLike: DeltaLike = { key: NAV_ENUM.RECT, x: 0, y: 0, width: 0, height: 0 };
+      const deltaLike: DeltaLike = { key: NAV_ENUM.RECT, ...empty };
       editor.canvas.insert.start(deltaLike);
     }
     setActive(index);
