@@ -6,7 +6,7 @@ import { EDITOR_EVENT } from "../../event/bus/action";
 import type { SelectionChangeEvent } from "../../event/bus/types";
 import { Point } from "../../selection/modules/point";
 import { Range } from "../../selection/modules/range";
-import type { ResizeType } from "../utils/constant";
+import type { ResizeType } from "../types/dom";
 import { MAX_Z_INDEX, RESIZE_OFS, RESIZE_TYPE, SELECT_BIAS, THE_DELAY } from "../utils/constant";
 import { BLUE_5 } from "../utils/palette";
 import { drawRect } from "../utils/shape";

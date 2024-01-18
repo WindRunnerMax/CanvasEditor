@@ -1,4 +1,4 @@
-import type { MouseEvent } from "./mouse";
+import type { MouseEvent } from "../event/mouse";
 
 export type EventOptions = { bubble?: boolean; capture?: boolean };
 

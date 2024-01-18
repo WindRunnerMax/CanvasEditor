@@ -1,4 +1,4 @@
-import type { EventOptions } from "./types";
+import type { EventOptions } from "../types/event";
 
 export class Event {
   public bubble: boolean;

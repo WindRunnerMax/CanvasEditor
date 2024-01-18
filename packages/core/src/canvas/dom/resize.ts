@@ -7,7 +7,7 @@ import { Point } from "../../selection/modules/point";
 import { Range } from "../../selection/modules/range";
 import { EDITOR_STATE } from "../../state/utils/constant";
 import type { MouseEvent } from "../event/mouse";
-import type { ResizeType } from "../utils/constant";
+import type { ResizeType } from "../types/dom";
 import {
   MAX_Z_INDEX,
   RESIZE_LEN,

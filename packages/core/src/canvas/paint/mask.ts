@@ -4,14 +4,15 @@ import type { Editor } from "../../editor";
 import { Range } from "../../selection/modules/range";
 import type { Node } from "../dom/node";
 import type { Canvas } from "../index";
+import type { DrawingEffectOptions } from "../types/paint";
 import { CURSOR_STATE } from "../utils/constant";
 
 export class Mask {
-  private canvas: HTMLCanvasElement;
-  public ctx: CanvasRenderingContext2D;
-  private timer: NodeJS.Timeout | null;
   private range: Range | null;
   private effects: Set<Node> | null;
+  private canvas: HTMLCanvasElement;
+  private timer: NodeJS.Timeout | null;
+  public ctx: CanvasRenderingContext2D;
 
   constructor(private editor: Editor, private engine: Canvas) {
     // `Mask`绘制的是`Node`
@@ -78,9 +79,10 @@ export class Mask {
     }
   }
 
-  public drawingEffect(range: Range, immediately = false) {
+  public drawingEffect(range: Range, options?: DrawingEffectOptions) {
+    const { immediately = false, force = false } = options || {};
     // 非默认模式下不需要绘制`Mask`
-    if (!this.engine.isDefaultMode()) return void 0;
+    if (!force && !this.engine.isDefaultMode()) return void 0;
     // COMPAT: 选区范围未能完全覆盖
     const current = range.zoom(this.editor.canvas.devicePixelRatio);
     // 增量绘制`range`范围内的节点
@@ -118,7 +120,7 @@ export class Mask {
     Promise.resolve().then(() => {
       const range = Range.from(offsetX, offsetY, width, height);
       // COMPAT: 需要立即绘制 否则在`wheel`事件中会闪动
-      this.drawingEffect(range, true);
+      this.drawingEffect(range, { immediately: true });
     });
   }
 

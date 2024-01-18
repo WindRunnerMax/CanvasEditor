@@ -12,8 +12,8 @@ import { Node } from "../dom/node";
 import { ResizeNode } from "../dom/resize";
 import { SelectNode } from "../dom/select";
 import { MouseEvent } from "../event/mouse";
-import type { NodeEvent } from "../event/types";
-import { NODE_EVENT } from "../event/types";
+import type { NodeEvent } from "../types/event";
+import { NODE_EVENT } from "../types/event";
 import type { Canvas } from "../index";
 import { THE_DELAY } from "../utils/constant";
 

@@ -1,6 +1,6 @@
 import type { Editor } from "../../editor";
+import type { EventOptions } from "../types/event";
 import { Event } from "./basic";
-import type { EventOptions } from "./types";
 
 export class MouseEvent extends Event {
   public readonly x: number;
