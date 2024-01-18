@@ -26,7 +26,7 @@ export const Header: FC = () => {
   };
 
   const onDragRect = (e: React.DragEvent<HTMLDivElement>) => {
-    if (active !== NAV_ENUM.DEFAULT) return void 0;
+    if (active !== NAV_ENUM.DEFAULT) return false;
     const deltaLike: DeltaLike = {
       key: NAV_ENUM.RECT,
       x: 0,
@@ -57,7 +57,7 @@ export const Header: FC = () => {
           {GrabIcon}
         </div>
         <div
-          draggable
+          draggable={active === NAV_ENUM.DEFAULT}
           onDragStart={e => onDragRect(e)}
           onDragEnd={onDragEnd}
           className={cs(styles.op, active === NAV_ENUM.RECT && styles.active)}

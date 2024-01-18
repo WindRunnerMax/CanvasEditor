@@ -106,4 +106,8 @@ export class Canvas {
   public isActive() {
     return this.mask.isActive() || this.graph.isActive();
   }
+
+  public isDefaultMode() {
+    return !this.grab.on && !this.insert.on;
+  }
 }

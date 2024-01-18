@@ -79,8 +79,8 @@ export class Mask {
   }
 
   public drawingEffect(range: Range, immediately = false) {
-    // 拖拽模式下不需要绘制`Mask`
-    if (this.engine.grab.on) return void 0;
+    // 非默认模式下不需要绘制`Mask`
+    if (!this.engine.isDefaultMode()) return void 0;
     // COMPAT: 选区范围未能完全覆盖
     const current = range.zoom(this.editor.canvas.devicePixelRatio);
     // 增量绘制`range`范围内的节点

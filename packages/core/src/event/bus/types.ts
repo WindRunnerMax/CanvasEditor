@@ -27,7 +27,7 @@ export type ResizeEvent = {
 };
 
 export type GrabEvent = {
-  state: boolean;
+  done: boolean;
 };
 
 export type InsertEvent = {

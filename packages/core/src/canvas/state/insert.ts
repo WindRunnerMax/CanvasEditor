@@ -9,12 +9,33 @@ import type { Canvas } from "../index";
 import { DRAG_KEY } from "../utils/constant";
 
 export class Insert {
+  private _on: boolean;
   constructor(private editor: Editor, private engine: Canvas) {
+    this._on = false;
     this.editor.event.on(EDITOR_EVENT.DROP, this.onDrop);
   }
 
   destroy() {
     this.editor.event.off(EDITOR_EVENT.DROP, this.onDrop);
+  }
+
+  public get on() {
+    return this._on;
+  }
+
+  public start() {
+    if (this._on) return void 0;
+    this._on = true;
+    this.engine.mask.clear();
+    this.engine.mask.setCursorState(null);
+    this.editor.selection.clearActiveDeltas();
+  }
+
+  public close() {
+    if (!this._on) return void 0;
+    this._on = false;
+    this.engine.mask.setCursorState(null);
+    this.editor.event.trigger(EDITOR_EVENT.INSERT_STATE, { done: true });
   }
 
   public onDrop = (e: DragEvent) => {

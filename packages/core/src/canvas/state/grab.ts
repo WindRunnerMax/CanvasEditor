@@ -31,7 +31,6 @@ export class Grab {
     this.editor.selection.clearActiveDeltas();
     this.engine.mask.setCursorState(CURSOR_TYPE.GRAB);
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDown);
-    this.editor.event.trigger(EDITOR_EVENT.GRAB_STATE, { state: true });
   }
 
   public close() {
@@ -39,7 +38,7 @@ export class Grab {
     this._on = false;
     this.engine.mask.setCursorState(null);
     this.editor.event.off(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDown);
-    this.editor.event.trigger(EDITOR_EVENT.GRAB_STATE, { state: false });
+    this.editor.event.trigger(EDITOR_EVENT.GRAB_STATE, { done: true });
   }
 
   private onTranslate = (e: WheelEvent) => {

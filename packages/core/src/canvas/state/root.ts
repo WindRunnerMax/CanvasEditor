@@ -67,8 +67,8 @@ export class Root extends Node {
   }
 
   public getFlatNode(): Node[] {
-    // 拖拽状态下不需要匹配
-    if (this.engine.grab.on) return [];
+    // 非默认状态下不需要匹配
+    if (!this.engine.isDefaultMode()) return [];
     // 事件调用实际顺序 // 渲染顺序则相反
     return [...super.getFlatNode(), this];
   }
