@@ -6,15 +6,14 @@ import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
 import { Point } from "../../selection/modules/point";
 import { Range } from "../../selection/modules/range";
-import { Node } from "../dom/node";
 import type { Canvas } from "../index";
-import { DRAG_KEY, MAX_Z_INDEX, THE_DELAY } from "../utils/constant";
+import { DRAG_KEY, THE_DELAY } from "../utils/constant";
 import { BLUE_5 } from "../utils/palette";
 import { drawRect } from "../utils/shape";
 
 export class Insert {
   private _on: boolean;
-  private node: Node | null;
+  private range: Range | null;
   private landing: Point | null;
   private dragged: Range | null;
   private data: DeltaLike | null;
@@ -23,7 +22,7 @@ export class Insert {
   constructor(private editor: Editor, private engine: Canvas) {
     this._on = false;
     this.data = null;
-    this.node = null;
+    this.range = null;
     this.landing = null;
     this.dragged = null;
     this.landingClient = null;
@@ -72,16 +71,12 @@ export class Insert {
     const point = Point.from(e, this.editor);
     this.dragged = Range.from(point.x, point.y, point.x, point.y);
     this.landing = Point.from(e, this.editor);
-    const node = new Node(this.dragged);
-    node.setZ(MAX_Z_INDEX);
-    this.node = node;
-    node.drawingMask = this.drawingMask.bind(node);
     this.landingClient = Point.from(e.clientX, e.clientY);
     this.bindOpEvents();
   };
 
   private onMouseMoveBasic = (e: globalThis.MouseEvent) => {
-    if (!this.landing || !this.node || !this.landingClient) return void 0;
+    if (!this.landing || !this.landingClient) return void 0;
     const point = Point.from(e.clientX, e.clientY);
     const { x, y } = this.landingClient.diff(point);
     const latest = new Range({
@@ -90,18 +85,17 @@ export class Insert {
       endX: this.landing.x + x,
       endY: this.landing.y + y,
     }).normalize();
-    this.node.setRange(latest);
+    this.range = latest;
     // 重绘拖拽过的最大区域
     this.dragged = this.dragged ? this.dragged.compose(latest) : latest;
-    this.engine.mask.drawingEffect(this.dragged, { force: true });
+    this.drawingMask(this.dragged);
   };
   private onMouseMoveController = throttle(this.onMouseMoveBasic, THE_DELAY);
 
   private onMouseUpController = () => {
     this.unbindOpEvents();
-    if (this.node && this.data) {
-      this.engine.root.removeChild(this.node);
-      const range = this.node.range;
+    if (this.range && this.data) {
+      const range = this.range;
       const rect = range.rect();
       const deltaLike: DeltaLike = {
         ...this.data,
@@ -110,9 +104,9 @@ export class Insert {
       const delta = DeltaSet.create(deltaLike);
       delta && this.editor.state.apply(Op.from(OP_TYPE.INSERT, { delta }));
     }
-    this.dragged && this.engine.mask.drawingEffect(this.dragged, { force: true });
+    this.dragged && this.drawingMask(this.dragged, true);
     this.close();
-    this.node = null;
+    this.range = null;
     this.dragged = null;
     this.landing = null;
     this.landingClient = null;
@@ -133,9 +127,12 @@ export class Insert {
     delta && this.editor.state.apply(Op.from(OP_TYPE.INSERT, { delta }));
   };
 
-  public drawingMask(this: Node, ctx: CanvasRenderingContext2D) {
-    console.log("111 :>> ", 111);
-    const { x, y, width, height } = this.range.rect();
-    drawRect(ctx, { x, y, width, height, borderColor: BLUE_5 });
+  public drawingMask(range: Range, onlyClear = false) {
+    this.engine.mask.clear(range.zoom(this.engine.devicePixelRatio));
+    if (!onlyClear) {
+      const ctx = this.engine.mask.ctx;
+      const { x, y, width, height } = range.rect();
+      drawRect(ctx, { x, y, width, height, borderColor: BLUE_5 });
+    }
   }
 }
