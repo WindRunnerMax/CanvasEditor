@@ -66,9 +66,7 @@ export class FrameNode extends Node {
       // 获取获取与选区交叉的所有`State`节点
       const effects: string[] = [];
       this.editor.state.getDeltas().forEach(state => {
-        if (latest.intersect(state.toRange())) {
-          effects.push(state.id);
-        }
+        if (latest.intersect(state.toRange())) effects.push(state.id);
       });
       this.editor.selection.setActiveDelta(...effects);
       // 重绘拖拽过的最大区域

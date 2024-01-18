@@ -12,9 +12,9 @@ import { Node } from "../dom/node";
 import { ResizeNode } from "../dom/resize";
 import { SelectNode } from "../dom/select";
 import { MouseEvent } from "../event/mouse";
+import type { Canvas } from "../index";
 import type { NodeEvent } from "../types/event";
 import { NODE_EVENT } from "../types/event";
-import type { Canvas } from "../index";
 import { THE_DELAY } from "../utils/constant";
 
 export class Root extends Node {

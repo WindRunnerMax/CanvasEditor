@@ -1,6 +1,6 @@
 import type { FC } from "react";
-import { useState } from "react";
-import { DRAG_KEY } from "sketching-core";
+import { useEffect, useState } from "react";
+import { DRAG_KEY, EDITOR_EVENT } from "sketching-core";
 import type { DeltaLike } from "sketching-delta";
 import { cs, TSON } from "sketching-utils";
 
@@ -22,6 +22,13 @@ export const Header: FC = () => {
     } else {
       editor.canvas.grab.close();
     }
+    if (index === NAV_ENUM.DEFAULT) {
+      editor.canvas.insert.close();
+    }
+    if (index === NAV_ENUM.RECT) {
+      const deltaLike: DeltaLike = { key: NAV_ENUM.RECT, x: 0, y: 0, width: 0, height: 0 };
+      editor.canvas.insert.start(deltaLike);
+    }
     setActive(index);
   };
 
@@ -40,6 +47,16 @@ export const Header: FC = () => {
   const onDragEnd = () => {
     setActive(NAV_ENUM.DEFAULT);
   };
+
+  useEffect(() => {
+    const onInsertState = (data: { done: boolean }) => {
+      if (data.done) setActive(NAV_ENUM.DEFAULT);
+    };
+    editor.event.on(EDITOR_EVENT.INSERT_STATE, onInsertState);
+    return () => {
+      editor.event.off(EDITOR_EVENT.INSERT_STATE, onInsertState);
+    };
+  }, [editor]);
 
   return (
     <div className={styles.container}>
