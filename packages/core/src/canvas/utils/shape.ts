@@ -18,7 +18,7 @@ export type ArcProps = {
 };
 
 export class Shape {
-  static rect = (ctx: CanvasRenderingContext2D, options: RectProps) => {
+  static rect(ctx: CanvasRenderingContext2D, options: RectProps) {
     ctx.beginPath();
     ctx.rect(options.x, options.y, options.width, options.height);
     if (options.borderColor) {
@@ -31,8 +31,9 @@ export class Shape {
       ctx.fill();
     }
     ctx.closePath();
-  };
-  static arc = (ctx: CanvasRenderingContext2D, options: ArcProps) => {
+  }
+
+  static arc(ctx: CanvasRenderingContext2D, options: ArcProps) {
     ctx.beginPath();
     ctx.arc(options.x, options.y, options.radius, 0, 2 * Math.PI);
     if (options.borderColor) {
@@ -45,5 +46,5 @@ export class Shape {
       ctx.fill();
     }
     ctx.closePath();
-  };
+  }
 }

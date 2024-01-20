@@ -1,10 +1,13 @@
 @import '../../styles/variable';
 
 .container {
+  display: flex;
   height: calc(100% - 50px);
   width: 100%;
 }
 
 .canvas {
   @include full-screen;
+
+  flex-grow: 1;
 }

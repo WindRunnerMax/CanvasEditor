@@ -1,0 +1,8 @@
+@import '../left-panel/index.m';
+
+.container {
+  border-left: $panel-border;
+  flex-shrink: 0;
+  height: 100%;
+  width: $panel-width;
+}
