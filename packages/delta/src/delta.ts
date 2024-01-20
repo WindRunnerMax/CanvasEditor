@@ -8,6 +8,7 @@ export abstract class Delta {
   public readonly id: string;
   protected x: number;
   protected y: number;
+  protected z: number;
   protected width: number;
   protected height: number;
   public children: string[];
@@ -16,10 +17,11 @@ export abstract class Delta {
   public abstract drawing: (ctx: CanvasRenderingContext2D) => void;
 
   public constructor(options: DeltaOptions) {
-    const { id, x, y, width, height } = options;
+    const { id, x, y, z, width, height } = options;
     this.id = id || getUniqueId();
     this.x = x;
     this.y = y;
+    this.z = z || 0;
     this.width = width;
     this.height = height;
     this.attrs = options.attrs || {};
@@ -39,22 +41,11 @@ export abstract class Delta {
     return this;
   }
 
-  public setX(x: number) {
+  setRect(x: number, y: number, width: number, height: number, z: number = 0) {
     this.x = x;
-    return this;
-  }
-
-  public setY(y: number) {
     this.y = y;
-    return this;
-  }
-
-  public setWidth(width: number) {
+    this.z = z;
     this.width = width;
-    return this;
-  }
-
-  public setHeight(height: number) {
     this.height = height;
     return this;
   }
@@ -83,8 +74,12 @@ export abstract class Delta {
     return this.attrs[key];
   }
 
-  public setAttr(key: string, value: string) {
-    this.attrs[key] = String(value);
+  public setAttr(key: string, value: string | null) {
+    if (!value) {
+      delete this.attrs[key];
+    } else {
+      this.attrs[key] = String(value);
+    }
     return this;
   }
 
@@ -93,7 +88,7 @@ export abstract class Delta {
   }
 
   public getRect() {
-    return { x: this.x, y: this.y, width: this.width, height: this.height };
+    return { x: this.x, y: this.y, width: this.width, height: this.height, z: this.z };
   }
 
   public clone(): this {
@@ -105,6 +100,7 @@ export abstract class Delta {
     return {
       x: this.x,
       y: this.y,
+      z: this.z,
       id: this.id,
       key: this.key,
       attrs: this.attrs,

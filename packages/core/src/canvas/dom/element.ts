@@ -1,5 +1,5 @@
 import type { Editor } from "../../editor";
-import type { Range } from "../../selection/modules/range";
+import type { DeltaState } from "../../state/modules/node";
 import { EDITOR_STATE } from "../../state/utils/constant";
 import type { MouseEvent } from "../event/mouse";
 import { BLUE_3 } from "../utils/palette";
@@ -7,9 +7,16 @@ import { drawRect } from "../utils/shape";
 import { Node } from "./node";
 
 export class ElementNode extends Node {
+  private readonly id: string;
   private isHovering: boolean;
-  constructor(public readonly id: string, private editor: Editor, range: Range) {
+
+  constructor(private editor: Editor, state: DeltaState) {
+    const range = state.toRange();
     super(range);
+    this.id = state.id;
+    const delta = state.toDelta();
+    const rect = delta.getRect();
+    this.setZ(rect.z);
     this.isHovering = false;
   }
 

@@ -48,7 +48,7 @@ export class DeltaState {
     this.children.push(state);
     const node = NSBridge.get(this);
     if (node) {
-      const element = new ElementNode(delta.id, this.editor, state.toRange());
+      const element = new ElementNode(this.editor, state);
       node.append(element);
       NSBridge.set(state, element);
     } else {
@@ -85,10 +85,7 @@ export class DeltaState {
 
   public resize(range: Range) {
     const { x, y, width, height } = range.rect();
-    this.delta.setX(x);
-    this.delta.setY(y);
-    this.delta.setWidth(width);
-    this.delta.setHeight(height);
+    this.delta.setRect(x, y, width, height);
     const node = NSBridge.get(this);
     if (node) {
       node.setRange(range);

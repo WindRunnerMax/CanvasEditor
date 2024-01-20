@@ -4,6 +4,7 @@ import type { Op } from "./op";
 export type DeltaLike = {
   x: number;
   y: number;
+  z?: number;
   id?: string;
   key: string;
   width: number;
@@ -11,9 +12,11 @@ export type DeltaLike = {
   children?: string[];
   attrs?: Record<string, string>;
 };
+
 export type DeltaOptions = DeltaLike;
 export type DeltaSetLike = Record<string, DeltaLike>;
 export type DeltaSetOptions = DeltaSetLike;
+
 export type StrictDeltaLike = Required<DeltaLike>;
 export type StrictDeltaSetLike = Record<string, StrictDeltaLike>;
 export type DeltaStatic = typeof Delta & {

@@ -48,7 +48,7 @@ export class Root extends Node {
     const createElement = (state: DeltaState) => {
       const element = NSBridge.get(state);
       if (element) return element;
-      return new ElementNode(state.id, this.editor, state.toRange());
+      return new ElementNode(this.editor, state);
     };
     while (queue.length) {
       const current = queue.shift();
