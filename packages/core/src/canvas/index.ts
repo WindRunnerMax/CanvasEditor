@@ -45,7 +45,6 @@ export class Canvas {
     this.height = dom.clientHeight;
     this.graph.onMount(dom);
     this.mask.onMount(dom);
-    this.reset();
   }
 
   public destroy() {
@@ -66,6 +65,7 @@ export class Canvas {
   }
 
   private onResize = (entries: ResizeObserverEntry[]) => {
+    // COMPAT: `onResize`会触发首次`render`
     const [entry] = entries;
     if (!entry) return void 0;
     // 置宏任务队列
