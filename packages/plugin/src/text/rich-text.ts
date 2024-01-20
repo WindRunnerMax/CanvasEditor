@@ -1,4 +1,4 @@
-import type { TextLines, TextMatrices, TextMatrix, TextMatrixItem } from "./constant";
+import type { RichTextLines, TextMatrices, TextMatrix, TextMatrixItem } from "./constant";
 import { TEXT_ATTRS } from "./constant";
 
 export class RichText {
@@ -30,18 +30,19 @@ export class RichText {
     return { metric, font };
   };
 
-  public parse = (lines: TextLines, width: number) => {
+  public parse = (lines: RichTextLines, width: number) => {
     const group: TextMatrices = [];
     for (const line of lines) {
-      let matrix: TextMatrix = { items: [], height: 0, width: 0 };
+      // COMPAT: 高度给予最小值
+      let matrix: TextMatrix = { items: [], height: 12, width: 0 };
       for (const item of line) {
         const { metric, font } = this.measure(item.char, item.config);
         if (!metric) continue;
-        const text: TextMatrixItem = { char: item.char, font, metric };
+        const text: TextMatrixItem = { char: item.char, font, metric, config: item.config };
         if (matrix.width + metric.width > width) {
           group.push(matrix);
           // 重置行`matrix`
-          matrix = { items: [], height: 0, width: 0 };
+          matrix = { items: [], height: 12, width: 0 };
         }
         matrix.height = Math.max(
           matrix.height,
@@ -50,6 +51,7 @@ export class RichText {
         matrix.width = matrix.width + metric.width;
         matrix.items.push(text);
       }
+      matrix.break = true;
       group.push(matrix);
     }
     return group;
@@ -70,10 +72,13 @@ export class RichText {
     let offsetX = x;
     let offsetY = y;
     for (const matrix of matrices) {
+      const gap = Math.max(0, (width - matrix.width) / matrix.items.length);
       for (const item of matrix.items) {
         ctx.font = item.font;
+        ctx.fillStyle = item.config.color || "#1D2129";
         ctx.fillText(item.char, offsetX, offsetY + matrix.height);
         offsetX = offsetX + item.metric.width;
+        if (!matrix.break) offsetX = offsetX + gap;
       }
       offsetX = x;
       offsetY = offsetY + matrix.height;

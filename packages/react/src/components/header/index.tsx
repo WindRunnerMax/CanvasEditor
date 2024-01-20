@@ -8,6 +8,7 @@ import { useEditor } from "../../hooks/useEditor";
 import { CursorIcon } from "../../static/cursor";
 import { GrabIcon } from "../../static/grab";
 import { RectIcon } from "../../static/rect";
+import { TextIcon } from "../../static/text";
 import styles from "./index.m.scss";
 import { NAV_ENUM } from "./types";
 
@@ -29,6 +30,10 @@ export const Header: FC = () => {
       const deltaLike: DeltaLike = { key: NAV_ENUM.RECT, ...empty };
       editor.canvas.insert.start(deltaLike);
     }
+    if (index === NAV_ENUM.TEXT) {
+      const deltaLike: DeltaLike = { key: NAV_ENUM.TEXT, ...empty };
+      editor.canvas.insert.start(deltaLike);
+    }
     setActive(index);
   };
 
@@ -36,6 +41,18 @@ export const Header: FC = () => {
     if (active !== NAV_ENUM.DEFAULT) return false;
     const deltaLike: DeltaLike = {
       key: NAV_ENUM.RECT,
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 50,
+    };
+    e.dataTransfer.setData(DRAG_KEY, TSON.encode(deltaLike) || "");
+  };
+
+  const onDragText = (e: React.DragEvent<HTMLDivElement>) => {
+    if (active !== NAV_ENUM.DEFAULT) return false;
+    const deltaLike: DeltaLike = {
+      key: NAV_ENUM.TEXT,
       x: 0,
       y: 0,
       width: 100,
@@ -75,12 +92,21 @@ export const Header: FC = () => {
         </div>
         <div
           draggable={active === NAV_ENUM.DEFAULT}
-          onDragStart={e => onDragRect(e)}
+          onDragStart={onDragRect}
           onDragEnd={onDragEnd}
           className={cs(styles.op, active === NAV_ENUM.RECT && styles.active)}
           onClick={() => switchIndex(NAV_ENUM.RECT)}
         >
           {RectIcon}
+        </div>
+        <div
+          draggable={active === NAV_ENUM.DEFAULT}
+          onDragStart={onDragText}
+          onDragEnd={onDragEnd}
+          className={cs(styles.op, active === NAV_ENUM.TEXT && styles.active)}
+          onClick={() => switchIndex(NAV_ENUM.TEXT)}
+        >
+          {TextIcon}
         </div>
       </div>
     </div>

@@ -4,22 +4,25 @@ export const TEXT_ATTRS = {
   SIZE: "size",
   WEIGHT: "weight",
   STYLE: "style",
+  COLOR: "color",
 };
 
-export type TextLine = {
+export type RichTextLine = {
   char: string;
   config: Record<string, string>;
 }[];
-export type TextLines = TextLine[];
+export type RichTextLines = RichTextLine[];
 
 export type TextMatrixItem = {
   char: string;
   font: string;
   metric: TextMetrics;
+  config: Record<string, string>;
 };
 export type TextMatrix = {
   items: TextMatrixItem[];
   height: number;
   width: number;
+  break?: boolean;
 };
 export type TextMatrices = TextMatrix[];

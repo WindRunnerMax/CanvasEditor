@@ -8,6 +8,8 @@ import { Point } from "../../selection/modules/point";
 import { Range } from "../../selection/modules/range";
 import type { Canvas } from "../index";
 import { DRAG_KEY, THE_CONFIG } from "../utils/constant";
+import { BLUE_5 } from "../utils/palette";
+import { Shape } from "../utils/shape";
 
 export class Insert {
   private _on: boolean;
@@ -86,7 +88,7 @@ export class Insert {
     this.range = latest;
     // 重绘拖拽过的最大区域
     this.dragged = this.dragged ? this.dragged.compose(latest) : latest;
-    this.drawingMask(this.dragged);
+    this.drawingMask();
   };
   private onMouseMoveController = throttle(this.onMouseMoveBasic, ...THE_CONFIG);
 
@@ -98,7 +100,7 @@ export class Insert {
       this.delta.setRect(x, y, width, height);
       this.editor.state.apply(Op.from(OP_TYPE.INSERT, { delta: this.delta }));
     }
-    this.dragged && this.drawingMask(this.dragged, true);
+    this.drawingMask(true);
     this.close();
     this.range = null;
     this.dragged = null;
@@ -121,13 +123,16 @@ export class Insert {
     delta && this.editor.state.apply(Op.from(OP_TYPE.INSERT, { delta }));
   };
 
-  public drawingMask(range: Range, onlyClear = false) {
-    this.engine.mask.clear(range.zoom(this.engine.devicePixelRatio));
-    if (!onlyClear && this.delta) {
+  public drawingMask(finish = false) {
+    if (this.dragged) {
+      this.engine.mask.clear(this.dragged.zoom(this.engine.devicePixelRatio));
+    }
+    if (this.range && this.delta) {
       const ctx = this.engine.mask.ctx;
-      const { x, y, width, height } = range.rect();
+      const { x, y, width, height } = this.range.rect();
       this.delta.setRect(x, y, width, height);
       this.delta.drawing(ctx);
+      !finish && Shape.rect(ctx, { x, y, width, height, borderColor: BLUE_5 });
     }
   }
 }
