@@ -3,7 +3,7 @@ export const RESIZE_LEN = 10;
 export const SELECT_BIAS = 3;
 export const REFER_BIAS = 5;
 
-export const THE_DELAY = 30;
+export const THE_CONFIG = [30, { trailing: false }] as const;
 export const MAX_Z_INDEX = 999999;
 
 export const DRAG_KEY = "DATA";

@@ -1,5 +1,6 @@
 import type { DeltaSet } from "sketching-delta";
 
+import type { ElementNode } from "../../canvas/dom/element";
 import type { Range } from "../../selection/modules/range";
 import type { ApplyOptions } from "../../state/utils/types";
 
@@ -32,4 +33,8 @@ export type GrabEvent = {
 
 export type InsertEvent = {
   done: boolean;
+};
+
+export type HoverEvent = {
+  node: ElementNode;
 };

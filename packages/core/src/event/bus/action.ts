@@ -3,6 +3,7 @@ import { NATIVE_EVENTS } from "../native/types";
 import type {
   ContentChangeEvent,
   GrabEvent,
+  HoverEvent,
   InsertEvent,
   PaintEvent,
   ResizeEvent,
@@ -16,6 +17,8 @@ export const EDITOR_EVENT = {
   RESIZE: "RESIZE",
   GRAB_STATE: "GRAB_STATE",
   INSERT_STATE: "INSERT_STATE",
+  HOVER_ENTER: "HOVER_ENTER",
+  HOVER_LEAVE: "HOVER_LEAVE",
   ...NATIVE_EVENTS,
 } as const;
 
@@ -26,6 +29,8 @@ export type EventMap = {
   [EDITOR_EVENT.RESIZE]: ResizeEvent;
   [EDITOR_EVENT.GRAB_STATE]: GrabEvent;
   [EDITOR_EVENT.INSERT_STATE]: InsertEvent;
+  [EDITOR_EVENT.HOVER_ENTER]: HoverEvent;
+  [EDITOR_EVENT.HOVER_LEAVE]: HoverEvent;
 } & NativeEventMap;
 
 type EventMapType = typeof EDITOR_EVENT;

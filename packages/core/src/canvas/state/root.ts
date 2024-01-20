@@ -15,7 +15,7 @@ import { MouseEvent } from "../event/mouse";
 import type { Canvas } from "../index";
 import type { NodeEvent } from "../types/event";
 import { NODE_EVENT } from "../types/event";
-import { THE_DELAY } from "../utils/constant";
+import { THE_CONFIG } from "../utils/constant";
 
 export class Root extends Node {
   public hover: ElementNode | ResizeNode | null;
@@ -122,24 +122,35 @@ export class Root extends Node {
     if (!this.engine.isDefaultMode()) return void 0;
     // 按事件顺序获取节点
     const flatNode = this.getFlatNode();
-    let hit: ElementNode | ResizeNode | null = null;
+    let next: ElementNode | ResizeNode | null = null;
     const point = Point.from(e, this.editor);
     for (const node of flatNode) {
+      // 当前只有`ElementNode`和`ResizeNode`需要触发`Mouse Enter/Leave`事件
       const authorize = node instanceof ElementNode || node instanceof ResizeNode;
       if (authorize && node.range.include(point)) {
-        hit = node;
+        next = node;
         break;
       }
     }
     // 如果命中节点且没有暂存的`hover`节点
-    if (this.hover !== hit) {
+    if (this.hover !== next) {
       const prev = this.hover;
-      this.hover = hit;
-      prev && this.emit(prev, NODE_EVENT.MOUSE_LEAVE, MouseEvent.from(e, this.editor));
-      hit && this.emit(hit, NODE_EVENT.MOUSE_ENTER, MouseEvent.from(e, this.editor));
+      this.hover = next;
+      if (prev !== null) {
+        this.emit(prev, NODE_EVENT.MOUSE_LEAVE, MouseEvent.from(e, this.editor));
+        if (prev instanceof ElementNode) {
+          this.editor.event.trigger(EDITOR_EVENT.HOVER_LEAVE, { node: prev });
+        }
+      }
+      if (next !== null) {
+        this.emit(next, NODE_EVENT.MOUSE_ENTER, MouseEvent.from(e, this.editor));
+        if (next instanceof ElementNode) {
+          this.editor.event.trigger(EDITOR_EVENT.HOVER_ENTER, { node: next });
+        }
+      }
     }
   };
-  private onMouseMoveController = throttle(this.onMouseMoveBasic, THE_DELAY);
+  private onMouseMoveController = throttle(this.onMouseMoveBasic, ...THE_CONFIG);
 
   private onMouseUpController = (e: globalThis.MouseEvent) => {
     // 非默认状态下不执行事件

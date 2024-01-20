@@ -6,7 +6,7 @@ import { Point } from "../../selection/modules/point";
 import { Range } from "../../selection/modules/range";
 import type { MouseEvent } from "../event/mouse";
 import type { Root } from "../state/root";
-import { MAX_Z_INDEX, RESIZE_OFS, SELECT_BIAS, THE_DELAY } from "../utils/constant";
+import { MAX_Z_INDEX, RESIZE_OFS, SELECT_BIAS, THE_CONFIG } from "../utils/constant";
 import { BLUE_5, BLUE_6_6 } from "../utils/palette";
 import { Shape } from "../utils/shape";
 import { Node } from "./node";
@@ -75,7 +75,7 @@ export class FrameNode extends Node {
       this.editor.canvas.mask.drawingEffect(this.dragged);
     }
   };
-  private onMouseMoveController = throttle(this.onMouseMoveBridge, THE_DELAY);
+  private onMouseMoveController = throttle(this.onMouseMoveBridge, ...THE_CONFIG);
 
   private onMouseUpController = () => {
     this.unbindOpEvents();

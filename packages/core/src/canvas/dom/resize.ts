@@ -14,7 +14,7 @@ import {
   RESIZE_OFS,
   RESIZE_TYPE,
   SELECT_BIAS,
-  THE_DELAY,
+  THE_CONFIG,
 } from "../utils/constant";
 import { GRAY_5, GRAY_7, WHITE } from "../utils/palette";
 import { Shape } from "../utils/shape";
@@ -201,7 +201,7 @@ export class ResizeNode extends Node {
       this.editor.selection.set(this.latest);
     }
   };
-  private onMouseMoveController = throttle(this.onMouseMoveBasic, THE_DELAY);
+  private onMouseMoveController = throttle(this.onMouseMoveBasic, ...THE_CONFIG);
 
   private onMouseUpController = (e: globalThis.MouseEvent) => {
     this.unbindOpEvents();

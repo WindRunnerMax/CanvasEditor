@@ -7,7 +7,7 @@ import { EDITOR_EVENT } from "../../event/bus/action";
 import { Point } from "../../selection/modules/point";
 import { Range } from "../../selection/modules/range";
 import type { Canvas } from "../index";
-import { DRAG_KEY, THE_DELAY } from "../utils/constant";
+import { DRAG_KEY, THE_CONFIG } from "../utils/constant";
 
 export class Insert {
   private _on: boolean;
@@ -88,7 +88,7 @@ export class Insert {
     this.dragged = this.dragged ? this.dragged.compose(latest) : latest;
     this.drawingMask(this.dragged);
   };
-  private onMouseMoveController = throttle(this.onMouseMoveBasic, THE_DELAY);
+  private onMouseMoveController = throttle(this.onMouseMoveBasic, ...THE_CONFIG);
 
   private onMouseUpController = () => {
     this.unbindOpEvents();

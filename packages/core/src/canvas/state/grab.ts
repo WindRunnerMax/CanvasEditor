@@ -4,7 +4,7 @@ import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
 import { Point } from "../../selection/modules/point";
 import type { Canvas } from "../index";
-import { CURSOR_TYPE, THE_DELAY } from "../utils/constant";
+import { CURSOR_TYPE, THE_CONFIG } from "../utils/constant";
 
 export class Grab {
   private _on: boolean;
@@ -52,7 +52,7 @@ export class Grab {
     this.engine.setOffset(offsetX + x, offsetY + y);
     this.engine.reset();
   };
-  public translate = throttle(this.translateImmediately, THE_DELAY);
+  public translate = throttle(this.translateImmediately, ...THE_CONFIG);
 
   private onMouseDown = (event: MouseEvent) => {
     this.engine.mask.setCursorState(CURSOR_TYPE.GRABBING);
@@ -71,7 +71,7 @@ export class Grab {
     this.landing = point;
     this.translateImmediately(x, y);
   };
-  private onMouseMove = throttle(this.onMouseMoveBasic, THE_DELAY);
+  private onMouseMove = throttle(this.onMouseMoveBasic, ...THE_CONFIG);
 
   private onMouseUp = () => {
     this.engine.mask.setCursorState(CURSOR_TYPE.GRAB);

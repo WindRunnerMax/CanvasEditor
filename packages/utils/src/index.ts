@@ -12,6 +12,7 @@ export {
   TSON,
 } from "laser-utils";
 import debounce from "lodash-es/debounce";
+// Compat: FireFox https://github.com/lodash/lodash/issues/3126
 import throttle from "lodash-es/throttle";
 export { debounce, throttle };
 export { findSetEffects } from "./set";
