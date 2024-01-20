@@ -4,7 +4,7 @@ import type { Editor } from "../../editor";
 import { Range } from "../../selection/modules/range";
 import { MAX_Z_INDEX, REFER_BIAS } from "../utils/constant";
 import { ORANGE_5 } from "../utils/palette";
-import { drawRect } from "../utils/shape";
+import { Shape } from "../utils/shape";
 import { Node } from "./node";
 
 export class ReferNode extends Node {
@@ -225,7 +225,7 @@ export class ReferNode extends Node {
     if (!this.editor.canvas.root.select.isDragging) return void 0;
     this.children.forEach(node => {
       const { x, y, width, height } = node.range.rect();
-      drawRect(ctx, { x, y, width, height, borderColor: ORANGE_5 });
+      Shape.rect(ctx, { x, y, width, height, borderColor: ORANGE_5 });
     });
   };
 }

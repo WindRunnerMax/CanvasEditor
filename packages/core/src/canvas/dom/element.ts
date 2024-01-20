@@ -3,7 +3,7 @@ import type { DeltaState } from "../../state/modules/node";
 import { EDITOR_STATE } from "../../state/utils/constant";
 import type { MouseEvent } from "../event/mouse";
 import { BLUE_3 } from "../utils/palette";
-import { drawRect } from "../utils/shape";
+import { Shape } from "../utils/shape";
 import { Node } from "./node";
 
 export class ElementNode extends Node {
@@ -50,7 +50,7 @@ export class ElementNode extends Node {
       !this.editor.state.get(EDITOR_STATE.MOUSE_DOWN)
     ) {
       const { x, y, width, height } = this.range.rect();
-      drawRect(ctx, {
+      Shape.rect(ctx, {
         x: x,
         y: y,
         width: width,

@@ -9,7 +9,7 @@ import { Range } from "../../selection/modules/range";
 import type { ResizeType } from "../types/dom";
 import { MAX_Z_INDEX, RESIZE_OFS, RESIZE_TYPE, SELECT_BIAS, THE_DELAY } from "../utils/constant";
 import { BLUE_5 } from "../utils/palette";
-import { drawRect } from "../utils/shape";
+import { Shape } from "../utils/shape";
 import { Node } from "./node";
 import { ReferNode } from "./refer";
 import { ResizeNode } from "./resize";
@@ -134,11 +134,11 @@ export class SelectNode extends Node {
     const selection = this.editor.selection.get();
     if (this._isDragging) {
       const { x, y, width, height } = this.range.rect();
-      drawRect(ctx, { x, y, width, height, borderColor: BLUE_5 });
+      Shape.rect(ctx, { x, y, width, height, borderColor: BLUE_5 });
     }
     if (selection) {
       const { x, y, width, height } = selection.rect();
-      drawRect(ctx, { x, y, width, height, borderColor: BLUE_5 });
+      Shape.rect(ctx, { x, y, width, height, borderColor: BLUE_5 });
       this.children.forEach(node => node.drawingMask?.(ctx));
     }
   };

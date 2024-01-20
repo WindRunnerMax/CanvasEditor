@@ -17,7 +17,7 @@ import {
   THE_DELAY,
 } from "../utils/constant";
 import { GRAY_5, GRAY_7, WHITE } from "../utils/palette";
-import { drawArc, drawRect } from "../utils/shape";
+import { Shape } from "../utils/shape";
 import { Node } from "./node";
 
 export class ResizeNode extends Node {
@@ -255,13 +255,13 @@ export class ResizeNode extends Node {
       case RESIZE_TYPE.LT:
       case RESIZE_TYPE.RB:
       case RESIZE_TYPE.RT:
-        drawArc(ctx, { x, y, borderColor: GRAY_7, fillColor, radius, borderWidth });
+        Shape.arc(ctx, { x, y, borderColor: GRAY_7, fillColor, radius, borderWidth });
         break;
       case RESIZE_TYPE.B:
       case RESIZE_TYPE.R:
       case RESIZE_TYPE.T:
       case RESIZE_TYPE.L:
-        drawRect(ctx, { ...range.rect(), fillColor, borderColor: GRAY_5, borderWidth });
+        Shape.rect(ctx, { ...range.rect(), fillColor, borderColor: GRAY_5, borderWidth });
         break;
     }
   };

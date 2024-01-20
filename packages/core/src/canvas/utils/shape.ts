@@ -17,32 +17,33 @@ export type ArcProps = {
   fillColor?: string;
 };
 
-export const drawRect = (ctx: CanvasRenderingContext2D, options: RectProps) => {
-  ctx.beginPath();
-  ctx.rect(options.x, options.y, options.width, options.height);
-  if (options.borderColor) {
-    ctx.strokeStyle = options.borderColor;
-    ctx.lineWidth = options.borderWidth || 1;
-    ctx.stroke();
-  }
-  if (options.fillColor) {
-    ctx.fillStyle = options.fillColor;
-    ctx.fill();
-  }
-  ctx.closePath();
-};
-
-export const drawArc = (ctx: CanvasRenderingContext2D, options: ArcProps) => {
-  ctx.beginPath();
-  ctx.arc(options.x, options.y, options.radius, 0, 2 * Math.PI);
-  if (options.borderColor) {
-    ctx.strokeStyle = options.borderColor;
-    ctx.lineWidth = options.borderWidth || 1;
-    ctx.stroke();
-  }
-  if (options.fillColor) {
-    ctx.fillStyle = options.fillColor;
-    ctx.fill();
-  }
-  ctx.closePath();
-};
+export class Shape {
+  static rect = (ctx: CanvasRenderingContext2D, options: RectProps) => {
+    ctx.beginPath();
+    ctx.rect(options.x, options.y, options.width, options.height);
+    if (options.borderColor) {
+      ctx.strokeStyle = options.borderColor;
+      ctx.lineWidth = options.borderWidth || 1;
+      ctx.stroke();
+    }
+    if (options.fillColor) {
+      ctx.fillStyle = options.fillColor;
+      ctx.fill();
+    }
+    ctx.closePath();
+  };
+  static arc = (ctx: CanvasRenderingContext2D, options: ArcProps) => {
+    ctx.beginPath();
+    ctx.arc(options.x, options.y, options.radius, 0, 2 * Math.PI);
+    if (options.borderColor) {
+      ctx.strokeStyle = options.borderColor;
+      ctx.lineWidth = options.borderWidth || 1;
+      ctx.stroke();
+    }
+    if (options.fillColor) {
+      ctx.fillStyle = options.fillColor;
+      ctx.fill();
+    }
+    ctx.closePath();
+  };
+}

@@ -8,7 +8,7 @@ import type { MouseEvent } from "../event/mouse";
 import type { Root } from "../state/root";
 import { MAX_Z_INDEX, RESIZE_OFS, SELECT_BIAS, THE_DELAY } from "../utils/constant";
 import { BLUE_5, BLUE_6_6 } from "../utils/palette";
-import { drawRect } from "../utils/shape";
+import { Shape } from "../utils/shape";
 import { Node } from "./node";
 
 export class FrameNode extends Node {
@@ -92,7 +92,7 @@ export class FrameNode extends Node {
   public drawingMask = (ctx: CanvasRenderingContext2D) => {
     if (this.isDragging) {
       const { x, y, width, height } = this.range.rect();
-      drawRect(ctx, { x, y, width, height, borderColor: BLUE_5, fillColor: BLUE_6_6 });
+      Shape.rect(ctx, { x, y, width, height, borderColor: BLUE_5, fillColor: BLUE_6_6 });
     }
   };
 }
