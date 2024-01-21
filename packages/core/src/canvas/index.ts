@@ -1,4 +1,5 @@
 import ResizeObserver from "resize-observer-polyfill";
+import { throttle } from "sketching-utils";
 
 import type { Editor } from "../editor";
 import { EDITOR_EVENT } from "../event/bus/action";
@@ -8,6 +9,7 @@ import { Mask } from "./paint/mask";
 import { Grab } from "./state/grab";
 import { Insert } from "./state/insert";
 import { Root } from "./state/root";
+import { THE_CONFIG } from "./utils/constant";
 
 export class Canvas {
   private width: number;
@@ -58,14 +60,15 @@ export class Canvas {
   }
 
   public reset() {
-    this.mask.reset();
-    this.graph.reset();
     this.editor.selection.clearActiveDeltas();
     const { width, height, offsetX, offsetY } = this.getRect();
-    this.root.setRange(Range.from(offsetX, offsetY, offsetX + width, offsetY + height));
+    const range = Range.from(offsetX, offsetY, offsetX + width, offsetY + height);
+    this.root.setRange(range);
+    this.mask.reset();
+    this.graph.reset();
   }
 
-  private onResize = (entries: ResizeObserverEntry[]) => {
+  private onResizeBasic = (entries: ResizeObserverEntry[]) => {
     // COMPAT: `onResize`会触发首次`render`
     const [entry] = entries;
     if (!entry) return void 0;
@@ -78,6 +81,7 @@ export class Canvas {
       this.editor.event.trigger(EDITOR_EVENT.RESIZE, { width, height });
     }, 0);
   };
+  private onResize = throttle(this.onResizeBasic, ...THE_CONFIG);
 
   public setOffset(x: number, y: number) {
     this.offsetX = x;

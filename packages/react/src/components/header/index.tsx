@@ -4,7 +4,7 @@ import { DRAG_KEY, EDITOR_EVENT } from "sketching-core";
 import type { DeltaLike } from "sketching-delta";
 import { cs, TSON } from "sketching-utils";
 
-import { useEditor } from "../../hooks/useEditor";
+import { useEditor } from "../../hooks/use-editor";
 import { CursorIcon } from "../../static/cursor";
 import { GrabIcon } from "../../static/grab";
 import { RectIcon } from "../../static/rect";

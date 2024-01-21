@@ -1,15 +1,14 @@
-@import '../left-panel/index.m';
+@import '../../styles/variable';
 $width: 300px;
 
 .container {
-  background-color: var(--color-bg-1);
-  border: $panel-border;
-  border-radius: 3px;
-  bottom: 10px;
+  @include frame-border;
+
+  bottom: 20px;
   box-sizing: border-box;
   flex-shrink: 0;
   height: 100%;
-  max-height: calc(100% - 20px);
+  max-height: calc(100% - 30px);
   overflow-y: auto;
   position: absolute;
   right: -$width;

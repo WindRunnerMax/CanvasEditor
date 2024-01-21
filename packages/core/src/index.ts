@@ -1,4 +1,5 @@
 export { ElementNode } from "./canvas/dom/element";
+export { EmptyNode } from "./canvas/dom/empty";
 export { Node } from "./canvas/dom/node";
 export { MouseEvent } from "./canvas/event/mouse";
 export { DRAG_KEY } from "./canvas/utils/constant";

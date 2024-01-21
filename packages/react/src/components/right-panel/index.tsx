@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { EDITOR_EVENT } from "sketching-core";
 import { cs } from "sketching-utils";
 
-import { useEditor } from "../../hooks/useEditor";
+import { useEditor } from "../../hooks/use-editor";
 import styles from "./index.m.scss";
 
 export const RightPanel: FC = () => {
@@ -21,7 +21,7 @@ export const RightPanel: FC = () => {
   }, [editor]);
 
   return (
-    <div className={cs(styles.container, active.length && styles.active)}>
+    <div className={cs(styles.container, active.length === 1 && styles.active)}>
       <div></div>
     </div>
   );

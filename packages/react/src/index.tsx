@@ -10,8 +10,9 @@ import { Rect, Text } from "sketching-plugin";
 
 import { Body } from "./components/body";
 import { Header } from "./components/header";
-import { WithEditor } from "./hooks/useEditor";
-import { EXAMPLE } from "./utils/constant";
+import { WithEditor } from "./hooks/use-editor";
+import { A4, EXAMPLE } from "./utils/constant";
+import { withPlaceHolder } from "./utils/placeholder";
 
 DeltaSet.register(Rect);
 DeltaSet.register(Text);
@@ -27,6 +28,7 @@ const App: FC = () => {
     window.editor = editor;
     const el = ref.current;
     el && editor.onMount(el);
+    withPlaceHolder({ editor, ...A4 });
     window.editor = editor;
     return () => {
       editor.destroy();

@@ -42,7 +42,7 @@ export class Mask {
       const node = nodes[i];
       // 需要排除`root`否则必然导致全量重绘
       if (node === this.engine.root) continue;
-      if (range.intersect(node.range) && !this.editor.canvas.isOutside(node.range)) {
+      if (!this.editor.canvas.isOutside(node.range) && range.intersect(node.range)) {
         effects.add(node);
       }
     }
