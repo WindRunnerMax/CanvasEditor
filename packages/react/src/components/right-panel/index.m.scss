@@ -11,7 +11,7 @@ $width: 300px;
   max-height: calc(100% - 30px);
   overflow-y: auto;
   position: absolute;
-  right: -$width;
+  right: -$width - 10px;
   top: 10px;
   transition: right 0.2s linear;
   width: $width;

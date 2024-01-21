@@ -26,9 +26,9 @@ export class Grab {
 
   public start() {
     if (this._on) return void 0;
-    this._on = true;
     this.engine.mask.clear();
     this.editor.selection.clearActiveDeltas();
+    this._on = true;
     this.engine.mask.setCursorState(CURSOR_TYPE.GRAB);
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDown);
   }

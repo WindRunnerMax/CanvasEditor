@@ -39,11 +39,11 @@ export class Insert {
 
   public start(data: DeltaLike) {
     if (this._on) return void 0;
-    this._on = true;
-    this.delta = DeltaSet.create(data);
     this.engine.mask.clear();
     this.engine.mask.setCursorState(null);
     this.editor.selection.clearActiveDeltas();
+    this._on = true;
+    this.delta = DeltaSet.create(data);
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);
   }
 

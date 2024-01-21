@@ -118,7 +118,8 @@ export class Mask {
     this.ctx.scale(this.engine.devicePixelRatio, this.engine.devicePixelRatio);
     this.ctx.translate(-offsetX, -offsetY);
     Promise.resolve().then(() => {
-      const range = Range.from(offsetX, offsetY, width, height);
+      // `Range.from`是具体坐标点
+      const range = Range.from(offsetX, offsetY, width + offsetX, height + offsetY);
       // COMPAT: 需要立即绘制 否则在`wheel`事件中会闪动
       this.drawingEffect(range, { immediately: true });
     });

@@ -5,7 +5,7 @@ import type { DeltaSetLike } from "sketching-delta";
 export const DPI = 96;
 export const A4 = { width: 210, height: 297 };
 export const OFFSET_POINT = new Point(100, 30);
-export const PLACEHOLDER_SIZE = 10;
+export const PLACEHOLDER_SIZE = 99999990;
 export const TOP_PLACEHOLDER = "TOP";
 export const LEFT_PLACEHOLDER = "LEFT";
 export const RIGHT_PLACEHOLDER = "RIGHT";
