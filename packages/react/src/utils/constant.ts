@@ -4,7 +4,7 @@ import type { DeltaSetLike } from "sketching-delta";
 // 暂时认为`DPI`为`96`
 export const DPI = 96;
 export const A4 = { width: 210, height: 297 };
-export const OFFSET_POINT = new Point(100, 30);
+export const PAGE_OFFSET = new Point(100, 30);
 export const PLACEHOLDER_SIZE = 99999990;
 export const TOP_PLACEHOLDER = "TOP";
 export const LEFT_PLACEHOLDER = "LEFT";

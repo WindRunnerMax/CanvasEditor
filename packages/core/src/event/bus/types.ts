@@ -38,3 +38,9 @@ export type InsertEvent = {
 export type HoverEvent = {
   node: ElementNode;
 };
+
+export type CanvasResetEvent = {
+  range: Range;
+  offsetX: number;
+  offsetY: number;
+};

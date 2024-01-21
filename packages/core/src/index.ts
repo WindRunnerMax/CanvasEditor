@@ -7,6 +7,7 @@ export { Editor } from "./editor";
 export type { EventMapKeys } from "./event/bus/action";
 export { EDITOR_EVENT } from "./event/bus/action";
 export type {
+  CanvasResetEvent,
   ContentChangeEvent,
   GrabEvent,
   HoverEvent,

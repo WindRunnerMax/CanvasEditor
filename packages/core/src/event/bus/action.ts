@@ -1,6 +1,7 @@
 import type { NativeEventMap } from "../native/types";
 import { NATIVE_EVENTS } from "../native/types";
 import type {
+  CanvasResetEvent,
   ContentChangeEvent,
   GrabEvent,
   HoverEvent,
@@ -19,6 +20,7 @@ export const EDITOR_EVENT = {
   INSERT_STATE: "INSERT_STATE",
   HOVER_ENTER: "HOVER_ENTER",
   HOVER_LEAVE: "HOVER_LEAVE",
+  CANVAS_RESET: "CANVAS_RESET",
   ...NATIVE_EVENTS,
 } as const;
 
@@ -31,6 +33,7 @@ export type EventMap = {
   [EDITOR_EVENT.INSERT_STATE]: InsertEvent;
   [EDITOR_EVENT.HOVER_ENTER]: HoverEvent;
   [EDITOR_EVENT.HOVER_LEAVE]: HoverEvent;
+  [EDITOR_EVENT.CANVAS_RESET]: CanvasResetEvent;
 } & NativeEventMap;
 
 type EventMapType = typeof EDITOR_EVENT;

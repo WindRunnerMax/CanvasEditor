@@ -21,8 +21,8 @@ export const RightPanel: FC = () => {
   }, [editor]);
 
   return (
-    <div className={cs(styles.container, active.length === 1 && styles.active)}>
-      <div></div>
+    <div className={cs(styles.container)}>
+      {active.length === 0 ? "请选择图形" : active.length > 1 ? "多选" : ""}
     </div>
   );
 };

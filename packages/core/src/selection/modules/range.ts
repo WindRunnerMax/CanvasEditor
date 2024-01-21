@@ -114,6 +114,10 @@ export class Range {
     return new Range({ startX: 0, startY: 0, endX: 0, endY: 0 });
   }
 
+  static fromRect(x: number, y: number, width: number, height: number) {
+    return Range.from(x, y, x + width, y + height);
+  }
+
   static isEqual(origin: Range | null, target: Range | null): boolean {
     if (origin === target) return true;
     if (!origin || !target) return false;

@@ -65,6 +65,7 @@ export class Canvas {
     this.root.setRange(range);
     this.mask.reset();
     this.graph.reset();
+    this.editor.event.trigger(EDITOR_EVENT.CANVAS_RESET, { range, offsetX, offsetY });
   }
 
   private onResizeBasic = (entries: ResizeObserverEntry[]) => {
