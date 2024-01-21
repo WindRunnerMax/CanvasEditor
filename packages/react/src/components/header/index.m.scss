@@ -3,8 +3,8 @@
 .container {
   @include flex-align-center;
 
-  background-color: var(--color-bg-2);
-  border-bottom: 1px solid var(--color-border-3);
+  background-color: var(--color-bg-1);
+  border-bottom: 1px solid var(--color-border-2);
   box-sizing: border-box;
   height: 50px;
   padding: 0 10px;

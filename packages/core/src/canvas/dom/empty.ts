@@ -1,5 +1,6 @@
+import { GRAY_3 } from "sketching-utils";
+
 import type { Range } from "../../selection/modules/range";
-import { GRAY_3 } from "../utils/palette";
 import { Shape } from "../utils/shape";
 import { Node } from "./node";
 

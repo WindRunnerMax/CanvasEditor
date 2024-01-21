@@ -1,8 +1,9 @@
+import { BLUE_3 } from "sketching-utils";
+
 import type { Editor } from "../../editor";
 import type { DeltaState } from "../../state/modules/node";
 import { EDITOR_STATE } from "../../state/utils/constant";
 import type { MouseEvent } from "../event/mouse";
-import { BLUE_3 } from "../utils/palette";
 import { Shape } from "../utils/shape";
 import { Node } from "./node";
 

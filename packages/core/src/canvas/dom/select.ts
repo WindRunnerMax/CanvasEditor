@@ -1,5 +1,6 @@
 import { Op, OP_TYPE } from "sketching-delta";
 import { throttle } from "sketching-utils";
+import { BLUE_5 } from "sketching-utils";
 
 import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
@@ -8,7 +9,6 @@ import { Point } from "../../selection/modules/point";
 import { Range } from "../../selection/modules/range";
 import type { ResizeType } from "../types/dom";
 import { MAX_Z_INDEX, RESIZE_OFS, RESIZE_TYPE, SELECT_BIAS, THE_CONFIG } from "../utils/constant";
-import { BLUE_5 } from "../utils/palette";
 import { Shape } from "../utils/shape";
 import { Node } from "./node";
 import { ReferNode } from "./refer";

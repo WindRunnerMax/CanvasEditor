@@ -1,3 +1,5 @@
+import { TEXT_1 } from "sketching-utils";
+
 import type { RichTextLines, TextMatrices, TextMatrix, TextMatrixItem } from "./constant";
 import { TEXT_ATTRS } from "./constant";
 
@@ -76,7 +78,7 @@ export class RichText {
       const gap = Math.max(0, (width - matrix.width) / matrix.items.length);
       for (const item of matrix.items) {
         ctx.font = item.font;
-        ctx.fillStyle = item.config.color || "#1D2129";
+        ctx.fillStyle = item.config.color || TEXT_1;
         ctx.fillText(item.char, offsetX, offsetY + matrix.height);
         offsetX = offsetX + item.metric.width;
         if (!matrix.break) offsetX = offsetX + gap;

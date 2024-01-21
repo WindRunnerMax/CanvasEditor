@@ -1,16 +1,7 @@
 import type { CanvasResetEvent, Editor } from "sketching-core";
-import { EDITOR_EVENT, EmptyNode, Range } from "sketching-core";
+import { EDITOR_EVENT, Range } from "sketching-core";
 
-import {
-  A4,
-  BOTTOM_PLACEHOLDER,
-  DPI,
-  LEFT_PLACEHOLDER,
-  PAGE_OFFSET,
-  PLACEHOLDER_SIZE,
-  RIGHT_PLACEHOLDER,
-  TOP_PLACEHOLDER,
-} from "../utils/constant";
+import { A4, DPI, PAGE_OFFSET } from "../utils/constant";
 
 export class Background {
   private static range: Range;
@@ -54,6 +45,7 @@ export class Background {
     canvas.style.width = width + "px";
     canvas.style.height = height + "px";
     ctx.scale(ratio, ratio);
+    ctx.clearRect(0, 0, width, height);
     ctx.translate(-offsetX, -offsetY);
     const rect = space.rect();
     ctx.fillStyle = "#fff";
@@ -66,53 +58,3 @@ export class Background {
     editor.event.off(EDITOR_EVENT.CANVAS_RESET, Background.onReset);
   }
 }
-
-export const withPlaceHolder = (options: { editor: Editor; width: number; height: number }) => {
-  const { editor, width, height } = options;
-  const opWidthPX = (width * DPI) / 25.4;
-  const opHeightPX = (height * DPI) / 25.4;
-  editor.canvas.root.append(
-    new EmptyNode(
-      LEFT_PLACEHOLDER,
-      Range.from(
-        PAGE_OFFSET.x - PLACEHOLDER_SIZE,
-        PAGE_OFFSET.y - PLACEHOLDER_SIZE,
-        PAGE_OFFSET.x,
-        PAGE_OFFSET.y + PLACEHOLDER_SIZE + opHeightPX
-      )
-    )
-  );
-  editor.canvas.root.append(
-    new EmptyNode(
-      TOP_PLACEHOLDER,
-      Range.from(
-        PAGE_OFFSET.x - PLACEHOLDER_SIZE,
-        PAGE_OFFSET.y - PLACEHOLDER_SIZE,
-        PAGE_OFFSET.x + PLACEHOLDER_SIZE + opWidthPX,
-        PAGE_OFFSET.y
-      )
-    )
-  );
-  editor.canvas.root.append(
-    new EmptyNode(
-      RIGHT_PLACEHOLDER,
-      Range.from(
-        PAGE_OFFSET.x + opWidthPX,
-        PAGE_OFFSET.y - PLACEHOLDER_SIZE,
-        PAGE_OFFSET.x + PLACEHOLDER_SIZE + opWidthPX,
-        PAGE_OFFSET.y + PLACEHOLDER_SIZE + opHeightPX
-      )
-    )
-  );
-  editor.canvas.root.append(
-    new EmptyNode(
-      BOTTOM_PLACEHOLDER,
-      Range.from(
-        PAGE_OFFSET.x - PLACEHOLDER_SIZE,
-        PAGE_OFFSET.y + opHeightPX,
-        PAGE_OFFSET.x + PLACEHOLDER_SIZE + opWidthPX,
-        PAGE_OFFSET.y + PLACEHOLDER_SIZE + opHeightPX
-      )
-    )
-  );
-};

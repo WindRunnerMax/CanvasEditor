@@ -15,5 +15,29 @@ import debounce from "lodash-es/debounce";
 // Compat: FireFox https://github.com/lodash/lodash/issues/3126
 import throttle from "lodash-es/throttle";
 export { debounce, throttle };
+export {
+  BLUE_3,
+  BLUE_5,
+  BLUE_6_6,
+  BLUE_7,
+  BORDER_1,
+  BORDER_2,
+  BORDER_3,
+  FILL_1,
+  FILL_2,
+  FILL_3,
+  GRAY_3,
+  GRAY_5,
+  GRAY_7,
+  GREEN_3,
+  GREEN_5,
+  GREEN_7,
+  ORANGE_3,
+  ORANGE_5,
+  ORANGE_7,
+  TEXT_1,
+  TEXT_2,
+  WHITE,
+} from "./palette";
 export { findSetEffects } from "./set";
 export type { Empty } from "./types";

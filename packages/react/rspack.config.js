@@ -39,6 +39,11 @@ module.exports = {
         customName: "@arco-design/web-react/es/{{ member }}",
         style: true,
       },
+      {
+        libraryName: "@arco-design/web-react/icon",
+        customName: "@arco-design/web-react/icon/react-icon/{{ member }}",
+        style: false,
+      },
     ],
   },
   module: {

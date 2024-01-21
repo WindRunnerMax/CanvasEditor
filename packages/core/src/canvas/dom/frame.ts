@@ -1,4 +1,5 @@
 import { NOOP, throttle } from "sketching-utils";
+import { BLUE_5, BLUE_6_6 } from "sketching-utils";
 
 import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
@@ -7,7 +8,6 @@ import { Range } from "../../selection/modules/range";
 import type { MouseEvent } from "../event/mouse";
 import type { Root } from "../state/root";
 import { MAX_Z_INDEX, RESIZE_OFS, SELECT_BIAS, THE_CONFIG } from "../utils/constant";
-import { BLUE_5, BLUE_6_6 } from "../utils/palette";
 import { Shape } from "../utils/shape";
 import { Node } from "./node";
 

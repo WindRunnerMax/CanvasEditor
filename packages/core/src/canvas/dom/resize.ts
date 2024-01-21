@@ -1,5 +1,6 @@
 import { Op, OP_TYPE } from "sketching-delta";
 import { throttle } from "sketching-utils";
+import { GRAY_5, GRAY_7, WHITE } from "sketching-utils";
 
 import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
@@ -16,7 +17,6 @@ import {
   SELECT_BIAS,
   THE_CONFIG,
 } from "../utils/constant";
-import { GRAY_5, GRAY_7, WHITE } from "../utils/palette";
 import { Shape } from "../utils/shape";
 import { Node } from "./node";
 

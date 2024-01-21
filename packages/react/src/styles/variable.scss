@@ -35,3 +35,13 @@
   border: 1px solid var(--color-border-2);
   box-shadow: 0 0 4px var(--color-border-2);
 }
+
+@mixin no-scrollbar {
+  overflow: -moz-scrollbars-none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
