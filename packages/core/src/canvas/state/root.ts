@@ -66,11 +66,12 @@ export class Root extends Node {
     this.append(this.frame);
   }
 
-  public getFlatNode(): Node[] {
+  public getFlatNode(isEventCall = true): Node[] {
     // 非默认状态下不需要匹配
     if (!this.engine.isDefaultMode()) return [];
     // 事件调用实际顺序 // 渲染顺序则相反
-    return [...super.getFlatNode(), this];
+    const flatNodes: Node[] = [...super.getFlatNode(), this];
+    return isEventCall ? flatNodes.filter(node => !node.ignoreEvent) : flatNodes;
   }
 
   public onMouseDown = (e: MouseEvent) => {

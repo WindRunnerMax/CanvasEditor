@@ -17,6 +17,7 @@ export class ReferNode extends Node {
   constructor(private editor: Editor) {
     super(Range.reset());
     this.dragged = null;
+    this.setIgnoreEvent(true);
     this.setZ(MAX_Z_INDEX - 1);
   }
 
@@ -124,6 +125,7 @@ export class ReferNode extends Node {
     const composeNodeRange = (range: Range) => {
       this.dragged = nextSelection.compose(this.dragged).compose(range);
       const node = new Node(range);
+      node.setIgnoreEvent(true);
       node.drawingMask = this.drawingMaskDispatch;
       this.append(node);
     };

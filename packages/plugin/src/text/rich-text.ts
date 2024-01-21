@@ -72,6 +72,7 @@ export class RichText {
     let offsetX = x;
     let offsetY = y;
     for (const matrix of matrices) {
+      if (offsetY + matrix.height > y + height) break;
       const gap = Math.max(0, (width - matrix.width) / matrix.items.length);
       for (const item of matrix.items) {
         ctx.font = item.font;
@@ -82,7 +83,6 @@ export class RichText {
       }
       offsetX = x;
       offsetY = offsetY + matrix.height;
-      if (offsetY > y + height) break;
     }
     this.ctx.closePath();
     this.ctx.restore();

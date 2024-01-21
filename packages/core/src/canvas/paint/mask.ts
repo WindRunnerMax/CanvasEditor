@@ -36,7 +36,7 @@ export class Mask {
   private collectEffects(range: Range) {
     // 判定`range`范围内影响的节点
     const effects = new Set<Node>();
-    const nodes: Node[] = this.engine.root.getFlatNode();
+    const nodes: Node[] = this.engine.root.getFlatNode(false);
     // 渲染顺序和事件调用顺序相反
     for (let i = nodes.length - 1; i >= 0; i--) {
       const node = nodes[i];

@@ -25,6 +25,7 @@ export class FrameNode extends Node {
     this._z = MAX_Z_INDEX;
     this.isDragging = false;
     this.landingClient = null;
+    this.setIgnoreEvent(true);
     this.savedRootMouseDown = this.root.onMouseDown || NOOP;
     this.root.onMouseDown = this.onRootMouseDown;
   }

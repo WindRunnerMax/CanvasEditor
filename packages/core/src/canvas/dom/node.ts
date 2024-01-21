@@ -7,6 +7,7 @@ export class Node {
   protected _z: number;
   private _range: Range;
   private _parent: Node | null;
+  protected _ignoreEvent: boolean;
   public readonly children: Node[];
   protected flatNodes: Node[] | null;
 
@@ -26,6 +27,7 @@ export class Node {
     this._range = range;
     this._parent = null;
     this.flatNodes = null;
+    this._ignoreEvent = false;
   }
 
   // ====== Parent ======
@@ -61,6 +63,15 @@ export class Node {
       }
       this._z = z;
     }
+  }
+
+  // ====== Event ======
+  public get ignoreEvent() {
+    return this._ignoreEvent;
+  }
+
+  public setIgnoreEvent(ignoreEvent: boolean) {
+    this._ignoreEvent = ignoreEvent;
   }
 
   // ====== DOM OP ======

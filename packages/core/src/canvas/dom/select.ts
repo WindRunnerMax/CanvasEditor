@@ -30,7 +30,9 @@ export class SelectNode extends Node {
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);
     this.editor.event.on(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange, 10);
     Object.keys(RESIZE_TYPE).forEach(key => {
-      this.append(new ResizeNode(this.editor, key as ResizeType, this));
+      const resizeNode = new ResizeNode(this.editor, key as ResizeType, this);
+      resizeNode.setIgnoreEvent(true);
+      this.append(resizeNode);
     });
     this.append(this.refer);
   }
@@ -48,11 +50,17 @@ export class SelectNode extends Node {
     const { current, previous } = e;
     if (current) {
       this.setRange(current);
-      this.children.forEach(node => node.setRange(current));
+      this.children.forEach(node => {
+        node.setRange(current);
+        node.setIgnoreEvent(false);
+      });
     } else {
       const empty = Range.reset();
       this.setRange(empty);
-      this.children.forEach(node => node.setRange(empty));
+      this.children.forEach(node => {
+        node.setRange(empty);
+        node.setIgnoreEvent(true);
+      });
     }
     this.editor.logger.info("Selection Change", current);
     const range = current || previous;
