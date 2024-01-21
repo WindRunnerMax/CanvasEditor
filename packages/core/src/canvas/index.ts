@@ -60,6 +60,7 @@ export class Canvas {
   public reset() {
     this.mask.reset();
     this.graph.reset();
+    this.editor.selection.clearActiveDeltas();
     const { width, height, offsetX, offsetY } = this.getRect();
     this.root.setRange(Range.from(offsetX, offsetY, offsetX + width, offsetY + height));
   }

@@ -1,8 +1,24 @@
 @import '../left-panel/index.m';
+$width: 300px;
 
 .container {
-  border-left: $panel-border;
+  background-color: var(--color-bg-1);
+  border: $panel-border;
+  border-radius: 3px;
+  bottom: 10px;
+  box-sizing: border-box;
   flex-shrink: 0;
   height: 100%;
-  width: $panel-width;
+  max-height: calc(100% - 20px);
+  overflow-y: auto;
+  position: absolute;
+  right: -$width;
+  top: 10px;
+  transition: right 0.2s linear;
+  width: $width;
+  z-index: 1;
+
+  &.active {
+    right: 10px;
+  }
 }

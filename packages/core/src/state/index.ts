@@ -85,7 +85,7 @@ export class EditorState {
       }
       case OP_TYPE.MOVE: {
         const { x, y } = op.payload;
-        const select = this.editor.selection.getActiveDeltas();
+        const select = this.editor.selection.getActiveDeltaId();
         select.forEach(id => {
           const target = this.getDeltaState(id);
           target && target.move(x, y);

@@ -32,7 +32,7 @@ export class ReferNode extends Node {
   }
 
   public onMouseDownController = () => {
-    const active = this.editor.selection.getActiveDeltas();
+    const active = this.editor.selection.getActiveDeltaId();
     if (!active) return void 0;
     const xLineMap = this.xLineMap;
     const yLineMap = this.yLineMap;

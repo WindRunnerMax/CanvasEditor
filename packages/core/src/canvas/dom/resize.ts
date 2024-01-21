@@ -215,7 +215,7 @@ export class ResizeNode extends Node {
         node instanceof ResizeNode && node.setCursorState(point);
       });
       // 需要根据新旧选区调整包含的每个图形的大小和位置
-      const nodes = this.editor.selection.getActiveDeltas();
+      const nodes = this.editor.selection.getActiveDeltaId();
       const { width: oldWidth, height: oldHeight, x: oldX, y: oldY } = this.landingRange.rect();
       const { width: newWidth, height: newHeight, x: newX, y: newY } = this.latest.rect();
       const ratioX = newWidth / oldWidth;

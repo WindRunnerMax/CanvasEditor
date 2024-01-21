@@ -3,6 +3,7 @@
 .container {
   display: flex;
   height: calc(100% - 50px);
+  position: relative;
   width: 100%;
 }
 
