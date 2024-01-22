@@ -2,14 +2,12 @@ import type { DeltaSet } from "sketching-delta";
 
 import type { ElementNode } from "../../canvas/dom/element";
 import type { Range } from "../../selection/modules/range";
-import type { ApplyOptions } from "../../state/utils/types";
+import type { ApplyOptions, FlatOp } from "../../state/utils/types";
 
 export type ContentChangeEvent = {
   current: DeltaSet;
   previous: DeltaSet;
-  // TODO: Strict Operation
-  changes: unknown;
-  effect: string[];
+  changes: FlatOp[];
   options: ApplyOptions;
 };
 

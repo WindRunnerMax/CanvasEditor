@@ -40,7 +40,7 @@ export type OpPayload = {
   [OP_TYPE.RESIZE]: { id: string; x: number; y: number; width: number; height: number };
   [OP_TYPE.REVISE]: { attrs: Record<string, string> };
 };
-export type OpRecord = {
-  [K in OpType]: Op<K>;
-};
-export type Ops = OpRecord[OpType];
+
+export type OpRecord = { [K in OpType]: Op<K> };
+export type OpSetType = OpRecord[OpType];
+export type Ops = OpSetType[];

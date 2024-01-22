@@ -1,4 +1,4 @@
-import type { Delta, Ops } from "sketching-delta";
+import type { Delta, OpSetType } from "sketching-delta";
 import { DeltaSet, OP_TYPE } from "sketching-delta";
 import { ROOT_DELTA } from "sketching-utils";
 
@@ -9,7 +9,7 @@ import { EDITOR_EVENT } from "../event/bus/action";
 import { Range } from "../selection/modules/range";
 import { DeltaState } from "./modules/node";
 import type { EDITOR_STATE } from "./utils/constant";
-import type { ApplyOptions } from "./utils/types";
+import type { ApplyOptions, FlatOp } from "./utils/types";
 
 export class EditorState {
   public readonly entry: DeltaState;
@@ -62,10 +62,10 @@ export class EditorState {
     return this.deltas.get(deltaId) || null;
   }
 
-  public apply(op: Ops, applyOptions?: ApplyOptions) {
+  public apply(op: OpSetType, applyOptions?: ApplyOptions) {
     const options = applyOptions || { source: "user", undoable: true };
     const previous = new DeltaSet(this.deltaSet.getDeltas());
-    const effect: string[] = [];
+    const changes: FlatOp[] = [];
 
     switch (op.type) {
       case OP_TYPE.INSERT: {
@@ -74,6 +74,7 @@ export class EditorState {
         const state = new DeltaState(this.editor, delta);
         this.deltas.set(delta.id, state);
         target && target.insert(state);
+        changes.push({ id: state.id, op });
         break;
       }
       case OP_TYPE.DELETE: {
@@ -81,6 +82,7 @@ export class EditorState {
         this.deltas.delete(id);
         const target = this.getDeltaState(id);
         target && target.remove();
+        changes.push({ id, op });
         break;
       }
       case OP_TYPE.MOVE: {
@@ -89,6 +91,7 @@ export class EditorState {
         select.forEach(id => {
           const target = this.getDeltaState(id);
           target && target.move(x, y);
+          changes.push({ id, op });
         });
         break;
       }
@@ -96,6 +99,7 @@ export class EditorState {
         const { id, x, y, width, height } = op.payload;
         const target = this.getDeltaState(id);
         target && target.resize(Range.from(x, y, x + width, y + height));
+        changes.push({ id, op });
         break;
       }
       case OP_TYPE.REVISE: {
@@ -103,17 +107,29 @@ export class EditorState {
       }
     }
 
-    Promise.resolve().then(() => {
-      this.editor.event.trigger(EDITOR_EVENT.CONTENT_CHANGE, {
-        previous,
-        current: this.deltaSet,
-        // TODO: 合并`Op`
-        changes: op,
-        effect,
-        options,
-      });
+    this.editor.event.trigger(EDITOR_EVENT.CONTENT_CHANGE, {
+      previous,
+      current: this.deltaSet,
+      changes,
+      options,
     });
 
-    this.editor.canvas.graph.drawingAll();
+    Promise.resolve().then(() => {
+      const effects = changes.map(change => change.id);
+      let range: Range | null = null;
+      effects.forEach(id => {
+        const prev = previous.get(id);
+        if (prev) {
+          const current = Range.from(prev);
+          range = range ? range.compose(current) : current;
+        }
+        const state = this.getDeltaState(id);
+        if (state) {
+          const current = state.toRange();
+          range = range ? range.compose(current) : current;
+        }
+      });
+      range && this.editor.canvas.graph.drawingEffect(range);
+    });
   }
 }

@@ -9,7 +9,7 @@ export type {
   DeltaStatic,
   OpPayload,
   OpRecord,
-  Ops,
+  OpSetType,
   OpType,
   StrictDeltaLike,
   StrictDeltaSetLike,
