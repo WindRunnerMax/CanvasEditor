@@ -1,4 +1,3 @@
-import { IconImage } from "@arco-design/web-react/icon";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
 import { DRAG_KEY, EDITOR_EVENT } from "sketching-core";
@@ -8,6 +7,7 @@ import { cs, TSON } from "sketching-utils";
 import { useEditor } from "../../hooks/use-editor";
 import { CursorIcon } from "../../static/cursor";
 import { GrabIcon } from "../../static/grab";
+import { ImageIcon } from "../../static/image";
 import { RectIcon } from "../../static/rect";
 import { TextIcon } from "../../static/text";
 import { IMAGE_INPUT_DOM_ID } from "../../utils/constant";
@@ -141,7 +141,7 @@ export const Header: FC = () => {
           className={cs(styles.op, active === NAV_ENUM.IMAGE && styles.active)}
           onClick={() => switchIndex(NAV_ENUM.IMAGE)}
         >
-          <IconImage />
+          {ImageIcon}
         </div>
       </div>
     </div>
