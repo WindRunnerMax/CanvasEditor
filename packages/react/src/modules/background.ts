@@ -32,12 +32,22 @@ export class Background {
     Background.range = range;
   }
 
-  private static onReset(e: CanvasResetEvent) {
-    const { range, offsetX, offsetY } = e;
-    const canvas = Background.canvas;
+  public static render() {
     const ctx = Background.ctx;
     const space = Background.range;
+    const width = this.canvas.width;
+    const height = this.canvas.height;
+    ctx.clearRect(0, 0, width, height);
+    const rect = space.rect();
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+  }
+
+  private static onReset(e: CanvasResetEvent) {
+    const { range, offsetX, offsetY } = e;
     if (!range) return void 0;
+    const ctx = Background.ctx;
+    const canvas = Background.canvas;
     const { height, width } = range.rect();
     const ratio = window.devicePixelRatio || 1;
     canvas.width = width * ratio;
@@ -45,11 +55,8 @@ export class Background {
     canvas.style.width = width + "px";
     canvas.style.height = height + "px";
     ctx.scale(ratio, ratio);
-    ctx.clearRect(0, 0, width, height);
     ctx.translate(-offsetX, -offsetY);
-    const rect = space.rect();
-    ctx.fillStyle = "#fff";
-    ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+    Background.render();
   }
 
   public static destroy(editor: Editor) {

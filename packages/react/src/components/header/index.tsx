@@ -129,6 +129,12 @@ export const Header: FC = () => {
           {RectIcon}
         </div>
         <div
+          className={cs(styles.op, active === NAV_ENUM.IMAGE && styles.active)}
+          onClick={() => switchIndex(NAV_ENUM.IMAGE)}
+        >
+          {ImageIcon}
+        </div>
+        <div
           draggable={active === NAV_ENUM.DEFAULT}
           onDragStart={onDragText}
           onDragEnd={onDragEnd}
@@ -136,12 +142,6 @@ export const Header: FC = () => {
           onClick={() => switchIndex(NAV_ENUM.TEXT)}
         >
           {TextIcon}
-        </div>
-        <div
-          className={cs(styles.op, active === NAV_ENUM.IMAGE && styles.active)}
-          onClick={() => switchIndex(NAV_ENUM.IMAGE)}
-        >
-          {ImageIcon}
         </div>
       </div>
     </div>
