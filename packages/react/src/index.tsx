@@ -6,7 +6,7 @@ import { useLayoutEffect, useMemo, useRef } from "react";
 import ReactDOM from "react-dom";
 import { Editor, LOG_LEVEL } from "sketching-core";
 import { DeltaSet } from "sketching-delta";
-import { Rect, Text } from "sketching-plugin";
+import { Image, Rect, Text } from "sketching-plugin";
 
 import { Body } from "./components/body";
 import { Header } from "./components/header";
@@ -16,6 +16,7 @@ import { EXAMPLE } from "./utils/constant";
 
 DeltaSet.register(Rect);
 DeltaSet.register(Text);
+DeltaSet.register(Image);
 
 const App: FC = () => {
   const ref = useRef<HTMLDivElement>(null);

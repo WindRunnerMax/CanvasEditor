@@ -6,6 +6,8 @@ export const DPI = 96;
 export const A4 = { width: 210, height: 297 };
 export const PAGE_OFFSET = new Point(160, 30);
 
+export const IMAGE_INPUT_DOM_ID = "__image-upload-input";
+
 export const EXAMPLE: DeltaSetLike = {
   ROOT: {
     x: -999999,

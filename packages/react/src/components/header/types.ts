@@ -3,4 +3,5 @@ export const NAV_ENUM = {
   GRAB: "grab",
   RECT: "rect",
   TEXT: "text",
+  IMAGE: "image",
 };
