@@ -35,7 +35,7 @@ export class Selection {
   }
 
   // ====== Active ======
-  public getActiveDeltaId() {
+  public getActiveDeltaIds() {
     return this.active;
   }
 

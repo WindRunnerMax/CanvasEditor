@@ -14,7 +14,7 @@ export const RightPanel: FC = () => {
 
   useEffect(() => {
     const onSelect = () => {
-      setActive([...editor.selection.getActiveDeltaId()]);
+      setActive([...editor.selection.getActiveDeltaIds()]);
     };
     editor.event.on(EDITOR_EVENT.SELECTION_CHANGE, onSelect);
     return () => {

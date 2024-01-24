@@ -8,11 +8,13 @@ import { DEFAULT_DELTA_LIKE } from "../editor/utils/constant";
 import { EDITOR_EVENT } from "../event/bus/action";
 import { Range } from "../selection/modules/range";
 import { DeltaState } from "./modules/node";
+import { Shortcut } from "./modules/shortcut";
 import type { EDITOR_STATE } from "./utils/constant";
 import type { ApplyOptions, FlatOp } from "./utils/types";
 
 export class EditorState {
   public readonly entry: DeltaState;
+  public readonly shortcut: Shortcut;
   private status: Map<string, boolean> = new Map();
   private deltas: Map<string, DeltaState> = new Map();
 
@@ -23,6 +25,11 @@ export class EditorState {
     this.deltas.set(entry.id, new DeltaState(editor, entry));
     this.entry = this.getDeltaState(ROOT_DELTA);
     this.createDeltaStateTree();
+    this.shortcut = new Shortcut(editor);
+  }
+
+  destroy() {
+    this.shortcut.destroy();
   }
 
   private createDeltaStateTree() {
@@ -79,15 +86,15 @@ export class EditorState {
       }
       case OP_TYPE.DELETE: {
         const { id } = op.payload;
-        this.deltas.delete(id);
         const target = this.getDeltaState(id);
         target && target.remove();
+        this.deltas.delete(id);
         changes.push({ id, op });
         break;
       }
       case OP_TYPE.MOVE: {
         const { x, y } = op.payload;
-        const select = this.editor.selection.getActiveDeltaId();
+        const select = this.editor.selection.getActiveDeltaIds();
         select.forEach(id => {
           const target = this.getDeltaState(id);
           target && target.move(x, y);

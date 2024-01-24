@@ -55,6 +55,7 @@ export class Editor {
     this.canvas.destroy();
     this.selection.destroy();
     this.state.set(EDITOR_STATE.MOUNTED, false);
+    this.state.destroy();
   }
 
   public getContainer() {
