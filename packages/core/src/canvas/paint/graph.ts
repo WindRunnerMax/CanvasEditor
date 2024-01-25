@@ -1,4 +1,5 @@
 import type { Editor } from "../../editor";
+import { EDITOR_EVENT } from "../../event/bus/action";
 import { Range } from "../../selection/modules/range";
 import type { DeltaState } from "../../state/modules/node";
 import type { Canvas } from "../index";
@@ -62,6 +63,7 @@ export class Graph {
     });
     this.ctx.closePath();
     this.ctx.restore();
+    this.editor.event.trigger(EDITOR_EVENT.PAINT, {});
   }
 
   public isActive() {

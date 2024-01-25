@@ -11,9 +11,10 @@ export type ContentChangeEvent = {
   options: ApplyOptions;
 };
 
-export type PaintEvent = {
-  deltaId: string;
-};
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type PaintEvent = {};
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type MountEvent = {};
 
 export type SelectionChangeEvent = {
   previous: Range | null;

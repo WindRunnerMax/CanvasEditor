@@ -6,6 +6,7 @@ import type {
   GrabEvent,
   HoverEvent,
   InsertEvent,
+  MountEvent,
   PaintEvent,
   ResizeEvent,
   SelectionChangeEvent,
@@ -21,6 +22,7 @@ export const EDITOR_EVENT = {
   HOVER_ENTER: "HOVER_ENTER",
   HOVER_LEAVE: "HOVER_LEAVE",
   CANVAS_RESET: "CANVAS_RESET",
+  MOUNT: "MOUNT",
   ...NATIVE_EVENTS,
 } as const;
 
@@ -34,6 +36,7 @@ export type EventMap = {
   [EDITOR_EVENT.HOVER_ENTER]: HoverEvent;
   [EDITOR_EVENT.HOVER_LEAVE]: HoverEvent;
   [EDITOR_EVENT.CANVAS_RESET]: CanvasResetEvent;
+  [EDITOR_EVENT.MOUNT]: MountEvent;
 } & NativeEventMap;
 
 type EventMapType = typeof EDITOR_EVENT;

@@ -47,6 +47,7 @@ export class Canvas {
     this.height = dom.clientHeight;
     this.graph.onMount(dom);
     this.mask.onMount(dom);
+    this.editor.event.trigger(EDITOR_EVENT.MOUNT, {});
   }
 
   public destroy() {

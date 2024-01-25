@@ -7,10 +7,12 @@ import { NSBridge } from "./bridge";
 
 export class DeltaState {
   public readonly id: string;
+  public readonly key: string;
   public _parent: DeltaState | null;
   public readonly children: DeltaState[];
   constructor(private editor: Editor, private readonly delta: Delta) {
     this.id = delta.id;
+    this.key = delta.key;
     this._parent = null;
     this.children = [];
   }
