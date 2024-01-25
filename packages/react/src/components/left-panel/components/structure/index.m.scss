@@ -14,8 +14,12 @@
     margin-top: -1px;
     padding: 7px 10px;
 
+    >.icon {
+      margin-right: 5px;
+    }
+
     &.active {
-      border-color: rgb(var(--arcoblue-6));
+      border-color: rgb(var(--arcoblue-4));
     }
   }
 }

@@ -41,8 +41,8 @@ export const Structure: FC<{ editor: Editor }> = ({ editor }) => {
           className={cs(styles.item, active.has(node.id) && styles.active)}
           onClick={() => onSelectNode(node.id)}
         >
-          {ICON_ENUM[node.key]}
-          {node.id}
+          <div className={styles.icon}>{ICON_ENUM[node.key]}</div>
+          <div>{node.id}</div>
         </div>
       ))}
     </div>
