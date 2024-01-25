@@ -4,4 +4,4 @@ export const NAV_ENUM = {
   RECT: "rect",
   TEXT: "text",
   IMAGE: "image",
-};
+} as const;

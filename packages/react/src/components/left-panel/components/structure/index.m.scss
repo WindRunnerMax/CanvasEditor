@@ -1,4 +1,21 @@
+@import '../../../../styles/variable';
+
 .container {
+  box-sizing: border-box;
   max-height: 100%;
   overflow-y: auto;
+  padding: 5px;
+
+  .item {
+    @include flex-align-center;
+
+    border: 1px solid transparent;
+    cursor: pointer;
+    margin-top: -1px;
+    padding: 7px 10px;
+
+    &.active {
+      border-color: rgb(var(--arcoblue-6));
+    }
+  }
 }
