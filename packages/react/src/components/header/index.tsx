@@ -11,8 +11,8 @@ import { ImageIcon } from "../../static/image";
 import { RectIcon } from "../../static/rect";
 import { TextIcon } from "../../static/text";
 import { IMAGE_INPUT_DOM_ID } from "../../utils/constant";
+import { NAV_ENUM } from "./constant";
 import styles from "./index.m.scss";
-import { NAV_ENUM } from "./types";
 
 export const Header: FC = () => {
   const { editor } = useEditor();
