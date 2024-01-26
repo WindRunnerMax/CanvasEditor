@@ -12,13 +12,25 @@ export class Rect extends Delta {
     const borderWidth = Number(this.getAttr(RECT_ATTRS.BORDER_WIDTH)) || DEFAULT_BORDER_WIDTH;
     const borderColor = this.getAttr(RECT_ATTRS.BORDER_COLOR) || DEFAULT_BORDER_COLOR;
     const fillColor = this.getAttr(RECT_ATTRS.FILL_COLOR);
+    ctx.save();
     if (fillColor) {
-      ctx.fillStyle = fillColor;
-      ctx.fillRect(this.x, this.y, this.width, this.height);
+      const width = this.width - borderWidth;
+      const height = this.height - borderWidth;
+      if (width > 0 && height > 0) {
+        ctx.fillStyle = fillColor;
+        const half = borderWidth / 2;
+        ctx.fillRect(this.x + half, this.y + half, width, height);
+      }
     }
-    ctx.lineWidth = borderWidth;
-    ctx.strokeStyle = borderColor;
-    ctx.strokeRect(this.x, this.y, this.width, this.height);
+    if (borderColor) {
+      const width = Math.min(this.width, this.height, borderWidth);
+      ctx.lineWidth = width;
+      ctx.strokeStyle = borderColor;
+      const half = width / 2;
+      ctx.strokeRect(this.x + half, this.y + half, this.width - width, this.height - width);
+    }
+
+    ctx.restore();
   };
 
   public static create = (options: DeltaOptions) => new Rect(options);

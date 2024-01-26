@@ -113,6 +113,7 @@ export class EditorState {
         const { id, attrs } = op.payload;
         const target = this.getDeltaState(id);
         target && target.revise(attrs);
+        changes.push({ id, op });
         break;
       }
     }
