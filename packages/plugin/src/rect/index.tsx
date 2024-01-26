@@ -1,12 +1,17 @@
 import type { DeltaOptions } from "sketching-delta";
 import { Delta } from "sketching-delta";
 
-import { DEFAULT_BORDER_COLOR, DEFAULT_BORDER_WIDTH } from "../utils/constant";
+import { DEFAULT_BORDER_COLOR, DEFAULT_BORDER_WIDTH, TRUE } from "../utils/constant";
+import { isTrue } from "../utils/is";
 import { RECT_ATTRS } from "./constant";
 
 export class Rect extends Delta {
   public static KEY = "rect";
   public key = Rect.KEY;
+
+  constructor(options: DeltaOptions) {
+    super(options);
+  }
 
   public drawing = (ctx: CanvasRenderingContext2D) => {
     const borderWidth = Number(this.getAttr(RECT_ATTRS.BORDER_WIDTH)) || DEFAULT_BORDER_WIDTH;
@@ -23,15 +28,42 @@ export class Rect extends Delta {
       }
     }
     if (borderColor) {
+      const L = this.getAttr(RECT_ATTRS.L);
+      const R = this.getAttr(RECT_ATTRS.R);
+      const T = this.getAttr(RECT_ATTRS.T);
+      const B = this.getAttr(RECT_ATTRS.B);
       const width = Math.min(this.width, this.height, borderWidth);
-      ctx.lineWidth = width;
-      ctx.strokeStyle = borderColor;
-      const half = width / 2;
-      ctx.strokeRect(this.x + half, this.y + half, this.width - width, this.height - width);
+      ctx.fillStyle = borderColor;
+      if (isTrue(L)) {
+        ctx.fillRect(this.x, this.y, width, this.height);
+      }
+      if (isTrue(R)) {
+        ctx.fillRect(this.x + this.width - width, this.y, width, this.height);
+      }
+      if (isTrue(T)) {
+        ctx.fillRect(this.x, this.y, this.width, width);
+      }
+      if (isTrue(B)) {
+        ctx.fillRect(this.x, this.y + this.height - width, this.width, width);
+      }
     }
 
     ctx.restore();
   };
 
-  public static create = (options: DeltaOptions) => new Rect(options);
+  public static create = (options: DeltaOptions) => {
+    const rect = new Rect(options);
+    // 默认创建时创建边框标记
+    const L = rect.getAttr(RECT_ATTRS.L);
+    const R = rect.getAttr(RECT_ATTRS.R);
+    const T = rect.getAttr(RECT_ATTRS.T);
+    const B = rect.getAttr(RECT_ATTRS.B);
+    if (!L && !R && !T && !B) {
+      rect.setAttr(RECT_ATTRS.L, TRUE);
+      rect.setAttr(RECT_ATTRS.R, TRUE);
+      rect.setAttr(RECT_ATTRS.T, TRUE);
+      rect.setAttr(RECT_ATTRS.B, TRUE);
+    }
+    return rect;
+  };
 }

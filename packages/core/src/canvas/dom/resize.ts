@@ -9,6 +9,7 @@ import { Range } from "../../selection/modules/range";
 import { EDITOR_STATE } from "../../state/utils/constant";
 import type { MouseEvent } from "../event/mouse";
 import type { ResizeType } from "../types/dom";
+import { noZero } from "../utils/cipher";
 import {
   MAX_Z_INDEX,
   RESIZE_LEN,
@@ -144,7 +145,7 @@ export class ResizeNode extends Node {
       let formattedX = x;
       let formattedY = y;
       const { width, height } = this.landingRange.rect();
-      const ratio = width / height;
+      const ratio = width / noZero(height);
       const { startX, startY, endX, endY } = this.landingRange.flat();
       let latest = Range.from(0, 0);
       switch (this.type) {
@@ -218,8 +219,8 @@ export class ResizeNode extends Node {
       const nodes = this.editor.selection.getActiveDeltaIds();
       const { width: oldWidth, height: oldHeight, x: oldX, y: oldY } = this.landingRange.rect();
       const { width: newWidth, height: newHeight, x: newX, y: newY } = this.latest.rect();
-      const ratioX = newWidth / oldWidth;
-      const ratioY = newHeight / oldHeight;
+      const ratioX = newWidth / noZero(oldWidth);
+      const ratioY = newHeight / noZero(oldHeight);
       nodes.forEach(id => {
         const state = this.editor.state.getDeltaState(id);
         if (!state) return void 0;
@@ -228,7 +229,9 @@ export class ResizeNode extends Node {
         const y = newY + (nodeY - oldY) * ratioY;
         const width = nodeWidth * ratioX;
         const height = nodeHeight * ratioY;
-        this.editor.state.apply(new Op(OP_TYPE.RESIZE, { id, x, y, width, height }));
+        this.editor.state.apply(
+          Op.from(OP_TYPE.RESIZE, { id, x, y, width: noZero(width), height: noZero(height) })
+        );
       });
     }
     this.latest = null;

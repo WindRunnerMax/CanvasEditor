@@ -24,7 +24,12 @@ export const EXAMPLE: DeltaSetLike = {
     y: 200,
     id: "VSIZD4xTEt",
     key: "rect",
-    attrs: {},
+    attrs: {
+      L: "true",
+      R: "true",
+      T: "true",
+      B: "true",
+    },
     width: 100,
     height: 100,
     children: [],

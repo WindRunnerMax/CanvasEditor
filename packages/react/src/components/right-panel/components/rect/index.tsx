@@ -1,7 +1,7 @@
 // COMPAT: https://github.com/arco-design/arco-design/pull/2520
 import "@arco-design/web-react/es/Select/style";
 
-import { ColorPicker, InputNumber } from "@arco-design/web-react";
+import { Checkbox, ColorPicker, InputNumber } from "@arco-design/web-react";
 import type { FC } from "react";
 import type { DeltaState, Editor } from "sketching-core";
 import { Op, OP_TYPE } from "sketching-delta";
@@ -9,13 +9,21 @@ import {
   DEFAULT_BORDER_COLOR,
   DEFAULT_BORDER_WIDTH,
   DEFAULT_FILL_COLOR,
+  FALSE,
+  isTrue,
   RECT_ATTRS,
+  TRUE,
 } from "sketching-plugin";
 
+import { useIsMounted } from "../../../../hooks/is-mounted";
 import styles from "../index.m.scss";
 
 export const Rect: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state }) => {
-  const onChange = (key: string, value: string) => {
+  const { isMounted } = useIsMounted();
+
+  const onChange = (key: string, value: string | null) => {
+    // COMPAT: 避免初始化时即触发`onChange`
+    if (!isMounted() || state.getAttr(key) === value) return void 0;
     editor.state.apply(new Op(OP_TYPE.REVISE, { id: state.id, attrs: { [key]: value } }));
   };
 
@@ -34,10 +42,41 @@ export const Rect: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
         <div>宽度</div>
         <InputNumber
           className={styles.input}
+          min={1}
+          max={10}
           size="mini"
           onChange={v => onChange(RECT_ATTRS.BORDER_WIDTH, v.toString())}
           defaultValue={state.getAttr(RECT_ATTRS.BORDER_WIDTH) || DEFAULT_BORDER_WIDTH}
         />
+      </div>
+      <div className={styles.item}>
+        <div>状态</div>
+        <div>
+          <Checkbox
+            defaultChecked={isTrue(state.getAttr(RECT_ATTRS.T))}
+            onChange={v => onChange(RECT_ATTRS.T, v ? TRUE : FALSE)}
+          >
+            T
+          </Checkbox>
+          <Checkbox
+            defaultChecked={isTrue(state.getAttr(RECT_ATTRS.L))}
+            onChange={v => onChange(RECT_ATTRS.L, v ? TRUE : FALSE)}
+          >
+            L
+          </Checkbox>
+          <Checkbox
+            defaultChecked={isTrue(state.getAttr(RECT_ATTRS.R))}
+            onChange={v => onChange(RECT_ATTRS.R, v ? TRUE : FALSE)}
+          >
+            R
+          </Checkbox>
+          <Checkbox
+            defaultChecked={isTrue(state.getAttr(RECT_ATTRS.B))}
+            onChange={v => onChange(RECT_ATTRS.B, v ? TRUE : FALSE)}
+          >
+            B
+          </Checkbox>
+        </div>
       </div>
       <div className={styles.title}>背景</div>
       <div className={styles.item}>
