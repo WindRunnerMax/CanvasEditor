@@ -1,10 +1,27 @@
 @import '../../../styles/variable';
 
+:global(.arco-color-picker-size-mini) {
+  padding: 4px;
+}
+
 .title {
+  border-bottom: 1px solid var(--color-border-2);
   font-size: 16px;
   font-weight: bold;
+  margin-top: 10px;
+  padding: 5px 0;
+
+  &:first-child {
+    margin-top: 5px;
+  }
 }
 
 .item {
   @include flex-justify-between;
+
+  margin-top: 10px;
+}
+
+.input {
+  width: 70px;
 }

@@ -196,13 +196,13 @@ importers:
         specifier: '5'
         version: 5.1.2(webpack@5.76.0)
       less:
-        specifier: ^4.2.0
+        specifier: 4.2.0
         version: 4.2.0
       less-loader:
-        specifier: ^11.1.4
-        version: 11.1.4(less@4.2.0)(webpack@5.76.0)
+        specifier: 12.1.0
+        version: 12.1.0(less@4.2.0)(webpack@5.76.0)
       sass-loader:
-        specifier: ^13.3.3
+        specifier: 13.3.3
         version: 13.3.3(sass@1.52.3)(webpack@5.76.0)
 
   packages/utils:
@@ -5915,9 +5915,9 @@ packages:
       shell-quote: 1.8.1
     dev: true
 
-  /less-loader@11.1.4(less@4.2.0)(webpack@5.76.0):
-    resolution: {integrity: sha512-6/GrYaB6QcW6Vj+/9ZPgKKs6G10YZai/l/eJ4SLwbzqNTBsAqt5hSLVF47TgsiBxV1P6eAU0GYRH3YRuQU9V3A==}
-    engines: {node: '>= 14.15.0'}
+  /less-loader@12.1.0(less@4.2.0)(webpack@5.76.0):
+    resolution: {integrity: sha512-N/MRZA9iILOW+TQ9xoDptsSPbtBJDWshOj3LNqL+UJAYDhtoraLECiBa93DeLJUfR4m/VE6bWuxaVs40+wBXYw==}
+    engines: {node: '>= 18.12.0'}
     peerDependencies:
       less: ^3.5.0 || ^4.0.0
       webpack: ^5.0.0

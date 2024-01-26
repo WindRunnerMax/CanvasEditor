@@ -1,4 +1,4 @@
-import type { Delta } from "sketching-delta";
+import type { Delta, DeltaAttribute } from "sketching-delta";
 
 import { ElementNode } from "../../canvas/dom/element";
 import type { Editor } from "../../editor";
@@ -36,6 +36,10 @@ export class DeltaState {
 
   public toDelta() {
     return this.delta;
+  }
+
+  public getAttr(key: string): string | null {
+    return this.delta.getAttr(key);
   }
 
   public drawing(ctx: CanvasRenderingContext2D) {
@@ -95,5 +99,11 @@ export class DeltaState {
       this.editor.logger.warning(`Node Not Found - ${this.delta.id}`);
     }
     return this;
+  }
+
+  public revise(attrs: DeltaAttribute) {
+    for (const [key, value] of Object.entries(attrs)) {
+      this.delta.setAttr(key, value);
+    }
   }
 }

@@ -10,12 +10,13 @@ export type DeltaLike = {
   width: number;
   height: number;
   children?: string[];
-  attrs?: Record<string, string>;
+  attrs?: DeltaAttribute;
 };
 
 export type DeltaOptions = DeltaLike;
 export type DeltaSetLike = Record<string, DeltaLike>;
 export type DeltaSetOptions = DeltaSetLike;
+export type DeltaAttribute = Record<string, string | null>;
 
 export type StrictDeltaLike = Required<DeltaLike>;
 export type StrictDeltaSetLike = Record<string, StrictDeltaLike>;
@@ -38,7 +39,7 @@ export type OpPayload = {
   [OP_TYPE.DELETE]: { id: string };
   [OP_TYPE.MOVE]: { x: number; y: number };
   [OP_TYPE.RESIZE]: { id: string; x: number; y: number; width: number; height: number };
-  [OP_TYPE.REVISE]: { attrs: Record<string, string> };
+  [OP_TYPE.REVISE]: { id: string; attrs: DeltaAttribute };
 };
 
 export type OpRecord = { [K in OpType]: Op<K> };

@@ -44,7 +44,7 @@ export const RightPanel: FC = () => {
       </div>
       <div className={styles.scroll}>
         {active.length === 0 && "请选择图形"}
-        {active.length > 1 && "多选图形"}
+        {active.length > 1 && "图形多选状态"}
         {active.length === 1 && loadEditor()}
       </div>
     </div>

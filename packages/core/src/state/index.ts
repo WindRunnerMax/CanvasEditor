@@ -110,6 +110,9 @@ export class EditorState {
         break;
       }
       case OP_TYPE.REVISE: {
+        const { id, attrs } = op.payload;
+        const target = this.getDeltaState(id);
+        target && target.revise(attrs);
         break;
       }
     }
