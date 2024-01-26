@@ -5,6 +5,8 @@ import { EDITOR_EVENT } from "sketching-core";
 import { cs } from "sketching-utils";
 
 import { useEditor } from "../../hooks/use-editor";
+import { NAV_ENUM } from "../header/constant";
+import { Rect } from "./components/rect";
 import styles from "./index.m.scss";
 
 export const RightPanel: FC = () => {
@@ -22,13 +24,28 @@ export const RightPanel: FC = () => {
     };
   }, [editor]);
 
+  const loadEditor = () => {
+    const id = active.length === 1 && active[0];
+    if (!id) return null;
+    const state = editor.state.getDeltaState(id);
+    if (!state) return null;
+    switch (state.key) {
+      case NAV_ENUM.RECT:
+        return <Rect editor={editor} state={state}></Rect>;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className={cs(styles.container, collapse && styles.collapse)}>
       <div className={cs(styles.op)} onClick={() => setCollapse(!collapse)}>
         <IconPlus />
       </div>
       <div className={styles.scroll}>
-        {active.length === 0 ? "请选择图形" : active.length > 1 ? "多选" : ""}
+        {active.length === 0 && "请选择图形"}
+        {active.length > 1 && "多选图形"}
+        {active.length === 1 && loadEditor()}
       </div>
     </div>
   );

@@ -16,7 +16,7 @@ import styles from "./index.m.scss";
 
 export const Header: FC = () => {
   const { editor } = useEditor();
-  const [active, setActive] = useState(NAV_ENUM.DEFAULT);
+  const [active, setActive] = useState<string>(NAV_ENUM.DEFAULT);
 
   const switchIndex = (index: string) => {
     if (index === active) return void 0;

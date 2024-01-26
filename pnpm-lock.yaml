@@ -156,8 +156,8 @@ importers:
   packages/react:
     dependencies:
       '@arco-design/web-react':
-        specifier: 2.58.1
-        version: 2.58.1(@types/react@17.0.2)(react-dom@17.0.2)(react@17.0.2)
+        specifier: 2.59.1
+        version: 2.59.1(@types/react@17.0.2)(react-dom@17.0.2)(react@17.0.2)
       ahooks:
         specifier: 3.7.8
         version: 3.7.8(react@17.0.2)
@@ -255,8 +255,8 @@ packages:
       color: 3.2.1
     dev: false
 
-  /@arco-design/web-react@2.58.1(@types/react@17.0.2)(react-dom@17.0.2)(react@17.0.2):
-    resolution: {integrity: sha512-zy2px9VlL3zNcF3LGuzbysQPTb881rIUOpiUl5psfPGbhfrfxRZOvXBMGd+fGd1e3JuOKL5sEpgYvDUX1ROfDA==}
+  /@arco-design/web-react@2.59.1(@types/react@17.0.2)(react-dom@17.0.2)(react@17.0.2):
+    resolution: {integrity: sha512-MiP0Jw50fBMmwqm2L1eHJ/oyl/f30ZSwwMbvBAXBnJatBdpiEDRYHtEOYdr80VK74OhL7OW7PLS7lnrHAnglMQ==}
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
