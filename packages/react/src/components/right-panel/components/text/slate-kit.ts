@@ -1,11 +1,12 @@
 import type { BlockElement } from "doc-editor-light";
 import { FONT_BASE_KEY, HYPER_LINK_KEY, STRIKE_THROUGH_KEY, UNDERLINE_KEY } from "doc-editor-light";
+import type { RichTextLine, RichTextLines } from "sketching-plugin";
+import { TEXT_ATTRS } from "sketching-plugin";
+import { TRUE } from "sketching-plugin";
 import { isArray, isEmptyValue } from "sketching-utils";
+import { BLUE_6 } from "sketching-utils";
 
-import { BLUE_6 } from "../../../utils/src/palette";
-import { TRUE } from "../utils/constant";
-import type { RichTextLine, RichTextLines } from "./constant";
-import { COLOR_PEER, TEXT_ATTRS } from "./constant";
+import { COLOR_PEER } from "./constant";
 
 export const isBlock = (block: BlockElement) => {
   return isArray(block.children);
@@ -65,7 +66,7 @@ export const blocksToLines = (blocks: BlockElement[]) => {
             target[TEXT_ATTRS.COLOR] = BLUE_6;
           }
           for (const char of text.text) {
-            line.chars.push({ char, config: target });
+            line.chars.push({ char, config: { ...target } });
           }
         }
         lines.push(line);

@@ -1,27 +1,16 @@
 export const TEXT_ATTRS = {
-  DATA: "data",
-  FAMILY: "family",
-  SIZE: "size",
-  WEIGHT: "weight",
-  STYLE: "style",
-  COLOR: "color",
-  UNDERLINE: "underline",
-  BACKGROUND: "background",
-  LINE_HEIGHT: "line-height",
-  LINK: "link",
-  STRIKE_THROUGH: "strike-through",
-};
-
-export const COLOR_PEER: Record<string, string> = {
-  "var(--color-white)": "#fff",
-  "var(--color-black)": "#000",
-  "rgb(var(--red-6))": "rgb(245,63,63)",
-  "rgb(var(--blue-6))": "rgb(52,145,250)",
-  "rgb(var(--green-6))": "rgb(0,180,42)",
-  "rgb(var(--orange-6))": "rgb(255,125,0)",
-  "rgb(var(--purple-6))": "rgb(114,46,209)",
-  "rgb(var(--magenta-6))": "rgb(245,49,157)",
-  "rgb(var(--pinkpurple-6))": "rgb(217,26,217)",
+  DATA: "DATA",
+  ORIGIN_DATA: "ORIGIN_DATA",
+  FAMILY: "FAMILY",
+  SIZE: "SIZE",
+  WEIGHT: "WEIGHT",
+  STYLE: "STYLE",
+  COLOR: "COLOR",
+  UNDERLINE: "UNDERLINE",
+  BACKGROUND: "BACKGROUND",
+  LINE_HEIGHT: "LINE_HEIGHT",
+  LINK: "LINK",
+  STRIKE_THROUGH: "STRIKE_THROUGH",
 };
 
 export type Attributes = Record<string, string>;
@@ -35,10 +24,10 @@ export type RichTextLines = RichTextLine[];
 export type TextMatrixItem = {
   char: string;
   font: string;
-  metric: TextMetrics;
   config: Attributes;
   width: number;
   height: number;
+  descent: number;
 };
 export type TextMatrix = {
   items: TextMatrixItem[];

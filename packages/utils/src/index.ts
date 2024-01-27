@@ -20,6 +20,7 @@ export { toFixedNumber } from "./calculator";
 export {
   BLUE_3,
   BLUE_5,
+  BLUE_6,
   BLUE_6_6,
   BLUE_7,
   BORDER_1,

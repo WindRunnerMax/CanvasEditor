@@ -28,6 +28,8 @@
 
 .richText {
   margin-top: 6px;
+  // COMPAT: 兼容`Canvas`绘制
+  word-break: break-all;
 }
 
 :global {

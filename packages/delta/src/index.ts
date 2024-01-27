@@ -2,7 +2,7 @@ export { Delta } from "./delta";
 export { DeltaSet } from "./delta-set";
 export { Op } from "./op";
 export type {
-  DeltaAttribute,
+  DeltaAttributes,
   DeltaLike,
   DeltaOptions,
   DeltaSetLike,
