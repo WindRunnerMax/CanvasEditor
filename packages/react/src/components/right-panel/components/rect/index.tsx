@@ -3,6 +3,7 @@ import "@arco-design/web-react/es/Select/style";
 
 import { Checkbox, ColorPicker, InputNumber } from "@arco-design/web-react";
 import type { FC } from "react";
+import React from "react";
 import type { DeltaState, Editor } from "sketching-core";
 import { Op, OP_TYPE } from "sketching-delta";
 import {
@@ -28,7 +29,7 @@ export const Rect: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
   };
 
   return (
-    <div>
+    <React.Fragment>
       <div className={styles.title}>边框</div>
       <div className={styles.item}>
         <div>颜色</div>
@@ -87,6 +88,6 @@ export const Rect: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
           defaultValue={state.getAttr(RECT_ATTRS.FILL_COLOR) || DEFAULT_FILL_COLOR}
         ></ColorPicker>
       </div>
-    </div>
+    </React.Fragment>
   );
 };

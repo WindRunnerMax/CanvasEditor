@@ -37,7 +37,7 @@ export class RichText {
     for (const line of lines) {
       // COMPAT: 高度给予最小值
       let matrix: TextMatrix = { items: [], height: 12, width: 0 };
-      for (const item of line) {
+      for (const item of line.chars) {
         const { metric, font } = this.measure(item.char, item.config);
         if (!metric) continue;
         const text: TextMatrixItem = { char: item.char, font, metric, config: item.config };

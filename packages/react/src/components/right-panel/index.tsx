@@ -9,6 +9,7 @@ import { useEditor } from "../../hooks/use-editor";
 import { Background } from "../../modules/background";
 import { NAV_ENUM } from "../header/constant";
 import { Rect } from "./components/rect";
+import { Text } from "./components/text";
 import styles from "./index.m.scss";
 
 export const RightPanel: FC = () => {
@@ -36,6 +37,8 @@ export const RightPanel: FC = () => {
     switch (state.key) {
       case NAV_ENUM.RECT:
         return <Rect editor={editor} state={state}></Rect>;
+      case NAV_ENUM.TEXT:
+        return <Text editor={editor} state={state}></Text>;
       default:
         return null;
     }

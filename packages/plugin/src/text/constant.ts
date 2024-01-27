@@ -7,17 +7,19 @@ export const TEXT_ATTRS = {
   COLOR: "color",
 };
 
+export type Attributes = Record<string, string>;
+
 export type RichTextLine = {
-  char: string;
-  config: Record<string, string>;
-}[];
+  chars: { char: string; config: Attributes }[];
+  config: Attributes;
+};
 export type RichTextLines = RichTextLine[];
 
 export type TextMatrixItem = {
   char: string;
   font: string;
   metric: TextMetrics;
-  config: Record<string, string>;
+  config: Attributes;
 };
 export type TextMatrix = {
   items: TextMatrixItem[];

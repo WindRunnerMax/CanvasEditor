@@ -25,3 +25,13 @@
 .input {
   width: 70px;
 }
+
+:global {
+  .hover-menu-container {
+    .arco-menu-inner {
+      .arco-menu-pop.arco-menu-pop-header {
+        display: none;
+      }
+    }
+  }
+}

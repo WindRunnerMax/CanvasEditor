@@ -18,7 +18,8 @@
   "license": "MIT",
   "dependencies": {
     "sketching-delta": "workspace: *",
-    "sketching-utils": "workspace: *"
+    "sketching-utils": "workspace: *",
+    "doc-editor-light": "0.3.5"
   },
   "devDependencies": {
     "@babel/core": "7.20.12",
