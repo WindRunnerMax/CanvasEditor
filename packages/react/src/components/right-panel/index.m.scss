@@ -59,6 +59,7 @@ $width: 300px;
 
   .rect {
     $margin: 15px;
+    $offset: 196px;
 
     display: flex;
     position: relative;
@@ -70,23 +71,23 @@ $width: 300px;
     }
 
     .lt {
-      right: 200px;
+      right: $offset;
       top: $margin;
     }
 
     .rt {
-      left: 200px;
+      left: $offset;
       top: $margin;
     }
 
     .lb {
       bottom: $margin;
-      right: 200px;
+      right: $offset;
     }
 
     .rb {
       bottom: $margin;
-      left: 200px;
+      left: $offset;
     }
 
     .content {

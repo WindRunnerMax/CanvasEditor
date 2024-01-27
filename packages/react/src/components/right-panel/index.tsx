@@ -49,7 +49,7 @@ export const RightPanel: FC = () => {
     const rt = { x: x + width - offset.x, y: y - offset.y };
     const lb = { x: x - offset.x, y: y + height - offset.y };
     const rb = { x: x + width - offset.x, y: y + height - offset.y };
-    const format = (num: number) => Math.round(num * 100) / 100;
+    const format = (num: number) => Math.round(num * 10) / 10;
     const toPos = (pos: { x: number; y: number }) => `[${format(pos.x)}, ${format(pos.y)}]`;
     return { lt: toPos(lt), rt: toPos(rt), lb: toPos(lb), rb: toPos(rb) };
   }, [range]);

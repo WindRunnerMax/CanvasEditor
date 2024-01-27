@@ -1,5 +1,6 @@
 import { Op, OP_TYPE } from "sketching-delta";
 
+import { RESIZE_LEN } from "../../canvas/utils/constant";
 import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
 
@@ -25,7 +26,22 @@ export class Shortcut {
     } else if (e.key === " ") {
       this.editor.canvas.grab.start();
       e.preventDefault();
-      e.stopPropagation();
+    } else if (e.key === "ArrowUp") {
+      this.editor.state.apply(new Op(OP_TYPE.MOVE, { x: 0, y: -1 }));
+      this.onSelectionMove(0, -1);
+      e.preventDefault();
+    } else if (e.key === "ArrowDown") {
+      this.editor.state.apply(new Op(OP_TYPE.MOVE, { x: 0, y: 1 }));
+      this.onSelectionMove(0, 1);
+      e.preventDefault();
+    } else if (e.key === "ArrowLeft") {
+      this.editor.state.apply(new Op(OP_TYPE.MOVE, { x: -1, y: 0 }));
+      this.onSelectionMove(-1, 0);
+      e.preventDefault();
+    } else if (e.key === "ArrowRight") {
+      this.editor.state.apply(new Op(OP_TYPE.MOVE, { x: 1, y: 0 }));
+      this.onSelectionMove(1, 0);
+      e.preventDefault();
     }
   };
 
@@ -34,6 +50,15 @@ export class Shortcut {
       this.editor.canvas.grab.close();
       e.preventDefault();
       e.stopPropagation();
+    }
+  };
+
+  onSelectionMove = (x: number, y: number) => {
+    const selection = this.editor.selection.get();
+    if (selection) {
+      this.editor.selection.set(selection.move(x, y));
+      const zoom = selection.zoom(RESIZE_LEN).zoom(1);
+      this.editor.canvas.mask.drawingEffect(zoom, { immediately: true });
     }
   };
 }

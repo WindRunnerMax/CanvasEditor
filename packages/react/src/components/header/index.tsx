@@ -44,6 +44,7 @@ export const Header: FC = () => {
         input.setAttribute("type", "file");
         input.setAttribute("id", IMAGE_INPUT_DOM_ID);
         input.setAttribute("accept", "image/png, image/jpeg, image/svg+xml");
+        input.style.display = "none";
         document.body.append(input);
       }
       input.value = "";
