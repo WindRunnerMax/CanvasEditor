@@ -37,19 +37,29 @@ export class RichText {
   public parse = (lines: RichTextLines, width: number) => {
     const group: TextMatrices = [];
     for (const line of lines) {
+      const lineHeight = Number(line.config[TEXT_ATTRS.LINE_HEIGHT]) || 1.5;
       // COMPAT: 高度给予最小值
-      let matrix: TextMatrix = { items: [], height: 12 * 1.5, width: 0 };
+      let matrix: TextMatrix = { items: [], height: 12 * lineHeight, width: 0 };
       for (const item of line.chars) {
         const { metric, font } = this.measure(item.char, item.config);
         if (!metric) continue;
-        const text: TextMatrixItem = { char: item.char, font, metric, config: item.config };
+        const text: TextMatrixItem = {
+          char: item.char,
+          font,
+          metric,
+          config: item.config,
+          width: 0,
+          height: 0,
+        };
         if (matrix.width + metric.width > width) {
           group.push(matrix);
           // 重置行`matrix`
-          matrix = { items: [], height: 12 * 1.5, width: 0 };
+          matrix = { items: [], height: 12 * lineHeight, width: 0 };
         }
         const fontHeight = metric.actualBoundingBoxAscent + metric.actualBoundingBoxDescent;
-        matrix.height = Math.max(matrix.height, fontHeight * 1.5);
+        text.height = fontHeight * lineHeight;
+        text.width = metric.width;
+        matrix.height = Math.max(matrix.height, fontHeight * lineHeight);
         matrix.width = matrix.width + metric.width;
         matrix.items.push(text);
       }
@@ -75,22 +85,54 @@ export class RichText {
     let offsetX = x;
     let offsetY = y;
     for (const matrix of matrices) {
-      if (offsetY + matrix.height > y + height) break;
-      const gap = Math.max(0, (width - matrix.width) / matrix.items.length);
+      const calibratedOffsetY = offsetY + matrix.height;
+      if (calibratedOffsetY > y + height) break;
+      const gap = matrix.break ? 0 : Math.max(0, (width - matrix.width) / matrix.items.length);
+      const halfGap = gap / 2;
       for (const item of matrix.items) {
+        // 绘制背景
+        if (item.config[TEXT_ATTRS.BACKGROUND]) {
+          ctx.beginPath();
+          ctx.fillStyle = item.config[TEXT_ATTRS.BACKGROUND];
+          ctx.rect(
+            offsetX - halfGap,
+            calibratedOffsetY - matrix.height,
+            item.metric.width + gap,
+            matrix.height
+          );
+          ctx.fill();
+          ctx.closePath();
+        }
+        // 绘制文字
         ctx.font = item.font;
         ctx.fillStyle = item.config.color || TEXT_1;
-        ctx.fillText(item.char, offsetX, offsetY + matrix.height);
-        offsetX = offsetX + item.metric.width;
-        if (!matrix.break) offsetX = offsetX + gap;
+        ctx.fillText(item.char, offsetX, calibratedOffsetY);
+        // 绘制下划线
+        if (item.config[TEXT_ATTRS.UNDERLINE]) {
+          ctx.beginPath();
+          ctx.strokeStyle = item.config.color || TEXT_1;
+          ctx.lineWidth = 1;
+          ctx.moveTo(offsetX - halfGap, calibratedOffsetY);
+          ctx.lineTo(offsetX + item.metric.width + halfGap, calibratedOffsetY);
+          ctx.stroke();
+          ctx.closePath();
+        }
+        // 绘制中划线
+        if (item.config[TEXT_ATTRS.STRIKE_THROUGH]) {
+          ctx.beginPath();
+          ctx.strokeStyle = item.config.color || TEXT_1;
+          ctx.lineWidth = 1;
+          const halfHeight = item.height / 2;
+          ctx.moveTo(offsetX - halfGap, calibratedOffsetY - halfHeight);
+          ctx.lineTo(offsetX + item.metric.width + halfGap, calibratedOffsetY - halfHeight);
+          ctx.stroke();
+          ctx.closePath();
+        }
+        offsetX = offsetX + item.metric.width + gap;
       }
-      ctx.beginPath();
-      ctx.moveTo(offsetX, offsetY + matrix.height);
-      ctx.lineTo(x, offsetY + matrix.height);
-      ctx.stroke();
-      ctx.closePath();
+
       offsetX = x;
-      offsetY = offsetY + matrix.height;
+      offsetY = calibratedOffsetY;
     }
     this.ctx.closePath();
     this.ctx.restore();

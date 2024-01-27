@@ -5,8 +5,11 @@ export const TEXT_ATTRS = {
   WEIGHT: "weight",
   STYLE: "style",
   COLOR: "color",
+  UNDERLINE: "underline",
   BACKGROUND: "background",
   LINE_HEIGHT: "line-height",
+  LINK: "link",
+  STRIKE_THROUGH: "strike-through",
 };
 
 export const COLOR_PEER: Record<string, string> = {
@@ -34,6 +37,8 @@ export type TextMatrixItem = {
   font: string;
   metric: TextMetrics;
   config: Attributes;
+  width: number;
+  height: number;
 };
 export type TextMatrix = {
   items: TextMatrixItem[];

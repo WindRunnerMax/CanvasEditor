@@ -1,7 +1,8 @@
 import type { BlockElement } from "doc-editor-light";
-import { FONT_BASE_KEY, UNDERLINE_KEY } from "doc-editor-light";
+import { FONT_BASE_KEY, HYPER_LINK_KEY, STRIKE_THROUGH_KEY, UNDERLINE_KEY } from "doc-editor-light";
 import { isArray, isEmptyValue } from "sketching-utils";
 
+import { BLUE_6 } from "../../../utils/src/palette";
 import { TRUE } from "../utils/constant";
 import type { RichTextLine, RichTextLines } from "./constant";
 import { COLOR_PEER, TEXT_ATTRS } from "./constant";
@@ -44,7 +45,8 @@ export const blocksToLines = (blocks: BlockElement[]) => {
           // 需要处理行内格式标识 -> Record<string, string>
           if (attrs.bold) target[TEXT_ATTRS.WEIGHT] = "bold";
           if (attrs.italic) target[TEXT_ATTRS.STYLE] = "italic";
-          if (attrs[UNDERLINE_KEY]) target[UNDERLINE_KEY] = TRUE;
+          if (attrs[UNDERLINE_KEY]) target[TEXT_ATTRS.UNDERLINE] = TRUE;
+          if (attrs[STRIKE_THROUGH_KEY]) target[TEXT_ATTRS.STRIKE_THROUGH] = TRUE;
           if (attrs[FONT_BASE_KEY]) {
             // @ts-expect-error unknown
             const color = attrs[FONT_BASE_KEY].color;
@@ -55,6 +57,12 @@ export const blocksToLines = (blocks: BlockElement[]) => {
             // @ts-expect-error unknown
             const fontSize = attrs[FONT_BASE_KEY].fontSize;
             fontSize && (target[TEXT_ATTRS.SIZE] = fontSize);
+          }
+          if (attrs[HYPER_LINK_KEY]) {
+            // @ts-expect-error unknown
+            const href = attrs[HYPER_LINK_KEY].href;
+            href && (target[TEXT_ATTRS.LINK] = href);
+            target[TEXT_ATTRS.COLOR] = BLUE_6;
           }
           for (const char of text.text) {
             line.chars.push({ char, config: target });

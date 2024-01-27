@@ -16,6 +16,7 @@ import debounce from "lodash-es/debounce";
 // Compat: FireFox https://github.com/lodash/lodash/issues/3126
 import throttle from "lodash-es/throttle";
 export { debounce, throttle };
+export { toFixedNumber } from "./calculator";
 export {
   BLUE_3,
   BLUE_5,
