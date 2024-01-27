@@ -1,10 +1,11 @@
-import type { CanvasResetEvent, Editor } from "sketching-core";
+import type { CanvasResetEvent, Editor, RangeRect } from "sketching-core";
 import { EDITOR_EVENT, Range } from "sketching-core";
 
 import { A4, DPI, PAGE_OFFSET } from "../utils/constant";
 
 export class Background {
-  private static range: Range;
+  public static range: Range;
+  public static rect: RangeRect;
   private static canvas: HTMLCanvasElement;
   private static ctx: CanvasRenderingContext2D;
 
@@ -17,12 +18,12 @@ export class Background {
     Background.canvas.style.position = "absolute";
     Background.canvas.style.zIndex = "-1";
     if (standard) {
-      Background.range = standard;
+      Background.setRange(standard);
     } else {
       const opWidthPX = (A4.width * DPI) / 25.4;
       const opHeightPX = (A4.height * DPI) / 25.4;
       const range = Range.fromRect(PAGE_OFFSET.x, PAGE_OFFSET.y, opWidthPX, opHeightPX);
-      Background.range = range;
+      Background.setRange(range);
     }
     dom.insertBefore(Background.canvas, dom.firstChild);
     editor.event.on(EDITOR_EVENT.CANVAS_RESET, Background.onReset);
@@ -30,6 +31,7 @@ export class Background {
 
   public static setRange(range: Range) {
     Background.range = range;
+    Background.rect = range.rect();
   }
 
   public static render() {

@@ -19,6 +19,7 @@ export type {
 export { LOG_LEVEL } from "./log";
 export { Point } from "./selection/modules/point";
 export { Range } from "./selection/modules/range";
+export type { RangeRect } from "./selection/utils/types";
 export { EditorState } from "./state/index";
 export { DeltaState } from "./state/modules/node";
 export { EDITOR_STATE } from "./state/utils/constant";

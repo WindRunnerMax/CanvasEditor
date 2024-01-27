@@ -56,4 +56,44 @@ $width: 300px;
       transform: rotate(0deg);
     }
   }
+
+  .rect {
+    $margin: 15px;
+
+    display: flex;
+    position: relative;
+
+    .pos {
+      color: var(--color-text-2);
+      font-size: 12px;
+      position: absolute;
+    }
+
+    .lt {
+      right: 200px;
+      top: $margin;
+    }
+
+    .rt {
+      left: 200px;
+      top: $margin;
+    }
+
+    .lb {
+      bottom: $margin;
+      right: 200px;
+    }
+
+    .rb {
+      bottom: $margin;
+      left: 200px;
+    }
+
+    .content {
+      border: 1px solid var(--color-border-4);
+      height: 70px;
+      margin: $margin 80px;
+      width: 100%;
+    }
+  }
 }
