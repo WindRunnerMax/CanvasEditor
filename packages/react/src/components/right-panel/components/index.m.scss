@@ -26,7 +26,16 @@
   width: 70px;
 }
 
+.richText {
+  margin-top: 6px;
+}
+
 :global {
+  .doc-line {
+    line-height: 1.5 !important;
+    margin: 0 !important;
+  }
+
   .hover-menu-container {
     .arco-menu-inner {
       .arco-menu-pop.arco-menu-pop-header {

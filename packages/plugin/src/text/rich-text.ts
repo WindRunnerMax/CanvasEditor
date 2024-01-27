@@ -13,7 +13,9 @@ export class RichText {
   }
 
   private getFont = (config: Record<string, string>) => {
-    const fontFamily = config[TEXT_ATTRS.FAMILY] || "sans-serif";
+    const fontFamily =
+      config[TEXT_ATTRS.FAMILY] ||
+      "Inter, -apple-system, BlinkMacSystemFont, PingFang SC, Hiragino Sans GB, noto sans, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif";
     const fontSize = config[TEXT_ATTRS.SIZE] || 14;
     const fontWeight = config[TEXT_ATTRS.WEIGHT] || "normal";
     const fontStyle = config[TEXT_ATTRS.STYLE] || "normal";
@@ -36,7 +38,7 @@ export class RichText {
     const group: TextMatrices = [];
     for (const line of lines) {
       // COMPAT: 高度给予最小值
-      let matrix: TextMatrix = { items: [], height: 12, width: 0 };
+      let matrix: TextMatrix = { items: [], height: 12 * 1.5, width: 0 };
       for (const item of line.chars) {
         const { metric, font } = this.measure(item.char, item.config);
         if (!metric) continue;
@@ -44,12 +46,10 @@ export class RichText {
         if (matrix.width + metric.width > width) {
           group.push(matrix);
           // 重置行`matrix`
-          matrix = { items: [], height: 12, width: 0 };
+          matrix = { items: [], height: 12 * 1.5, width: 0 };
         }
-        matrix.height = Math.max(
-          matrix.height,
-          metric.actualBoundingBoxAscent + metric.actualBoundingBoxDescent
-        );
+        const fontHeight = metric.actualBoundingBoxAscent + metric.actualBoundingBoxDescent;
+        matrix.height = Math.max(matrix.height, fontHeight * 1.5);
         matrix.width = matrix.width + metric.width;
         matrix.items.push(text);
       }
@@ -71,6 +71,7 @@ export class RichText {
     this.ctx.beginPath();
     this.ctx.rect(x, y, width, height);
     this.ctx.clip();
+    ctx.textBaseline = "bottom";
     let offsetX = x;
     let offsetY = y;
     for (const matrix of matrices) {
@@ -83,6 +84,11 @@ export class RichText {
         offsetX = offsetX + item.metric.width;
         if (!matrix.break) offsetX = offsetX + gap;
       }
+      ctx.beginPath();
+      ctx.moveTo(offsetX, offsetY + matrix.height);
+      ctx.lineTo(x, offsetY + matrix.height);
+      ctx.stroke();
+      ctx.closePath();
       offsetX = x;
       offsetY = offsetY + matrix.height;
     }

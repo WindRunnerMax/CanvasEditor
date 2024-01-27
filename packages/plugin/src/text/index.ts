@@ -6,6 +6,7 @@ import { TSON } from "sketching-utils";
 import type { RichTextLines } from "./constant";
 import { TEXT_ATTRS } from "./constant";
 import { RichText } from "./rich-text";
+import { blocksToLines } from "./slate-kit";
 
 const text = new RichText();
 
@@ -21,6 +22,9 @@ export class Text extends Delta {
       const plain = "选中以编辑...";
       const line = plain.split("").map(char => ({ char, config: {} }));
       lines.push({ chars: line, config: {} });
+    } else {
+      const result = blocksToLines(blocks);
+      lines.push(...result);
     }
     const matrices = text.parse(lines, this.width);
     text.render(matrices, ctx, this.x, this.y, this.width, this.height);

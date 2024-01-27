@@ -59,6 +59,10 @@ export class DeltaSet {
     }
   }
 
+  public toJSON() {
+    return this.getDeltas();
+  }
+
   private static DeltaTypeStore: Record<string, DeltaStatic> = {};
   public static register(delta: DeltaStatic) {
     if (!delta.KEY) {

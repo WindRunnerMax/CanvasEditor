@@ -41,10 +41,8 @@ export const Text: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
 
   const initText = useMemo(() => {
     const data = state.getAttr(TEXT_ATTRS.DATA);
-    if (data) {
-      const blocks = TSON.parse<BlockElement[]>(data);
-      if (blocks) return blocks;
-    }
+    const blocks = data && TSON.parse<BlockElement[]>(data);
+    if (blocks) return blocks;
     return [{ children: [{ text: "" }] }] as BlockElement[];
   }, [state]);
 
@@ -98,6 +96,7 @@ export const Text: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
           <MenuToolBar readonly={false} commands={commands} editor={richText}></MenuToolBar>
         </div>
         <Editable
+          className={styles.richText}
           renderElement={renderElement}
           renderLeaf={renderLeaf}
           readOnly={false}

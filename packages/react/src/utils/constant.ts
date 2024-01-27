@@ -8,6 +8,7 @@ export const PAGE_OFFSET = new Point(160, 30);
 
 export const IMAGE_INPUT_DOM_ID = "__image-upload-input";
 
+export const STORAGE_KEY = "sketching-storage";
 export const EXAMPLE: DeltaSetLike = {
   ROOT: {
     x: -999999,

@@ -9,6 +9,7 @@ export {
   isObject,
   isPlainNumber,
   isString,
+  storage,
   TSON,
 } from "laser-utils";
 import debounce from "lodash-es/debounce";
