@@ -8,19 +8,25 @@
   padding: 5px;
 
   .item {
-    @include flex-align-center;
+    @include flex-justify-between;
 
     border: 1px solid transparent;
-    cursor: pointer;
     margin-top: -1px;
     padding: 7px 10px;
 
-    >.icon {
+    &.active {
+      border-color: rgb(var(--arcoblue-4));
+    }
+
+    .icon {
       margin-right: 5px;
     }
 
-    &.active {
-      border-color: rgb(var(--arcoblue-4));
+    >.title,
+    >.op {
+      @include flex-align-center;
+
+      cursor: pointer;
     }
   }
 }

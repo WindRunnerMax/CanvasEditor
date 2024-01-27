@@ -89,6 +89,7 @@ export class EditorState {
         const target = this.getDeltaState(id);
         target && target.remove();
         this.deltas.delete(id);
+        this.editor.selection.removeActiveDelta(id);
         changes.push({ id, op });
         break;
       }
