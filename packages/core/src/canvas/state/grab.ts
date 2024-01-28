@@ -26,8 +26,7 @@ export class Grab {
 
   public start() {
     if (this._on) return void 0;
-    this.engine.mask.clear();
-    this.editor.selection.clearActiveDeltas();
+    this.engine.mask.clearWithOp();
     this._on = true;
     this.engine.mask.setCursorState(CURSOR_TYPE.GRAB);
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDown);
@@ -52,7 +51,11 @@ export class Grab {
     this.engine.setOffset(offsetX + x, offsetY + y);
     this.engine.reset();
   };
-  public translate = throttle(this.translateImmediately, ...THE_CONFIG);
+
+  public translate: (x: number, y: number) => void = throttle(
+    this.translateImmediately,
+    ...THE_CONFIG
+  );
 
   private onMouseDown = (event: MouseEvent) => {
     this.engine.mask.setCursorState(CURSOR_TYPE.GRABBING);

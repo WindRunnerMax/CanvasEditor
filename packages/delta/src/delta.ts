@@ -103,9 +103,9 @@ export abstract class Delta {
       z: this.z,
       id: this.id,
       key: this.key,
-      attrs: this.attrs,
       width: this.width,
       height: this.height,
+      attrs: { ...this.attrs },
       children: Array.from(this.children),
     };
   }

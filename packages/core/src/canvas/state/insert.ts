@@ -39,8 +39,7 @@ export class Insert {
 
   public start(data: DeltaLike) {
     if (this._on) return void 0;
-    this.engine.mask.clear();
-    this.engine.mask.setCursorState(null);
+    this.engine.mask.clearWithOp();
     this.editor.selection.clearActiveDeltas();
     this._on = true;
     this.delta = DeltaSet.create(data);

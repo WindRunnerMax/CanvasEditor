@@ -26,8 +26,8 @@ export class Op<T extends OpType> {
       }
       case OP_TYPE.MOVE: {
         const payload = this.payload as OpPayload[typeof OP_TYPE.MOVE];
-        const { x, y } = payload;
-        return new Op(OP_TYPE.MOVE, { x: -x, y: -y });
+        const { x, y, ids } = payload;
+        return new Op(OP_TYPE.MOVE, { ids, x: -x, y: -y });
       }
       case OP_TYPE.RESIZE: {
         const payload = this.payload as OpPayload[typeof OP_TYPE.RESIZE];

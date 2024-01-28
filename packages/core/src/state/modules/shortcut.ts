@@ -17,8 +17,8 @@ export class Shortcut {
 
   onKeydown = (e: KeyboardEvent) => {
     if (!this.editor.canvas.isActive()) return void 0;
+    const ids = [...this.editor.selection.getActiveDeltaIds()];
     if (e.key === "Backspace") {
-      const ids = this.editor.selection.getActiveDeltaIds();
       ids.forEach(id => {
         const parentId = this.editor.state.getDeltaStateParentId(id);
         this.editor.state.apply(new Op(OP_TYPE.DELETE, { id, parentId }));
@@ -28,21 +28,23 @@ export class Shortcut {
       this.editor.canvas.grab.start();
       e.preventDefault();
     } else if (e.key === "ArrowUp") {
-      this.editor.state.apply(new Op(OP_TYPE.MOVE, { x: 0, y: -1 }));
+      this.editor.state.apply(new Op(OP_TYPE.MOVE, { ids, x: 0, y: -1 }));
       this.onSelectionMove(0, -1);
       e.preventDefault();
     } else if (e.key === "ArrowDown") {
-      this.editor.state.apply(new Op(OP_TYPE.MOVE, { x: 0, y: 1 }));
+      this.editor.state.apply(new Op(OP_TYPE.MOVE, { ids, x: 0, y: 1 }));
       this.onSelectionMove(0, 1);
       e.preventDefault();
     } else if (e.key === "ArrowLeft") {
-      this.editor.state.apply(new Op(OP_TYPE.MOVE, { x: -1, y: 0 }));
+      this.editor.state.apply(new Op(OP_TYPE.MOVE, { ids, x: -1, y: 0 }));
       this.onSelectionMove(-1, 0);
       e.preventDefault();
     } else if (e.key === "ArrowRight") {
-      this.editor.state.apply(new Op(OP_TYPE.MOVE, { x: 1, y: 0 }));
+      this.editor.state.apply(new Op(OP_TYPE.MOVE, { ids, x: 1, y: 0 }));
       this.onSelectionMove(1, 0);
       e.preventDefault();
+    } else if (e.key === "z" && (e.ctrlKey || e.metaKey)) {
+      e.shiftKey ? this.editor.history.redo() : this.editor.history.undo();
     }
   };
 

@@ -101,9 +101,8 @@ export class EditorState {
         break;
       }
       case OP_TYPE.MOVE: {
-        const { x, y } = op.payload;
-        const select = this.editor.selection.getActiveDeltaIds();
-        select.forEach(id => {
+        const { x, y, ids } = op.payload;
+        ids.forEach(id => {
           const target = this.getDeltaState(id);
           target && target.move(x, y);
           changes.push({ id, op });

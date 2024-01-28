@@ -127,8 +127,9 @@ export class SelectNode extends Node {
     if (this._isDragging && selection) {
       const rect = this.range;
       const { startX, startY } = selection.flat();
+      const ids = [...this.editor.selection.getActiveDeltaIds()];
       this.editor.state.apply(
-        new Op(OP_TYPE.MOVE, { x: rect.start.x - startX, y: rect.start.y - startY })
+        new Op(OP_TYPE.MOVE, { ids, x: rect.start.x - startX, y: rect.start.y - startY })
       );
       this.editor.selection.set(rect);
       this.dragged && this.editor.canvas.mask.drawingEffect(this.dragged);

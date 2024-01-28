@@ -11,8 +11,8 @@ export class Mask {
   private range: Range | null;
   private effects: Set<Node> | null;
   private canvas: HTMLCanvasElement;
-  private timer: NodeJS.Timeout | null;
   public ctx: CanvasRenderingContext2D;
+  private timer: ReturnType<typeof setTimeout> | null;
 
   constructor(private editor: Editor, private engine: Canvas) {
     // `Mask`绘制的是`Node`
@@ -123,6 +123,11 @@ export class Mask {
       // COMPAT: 需要立即绘制 否则在`wheel`事件中会闪动
       this.drawingEffect(range, { immediately: true });
     });
+  }
+
+  public clearWithOp() {
+    this.clear();
+    this.editor.selection.clearActiveDeltas();
   }
 
   public clear(range?: Range) {
