@@ -1,7 +1,13 @@
 import { TEXT_1 } from "sketching-utils";
 
 import { DEFAULT, TEXT_ATTRS } from "./constant";
-import { drawingBackground, drawingStrikeThrough, drawingUnderline } from "./text-matrix";
+import {
+  drawingBackground,
+  drawingList,
+  drawingStrikeThrough,
+  drawingUnderline,
+  getLineOffset,
+} from "./text-matrix";
 import type { Attributes, RichTextLines, TextMatrices, TextMatrix, TextMatrixItem } from "./types";
 
 export class RichText {
@@ -38,11 +44,18 @@ export class RichText {
     for (const line of lines) {
       const lineHeight =
         Number(line.config[TEXT_ATTRS.LINE_HEIGHT]) || DEFAULT[TEXT_ATTRS.LINE_HEIGHT];
-      const getDefaultMatrix = () => ({
+      const lineOffset = getLineOffset(line);
+      const getDefaultMatrix = (): TextMatrix => ({
         items: [],
         // COMPAT: 高度给予最小值
+        originHeight: DEFAULT[TEXT_ATTRS.SIZE],
         height: DEFAULT[TEXT_ATTRS.SIZE] * lineHeight,
         width: 0,
+        lineHeight,
+        offsetX: lineOffset,
+        config: line.config,
+        ascent: 0,
+        descent: 0,
       });
       let matrix: TextMatrix = getDefaultMatrix();
       for (const item of line.chars) {
@@ -54,17 +67,21 @@ export class RichText {
           config: item.config,
           width: metric.width,
           height: 0,
+          ascent: metric.actualBoundingBoxAscent,
           descent: metric.actualBoundingBoxDescent,
         };
-        if (matrix.width + text.width > width) {
+        if (matrix.width + text.width + lineOffset > width) {
           group.push(matrix);
           // 重置行`matrix`
           matrix = getDefaultMatrix();
         }
         const fontHeight = metric.actualBoundingBoxAscent + metric.actualBoundingBoxDescent;
-        text.height = fontHeight * lineHeight;
+        text.height = fontHeight;
+        matrix.originHeight = Math.max(matrix.originHeight, fontHeight);
         matrix.height = Math.max(matrix.height, fontHeight * lineHeight);
         matrix.width = matrix.width + text.width;
+        matrix.ascent = Math.max(matrix.ascent, metric.actualBoundingBoxAscent);
+        matrix.descent = Math.max(matrix.descent, metric.actualBoundingBoxDescent);
         matrix.items.push(text);
       }
       matrix.break = true;
@@ -91,10 +108,17 @@ export class RichText {
     for (const matrix of matrices) {
       const offsetYBaseLine = offsetY + matrix.height;
       if (offsetYBaseLine > y + height) break;
-      const gap = matrix.break ? 0 : Math.max(0, (width - matrix.width) / matrix.items.length);
+      const middleOffsetY = offsetYBaseLine - matrix.originHeight / 2;
+      drawingList(ctx, matrix, matrix.config, offsetX, middleOffsetY);
+      offsetX = offsetX + matrix.offsetX;
+      const gap = matrix.break
+        ? 0
+        : Math.max(0, (width - matrix.width - matrix.offsetX) / matrix.items.length);
       const halfGap = gap / 2;
       for (let i = 0; i < matrix.items.length; ++i) {
         const item = matrix.items[i];
+        // DEBUG
+        // drawingDebugLine(ctx, matrix, item, halfGap, offsetX, offsetY, offsetYBaseLine);
         // 连续绘制背景
         drawingBackground(ctx, matrix, item, i, halfGap, offsetX, offsetYBaseLine);
         // 绘制文字
@@ -102,9 +126,9 @@ export class RichText {
         ctx.fillStyle = item.config[TEXT_ATTRS.COLOR] || TEXT_1;
         ctx.fillText(item.char, offsetX, offsetYBaseLine);
         // 绘制下划线
-        drawingUnderline(ctx, item, halfGap, offsetX, offsetYBaseLine);
+        drawingUnderline(ctx, matrix, item, halfGap, offsetX, offsetYBaseLine);
         // 绘制中划线
-        drawingStrikeThrough(ctx, item, halfGap, offsetX, offsetYBaseLine);
+        drawingStrikeThrough(ctx, item, halfGap, offsetX, middleOffsetY);
         offsetX = offsetX + item.width + gap;
       }
       offsetX = x;

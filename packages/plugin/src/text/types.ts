@@ -12,12 +12,19 @@ export type TextMatrixItem = {
   config: Attributes;
   width: number;
   height: number;
+  ascent: number;
   descent: number;
 };
 export type TextMatrix = {
+  config: Attributes;
   items: TextMatrixItem[];
+  originHeight: number;
   height: number;
   width: number;
+  offsetX: number;
   break?: boolean;
+  lineHeight: number;
+  ascent: number;
+  descent: number;
 };
 export type TextMatrices = TextMatrix[];

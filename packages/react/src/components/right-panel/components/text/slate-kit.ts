@@ -47,7 +47,7 @@ export const blocksToLines = (blocks: BlockElement[]) => {
         // 需要处理行格式标识 -> Attributes
         if (block[UNORDERED_LIST_ITEM_KEY]) {
           const base = block[UNORDERED_LIST_ITEM_KEY];
-          lineAttrs[TEXT_ATTRS.ORDERED_LIST_LEVEL] = base.level.toString();
+          lineAttrs[TEXT_ATTRS.UNORDERED_LIST_LEVEL] = base.level.toString();
         }
         if (block[ORDERED_LIST_ITEM_KEY]) {
           const base = block[ORDERED_LIST_ITEM_KEY];
