@@ -1,5 +1,6 @@
 import type { BlockElement } from "doc-editor-light";
 import {
+  DIVIDING_LINE_KEY,
   FONT_BASE_KEY,
   HYPER_LINK_KEY,
   INLINE_CODE_KEY,
@@ -57,6 +58,9 @@ export const blocksToLines = (blocks: BlockElement[]) => {
         }
         if (block[LINE_HEIGHT_KEY]) {
           lineAttrs[TEXT_ATTRS.LINE_HEIGHT] = block[LINE_HEIGHT_KEY].toString();
+        }
+        if (block[DIVIDING_LINE_KEY]) {
+          lineAttrs[TEXT_ATTRS.DIVIDING_LINE] = TRUE;
         }
         const line: RichTextLine = { chars: [], config: lineAttrs };
         for (const text of block.children) {

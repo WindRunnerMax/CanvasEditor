@@ -1,8 +1,9 @@
 import { TEXT_1 } from "sketching-utils";
 
-import { DEFAULT, TEXT_ATTRS } from "./constant";
+import { DEFAULT, DIVIDING_LINE_OFFSET, TEXT_ATTRS } from "./constant";
 import {
   drawingBackground,
+  drawingDividingLine,
   drawingList,
   drawingStrikeThrough,
   drawingUnderline,
@@ -108,6 +109,11 @@ export class RichText {
     for (const matrix of matrices) {
       const offsetYBaseLine = offsetY + matrix.height;
       if (offsetYBaseLine > y + height) break;
+      if (drawingDividingLine(ctx, matrix, width, offsetX, offsetY)) {
+        offsetX = x;
+        offsetY = offsetY + DIVIDING_LINE_OFFSET;
+        continue;
+      }
       const middleOffsetY = offsetYBaseLine - matrix.originHeight / 2;
       drawingList(ctx, matrix.config, offsetX, middleOffsetY, offsetYBaseLine);
       offsetX = offsetX + matrix.offsetX;

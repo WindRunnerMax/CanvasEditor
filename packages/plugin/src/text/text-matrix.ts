@@ -1,7 +1,8 @@
 import { BLUE_6, GREEN_7, ORANGE_7, TEXT_1 } from "sketching-utils";
 
+import { GRAY_4 } from "../../../utils/src/palette";
 import { formatListSerial } from "../utils/list";
-import { BACKGROUND_OFFSET, TEXT_ATTRS } from "./constant";
+import { BACKGROUND_OFFSET, DIVIDING_LINE_OFFSET, TEXT_ATTRS } from "./constant";
 import type { Attributes, RichTextLine, TextMatrix, TextMatrixItem } from "./types";
 
 export const getLineOffset = (line: RichTextLine) => {
@@ -67,6 +68,27 @@ export const drawingList = (
     ctx.fillText(str + ".", x, offsetYBaseLine);
     ctx.closePath();
   }
+};
+
+export const drawingDividingLine = (
+  ctx: CanvasRenderingContext2D,
+  matrix: TextMatrix,
+  width: number,
+  offsetX: number,
+  offsetY: number
+) => {
+  if (matrix.config[TEXT_ATTRS.DIVIDING_LINE]) {
+    ctx.beginPath();
+    ctx.strokeStyle = GRAY_4;
+    ctx.lineWidth = 1;
+    const y = offsetY + DIVIDING_LINE_OFFSET;
+    ctx.moveTo(offsetX, y);
+    ctx.lineTo(offsetX + width, y);
+    ctx.stroke();
+    ctx.closePath();
+    return true;
+  }
+  return false;
 };
 
 export const drawingBackground = (

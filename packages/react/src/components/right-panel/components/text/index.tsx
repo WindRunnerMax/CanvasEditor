@@ -3,6 +3,7 @@ import "doc-editor-light/dist/styles/index";
 import { useMemoizedFn } from "ahooks";
 import {
   BoldPlugin,
+  DividingLinePlugin,
   FontBasePlugin,
   HeadingPlugin,
   HyperLinkPlugin,
@@ -92,6 +93,7 @@ export const Text: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
       InlineCodePlugin(),
       OrderedListPlugin(richText),
       UnorderedListPlugin(richText),
+      DividingLinePlugin(),
       FontBasePlugin(),
       LineHeightPlugin()
     );
