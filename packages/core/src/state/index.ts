@@ -63,6 +63,13 @@ export class EditorState {
     return this.deltas;
   }
 
+  public getDeltaStateParentId(id: string) {
+    const state = this.editor.state.getDeltaState(id);
+    const parent = state && state.parent;
+    const parentId = (parent && parent.id) || ROOT_DELTA;
+    return parentId;
+  }
+
   public getDeltaState(deltaId: typeof ROOT_DELTA): DeltaState;
   public getDeltaState(deltaId: string): DeltaState | null;
   public getDeltaState(deltaId: string): DeltaState | null {
@@ -76,8 +83,8 @@ export class EditorState {
 
     switch (op.type) {
       case OP_TYPE.INSERT: {
-        const { delta, id } = op.payload;
-        const target = id ? this.getDeltaState(id) : this.entry;
+        const { delta, parentId } = op.payload;
+        const target = this.getDeltaState(parentId);
         const state = new DeltaState(this.editor, delta);
         this.deltas.set(delta.id, state);
         target && target.insert(state);

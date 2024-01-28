@@ -36,7 +36,8 @@ export const Structure: FC<{ editor: Editor }> = ({ editor }) => {
   };
 
   const onDeleteNode = (id: string) => {
-    editor.state.apply(Op.from(OP_TYPE.DELETE, { id }));
+    const parentId = editor.state.getDeltaStateParentId(id);
+    editor.state.apply(Op.from(OP_TYPE.DELETE, { id, parentId }));
   };
 
   return (

@@ -146,7 +146,11 @@ export const Header: FC = () => {
         </div>
       </div>
       <div className={cs(styles.externalGroup)}>
-        <a className={styles.github} href={"https://github.com/WindrunnerMax/CanvasEditor"}>
+        <a
+          className={styles.github}
+          target="_blank"
+          href={"https://github.com/WindrunnerMax/CanvasEditor"}
+        >
           <IconGithub />
         </a>
       </div>

@@ -3,17 +3,14 @@ import { ROOT_DELTA } from "sketching-utils";
 
 import { Canvas } from "../canvas";
 import { Event } from "../event";
+import { History } from "../history/";
 import { LOG_LEVEL, Logger } from "../log";
 import { Selection } from "../selection";
 import { EditorState } from "../state";
 import { EDITOR_STATE } from "../state/utils/constant";
 import { EntryDelta } from "./delta/entry";
 import { DEFAULT_DELTA_LIKE, DEFAULT_DELTA_SET_LIKE } from "./utils/constant";
-export type EditorOptions = {
-  deltaSet?: DeltaSet;
-  logLevel?: typeof LOG_LEVEL[keyof typeof LOG_LEVEL];
-};
-
+import type { EditorOptions } from "./utils/types";
 export class Editor {
   public readonly deltaSet: DeltaSet;
   public readonly state: EditorState;
@@ -21,6 +18,7 @@ export class Editor {
   public readonly logger: Logger;
   public readonly canvas: Canvas;
   public readonly selection: Selection;
+  public readonly history: History;
   private container: HTMLDivElement;
 
   constructor(options: EditorOptions = {}) {
@@ -38,6 +36,7 @@ export class Editor {
     this.logger = new Logger(logLevel);
     this.selection = new Selection(this);
     this.canvas = new Canvas(this);
+    this.history = new History(this);
   }
 
   public onMount(container: HTMLDivElement) {
@@ -56,6 +55,7 @@ export class Editor {
     this.selection.destroy();
     this.state.set(EDITOR_STATE.MOUNTED, false);
     this.state.destroy();
+    this.history.destroy();
   }
 
   public getContainer() {

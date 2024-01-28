@@ -20,7 +20,8 @@ export class Shortcut {
     if (e.key === "Backspace") {
       const ids = this.editor.selection.getActiveDeltaIds();
       ids.forEach(id => {
-        this.editor.state.apply(new Op(OP_TYPE.DELETE, { id }));
+        const parentId = this.editor.state.getDeltaStateParentId(id);
+        this.editor.state.apply(new Op(OP_TYPE.DELETE, { id, parentId }));
       });
       this.editor.selection.clearActiveDeltas();
     } else if (e.key === " ") {

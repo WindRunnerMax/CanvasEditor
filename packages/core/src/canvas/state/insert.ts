@@ -1,6 +1,6 @@
 import type { Delta, DeltaLike } from "sketching-delta";
 import { DeltaSet, Op, OP_TYPE } from "sketching-delta";
-import { throttle, TSON } from "sketching-utils";
+import { ROOT_DELTA, throttle, TSON } from "sketching-utils";
 import { BLUE_5 } from "sketching-utils";
 
 import type { Editor } from "../../editor";
@@ -98,7 +98,8 @@ export class Insert {
       const range = this.range;
       const { x, y, width, height } = range.rect();
       this.delta.setRect(x, y, width, height);
-      this.editor.state.apply(Op.from(OP_TYPE.INSERT, { delta: this.delta }));
+      const parentId = ROOT_DELTA;
+      this.editor.state.apply(Op.from(OP_TYPE.INSERT, { delta: this.delta, parentId }));
     }
     this.drawingMask(true);
     this.close();
@@ -120,7 +121,10 @@ export class Insert {
       y: point.y,
     };
     const delta = DeltaSet.create(deltaLike);
-    delta && this.editor.state.apply(Op.from(OP_TYPE.INSERT, { delta }));
+    if (delta) {
+      const parentId = ROOT_DELTA;
+      this.editor.state.apply(Op.from(OP_TYPE.INSERT, { delta, parentId }));
+    }
   };
 
   public drawingMask(finish = false) {

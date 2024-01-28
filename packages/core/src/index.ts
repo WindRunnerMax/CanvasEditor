@@ -4,6 +4,7 @@ export { Node } from "./canvas/dom/node";
 export { MouseEvent } from "./canvas/event/mouse";
 export { DRAG_KEY } from "./canvas/utils/constant";
 export { Editor } from "./editor";
+export type { EditorOptions } from "./editor/utils/types";
 export type { EventMapKeys } from "./event/bus/action";
 export { EDITOR_EVENT } from "./event/bus/action";
 export type {
