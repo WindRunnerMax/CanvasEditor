@@ -75,6 +75,7 @@ export class Root extends Node {
   }
 
   public onMouseDown = (e: MouseEvent) => {
+    this.editor.canvas.mask.setCursorState(null);
     !e.shiftKey && this.editor.selection.clearActiveDeltas();
   };
 

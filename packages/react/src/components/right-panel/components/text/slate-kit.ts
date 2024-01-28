@@ -3,6 +3,7 @@ import {
   FONT_BASE_KEY,
   HYPER_LINK_KEY,
   INLINE_CODE_KEY,
+  LINE_HEIGHT_KEY,
   ORDERED_LIST_ITEM_KEY,
   STRIKE_THROUGH_KEY,
   UNDERLINE_KEY,
@@ -53,6 +54,9 @@ export const blocksToLines = (blocks: BlockElement[]) => {
           const base = block[ORDERED_LIST_ITEM_KEY];
           lineAttrs[TEXT_ATTRS.ORDERED_LIST_LEVEL] = base.level.toString();
           lineAttrs[TEXT_ATTRS.ORDERED_LIST_START] = base.start.toString();
+        }
+        if (block[LINE_HEIGHT_KEY]) {
+          lineAttrs[TEXT_ATTRS.LINE_HEIGHT] = block[LINE_HEIGHT_KEY].toString();
         }
         const line: RichTextLine = { chars: [], config: lineAttrs };
         for (const text of block.children) {

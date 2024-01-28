@@ -1,5 +1,14 @@
 export const IMAGE_ATTRS = {
   SRC: "src",
+  BORDER_WIDTH: "border-width",
+  BORDER_COLOR: "border-color",
+  MODE: "mode",
+};
+
+export const IMAGE_MODE = {
+  FILL: "FILL",
+  CONTAIN: "CONTAIN",
+  COVER: "COVER",
 };
 
 export const EMPTY =

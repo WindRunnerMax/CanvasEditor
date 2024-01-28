@@ -1,4 +1,5 @@
 export { Image } from "./image";
+export { IMAGE_ATTRS, IMAGE_MODE } from "./image/constant";
 export { Rect } from "./rect";
 export { RECT_ATTRS } from "./rect/constant";
 export { Text } from "./text";

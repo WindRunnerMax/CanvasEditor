@@ -8,6 +8,7 @@ import { cs } from "sketching-utils";
 import { useEditor } from "../../hooks/use-editor";
 import { Background } from "../../modules/background";
 import { NAV_ENUM } from "../header/constant";
+import { Image } from "./components/image";
 import { Rect } from "./components/rect";
 import { Text } from "./components/text";
 import styles from "./index.m.scss";
@@ -39,6 +40,8 @@ export const RightPanel: FC = () => {
         return <Rect editor={editor} state={state}></Rect>;
       case NAV_ENUM.TEXT:
         return <Text editor={editor} state={state}></Text>;
+      case NAV_ENUM.IMAGE:
+        return <Image editor={editor} state={state}></Image>;
       default:
         return null;
     }

@@ -48,3 +48,9 @@
     }
   }
 }
+
+.radioGroup {
+  :global(.arco-radio) {
+    line-height: unset;
+  }
+}

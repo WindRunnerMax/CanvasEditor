@@ -47,7 +47,6 @@ export class Rect extends Delta {
         ctx.fillRect(this.x, this.y + this.height - width, this.width, width);
       }
     }
-
     ctx.restore();
   };
 
