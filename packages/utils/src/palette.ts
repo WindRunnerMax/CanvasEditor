@@ -3,6 +3,7 @@ export const BLUE_3 = "#94BFFF";
 export const BLUE_5 = "#4080FF";
 export const BLUE_6 = "rgb(22,93,255)";
 export const BLUE_7 = "#0E42D2";
+export const GRAY_2 = "rgb(242,243,245)";
 export const GRAY_3 = "#e5e6eb";
 export const GRAY_5 = "#a9aeb8";
 export const GRAY_7 = "#6b7785";

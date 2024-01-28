@@ -1,7 +1,7 @@
 import { getUniqueId, isString } from "sketching-utils";
 
 import type { DeltaSet } from "./delta-set";
-import type { DeltaAttribute, DeltaOptions, StrictDeltaLike } from "./types";
+import type { DeltaAttributes, DeltaOptions, StrictDeltaLike } from "./types";
 
 export abstract class Delta {
   public abstract readonly key: string;
@@ -12,7 +12,7 @@ export abstract class Delta {
   protected width: number;
   protected height: number;
   public children: string[];
-  public attrs: DeltaAttribute;
+  public attrs: DeltaAttributes;
   public getDeltaSet?: () => DeltaSet;
   public abstract drawing: (ctx: CanvasRenderingContext2D) => void;
 

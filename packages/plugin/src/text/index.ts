@@ -2,9 +2,9 @@ import type { DeltaOptions } from "sketching-delta";
 import { Delta } from "sketching-delta";
 import { TSON } from "sketching-utils";
 
-import type { RichTextLines } from "./constant";
 import { TEXT_ATTRS } from "./constant";
 import { RichText } from "./rich-text";
+import type { RichTextLines } from "./types";
 
 const text = new RichText();
 

@@ -1,4 +1,4 @@
-import type { Delta, DeltaAttribute } from "sketching-delta";
+import type { Delta, DeltaAttributes } from "sketching-delta";
 
 import { ElementNode } from "../../canvas/dom/element";
 import type { Editor } from "../../editor";
@@ -101,7 +101,7 @@ export class DeltaState {
     return this;
   }
 
-  public revise(attrs: DeltaAttribute) {
+  public revise(attrs: DeltaAttributes) {
     for (const [key, value] of Object.entries(attrs)) {
       this.delta.setAttr(key, value);
     }

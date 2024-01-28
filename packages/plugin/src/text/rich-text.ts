@@ -1,13 +1,8 @@
-import { TEXT_1, toFixedNumber } from "sketching-utils";
+import { TEXT_1 } from "sketching-utils";
 
-import type {
-  Attributes,
-  RichTextLines,
-  TextMatrices,
-  TextMatrix,
-  TextMatrixItem,
-} from "./constant";
-import { TEXT_ATTRS } from "./constant";
+import { DEFAULT, TEXT_ATTRS } from "./constant";
+import { drawingBackground, drawingStrikeThrough, drawingUnderline } from "./text-matrix";
+import type { Attributes, RichTextLines, TextMatrices, TextMatrix, TextMatrixItem } from "./types";
 
 export class RichText {
   private ctx: CanvasRenderingContext2D;
@@ -19,12 +14,10 @@ export class RichText {
   }
 
   private getFont = (config: Attributes) => {
-    const fontFamily =
-      config[TEXT_ATTRS.FAMILY] ||
-      "Inter, -apple-system, BlinkMacSystemFont, PingFang SC, Hiragino Sans GB, noto sans, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif";
-    const fontSize = config[TEXT_ATTRS.SIZE] || 14;
-    const fontWeight = config[TEXT_ATTRS.WEIGHT] || "normal";
-    const fontStyle = config[TEXT_ATTRS.STYLE] || "normal";
+    const fontFamily = config[TEXT_ATTRS.FAMILY] || DEFAULT[TEXT_ATTRS.FAMILY];
+    const fontSize = config[TEXT_ATTRS.SIZE] || DEFAULT[TEXT_ATTRS.SIZE];
+    const fontWeight = config[TEXT_ATTRS.WEIGHT] || DEFAULT[TEXT_ATTRS.WEIGHT];
+    const fontStyle = config[TEXT_ATTRS.STYLE] || DEFAULT[TEXT_ATTRS.STYLE];
     return `${fontStyle} ${fontWeight} ${fontSize}px ${fontFamily}`;
   };
 
@@ -43,9 +36,15 @@ export class RichText {
   public parse = (lines: RichTextLines, width: number) => {
     const group: TextMatrices = [];
     for (const line of lines) {
-      const lineHeight = Number(line.config[TEXT_ATTRS.LINE_HEIGHT]) || 1.5;
-      // COMPAT: 高度给予最小值
-      let matrix: TextMatrix = { items: [], height: 12 * lineHeight, width: 0 };
+      const lineHeight =
+        Number(line.config[TEXT_ATTRS.LINE_HEIGHT]) || DEFAULT[TEXT_ATTRS.LINE_HEIGHT];
+      const getDefaultMatrix = () => ({
+        items: [],
+        // COMPAT: 高度给予最小值
+        height: DEFAULT[TEXT_ATTRS.SIZE] * lineHeight,
+        width: 0,
+      });
+      let matrix: TextMatrix = getDefaultMatrix();
       for (const item of line.chars) {
         const { metric, font } = this.measure(item.char, item.config);
         if (!metric) continue;
@@ -53,19 +52,17 @@ export class RichText {
           char: item.char,
           font,
           config: item.config,
-          width: toFixedNumber(metric.width),
+          width: metric.width,
           height: 0,
-          descent: toFixedNumber(metric.actualBoundingBoxDescent),
+          descent: metric.actualBoundingBoxDescent,
         };
         if (matrix.width + text.width > width) {
           group.push(matrix);
           // 重置行`matrix`
-          matrix = { items: [], height: 12 * lineHeight, width: 0 };
+          matrix = getDefaultMatrix();
         }
-        const fontHeight = toFixedNumber(
-          metric.actualBoundingBoxAscent + metric.actualBoundingBoxDescent
-        );
-        text.height = toFixedNumber(fontHeight * lineHeight);
+        const fontHeight = metric.actualBoundingBoxAscent + metric.actualBoundingBoxDescent;
+        text.height = fontHeight * lineHeight;
         matrix.height = Math.max(matrix.height, fontHeight * lineHeight);
         matrix.width = matrix.width + text.width;
         matrix.items.push(text);
@@ -92,64 +89,26 @@ export class RichText {
     let offsetX = x;
     let offsetY = y;
     for (const matrix of matrices) {
-      const calibratedOffsetY = offsetY + matrix.height;
-      if (calibratedOffsetY > y + height) break;
+      const offsetYBaseLine = offsetY + matrix.height;
+      if (offsetYBaseLine > y + height) break;
       const gap = matrix.break ? 0 : Math.max(0, (width - matrix.width) / matrix.items.length);
       const halfGap = gap / 2;
       for (let i = 0; i < matrix.items.length; ++i) {
         const item = matrix.items[i];
         // 连续绘制背景
-        if (item.config[TEXT_ATTRS.BACKGROUND]) {
-          ctx.beginPath();
-          const background = item.config[TEXT_ATTRS.BACKGROUND];
-          let backgroundWidth = item.width + halfGap;
-          for (let k = i + 1; k < matrix.items.length; ++k) {
-            const next = matrix.items[k];
-            if (next.config[TEXT_ATTRS.BACKGROUND] === background) {
-              backgroundWidth = backgroundWidth + next.width + halfGap;
-              next.config[TEXT_ATTRS.BACKGROUND] = "";
-            } else {
-              break;
-            }
-          }
-          ctx.fillStyle = background;
-          ctx.fillRect(
-            offsetX - halfGap,
-            calibratedOffsetY - matrix.height,
-            backgroundWidth,
-            matrix.height
-          );
-          ctx.closePath();
-        }
+        drawingBackground(ctx, matrix, item, i, halfGap, offsetX, offsetYBaseLine);
         // 绘制文字
         ctx.font = item.font;
         ctx.fillStyle = item.config[TEXT_ATTRS.COLOR] || TEXT_1;
-        ctx.fillText(item.char, offsetX, calibratedOffsetY);
+        ctx.fillText(item.char, offsetX, offsetYBaseLine);
         // 绘制下划线
-        if (item.config[TEXT_ATTRS.UNDERLINE]) {
-          ctx.beginPath();
-          ctx.strokeStyle = item.config[TEXT_ATTRS.COLOR] || TEXT_1;
-          ctx.lineWidth = 1;
-          ctx.moveTo(offsetX - halfGap, calibratedOffsetY);
-          ctx.lineTo(offsetX + item.width + halfGap, calibratedOffsetY);
-          ctx.stroke();
-          ctx.closePath();
-        }
+        drawingUnderline(ctx, item, halfGap, offsetX, offsetYBaseLine);
         // 绘制中划线
-        if (item.config[TEXT_ATTRS.STRIKE_THROUGH]) {
-          ctx.beginPath();
-          ctx.strokeStyle = item.config[TEXT_ATTRS.COLOR] || TEXT_1;
-          ctx.lineWidth = 1;
-          const halfHeight = item.height / 2;
-          ctx.moveTo(offsetX - halfGap, calibratedOffsetY - halfHeight);
-          ctx.lineTo(offsetX + item.width + halfGap, calibratedOffsetY - halfHeight);
-          ctx.stroke();
-          ctx.closePath();
-        }
+        drawingStrikeThrough(ctx, item, halfGap, offsetX, offsetYBaseLine);
         offsetX = offsetX + item.width + gap;
       }
       offsetX = x;
-      offsetY = calibratedOffsetY;
+      offsetY = offsetYBaseLine;
     }
     this.ctx.closePath();
     this.ctx.restore();

@@ -29,6 +29,7 @@ export {
   FILL_1,
   FILL_2,
   FILL_3,
+  GRAY_2,
   GRAY_3,
   GRAY_5,
   GRAY_7,

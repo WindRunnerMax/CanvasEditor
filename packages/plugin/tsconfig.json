@@ -1,6 +1,4 @@
 {
-  "extends":"../../tsconfig.json",
-  "include": [
-    "./src/**/*"
-, "../react/src/components/right-panel/components/text/slate-kit.ts"  ]
+  "extends": "../../tsconfig.json",
+  "include": ["./src/**/*"]
 }

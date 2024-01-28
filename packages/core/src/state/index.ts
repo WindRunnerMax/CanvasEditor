@@ -21,7 +21,7 @@ export class EditorState {
   constructor(private editor: Editor, private deltaSet: DeltaSet) {
     // Verify DeltaSet Rules
     const entryDelta = this.deltaSet.get(ROOT_DELTA);
-    const entry = new EntryDelta(entryDelta?.toJSON() || DEFAULT_DELTA_LIKE);
+    const entry = entryDelta || new EntryDelta(DEFAULT_DELTA_LIKE);
     this.deltas.set(entry.id, new DeltaState(editor, entry));
     this.entry = this.getDeltaState(ROOT_DELTA);
     this.createDeltaStateTree();

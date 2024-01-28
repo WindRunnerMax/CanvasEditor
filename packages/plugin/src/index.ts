@@ -2,6 +2,7 @@ export { Image } from "./image";
 export { Rect } from "./rect";
 export { RECT_ATTRS } from "./rect/constant";
 export { Text } from "./text";
+export { TEXT_ATTRS } from "./text/constant";
 export type {
   Attributes,
   RichTextLine,
@@ -9,8 +10,7 @@ export type {
   TextMatrices,
   TextMatrix,
   TextMatrixItem,
-} from "./text/constant";
-export { TEXT_ATTRS } from "./text/constant";
+} from "./text/types";
 export {
   DEFAULT_BORDER_COLOR,
   DEFAULT_BORDER_WIDTH,

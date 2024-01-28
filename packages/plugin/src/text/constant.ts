@@ -1,38 +1,32 @@
+import { TEXT_1 } from "sketching-utils";
+
 export const TEXT_ATTRS = {
+  // 基准数据
   DATA: "DATA",
   ORIGIN_DATA: "ORIGIN_DATA",
-  FAMILY: "FAMILY",
+  // 行标识
+  LINE_HEIGHT: "LINE_HEIGHT",
+  ORDERED_LIST_LEVEL: "ORDERED_LIST_LEVEL",
+  ORDERED_LIST_START: "ORDERED_LIST_START",
+  UNORDERED_LIST_LEVEL: "UNORDERED_LIST_LEVEL",
+  // 文字标识
   SIZE: "SIZE",
-  WEIGHT: "WEIGHT",
+  LINK: "LINK",
   STYLE: "STYLE",
   COLOR: "COLOR",
+  FAMILY: "FAMILY",
+  WEIGHT: "WEIGHT",
   UNDERLINE: "UNDERLINE",
   BACKGROUND: "BACKGROUND",
-  LINE_HEIGHT: "LINE_HEIGHT",
-  LINK: "LINK",
   STRIKE_THROUGH: "STRIKE_THROUGH",
-};
+} as const;
 
-export type Attributes = Record<string, string>;
-
-export type RichTextLine = {
-  chars: { char: string; config: Attributes }[];
-  config: Attributes;
-};
-export type RichTextLines = RichTextLine[];
-
-export type TextMatrixItem = {
-  char: string;
-  font: string;
-  config: Attributes;
-  width: number;
-  height: number;
-  descent: number;
-};
-export type TextMatrix = {
-  items: TextMatrixItem[];
-  height: number;
-  width: number;
-  break?: boolean;
-};
-export type TextMatrices = TextMatrix[];
+export const DEFAULT = {
+  [TEXT_ATTRS.FAMILY]:
+    "Inter, -apple-system, BlinkMacSystemFont, PingFang SC, Hiragino Sans GB, noto sans, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif",
+  [TEXT_ATTRS.SIZE]: 14,
+  [TEXT_ATTRS.WEIGHT]: "normal",
+  [TEXT_ATTRS.STYLE]: "normal",
+  [TEXT_ATTRS.COLOR]: TEXT_1,
+  [TEXT_ATTRS.LINE_HEIGHT]: 1.5,
+} as const;
