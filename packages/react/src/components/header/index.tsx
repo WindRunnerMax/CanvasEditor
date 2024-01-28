@@ -1,3 +1,5 @@
+import { IconGithub } from "@arco-design/web-react/icon";
+import { useMemoizedFn } from "ahooks";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
 import { DRAG_KEY, EDITOR_EVENT } from "sketching-core";
@@ -18,12 +20,10 @@ export const Header: FC = () => {
   const { editor } = useEditor();
   const [active, setActive] = useState<string>(NAV_ENUM.DEFAULT);
 
-  const switchIndex = (index: string) => {
+  const switchIndex = useMemoizedFn((index: string) => {
     if (index === active) return void 0;
-    if (index === NAV_ENUM.DEFAULT) {
-      editor.canvas.insert.close();
-      editor.canvas.grab.close();
-    }
+    editor.canvas.grab.close();
+    editor.canvas.insert.close();
     if (index === NAV_ENUM.GRAB) {
       editor.canvas.grab.start();
     }
@@ -65,7 +65,7 @@ export const Header: FC = () => {
       input.click();
     }
     setActive(index);
-  };
+  });
 
   const onDragRect = (e: React.DragEvent<HTMLDivElement>) => {
     if (active !== NAV_ENUM.DEFAULT) return false;
@@ -92,18 +92,18 @@ export const Header: FC = () => {
   };
 
   const onDragEnd = () => {
-    setActive(NAV_ENUM.DEFAULT);
+    switchIndex(NAV_ENUM.DEFAULT);
   };
 
   useEffect(() => {
     const onInsertState = (data: { done: boolean }) => {
-      if (data.done) setActive(NAV_ENUM.DEFAULT);
+      if (data.done) switchIndex(NAV_ENUM.DEFAULT);
     };
     editor.event.on(EDITOR_EVENT.INSERT_STATE, onInsertState);
     return () => {
       editor.event.off(EDITOR_EVENT.INSERT_STATE, onInsertState);
     };
-  }, [editor]);
+  }, [editor, switchIndex]);
 
   return (
     <div className={styles.container}>
@@ -144,6 +144,11 @@ export const Header: FC = () => {
         >
           {TextIcon}
         </div>
+      </div>
+      <div className={cs(styles.externalGroup)}>
+        <a className={styles.github} href={"https://github.com/WindrunnerMax/CanvasEditor"}>
+          <IconGithub />
+        </a>
       </div>
     </div>
   );

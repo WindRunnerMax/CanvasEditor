@@ -27,6 +27,7 @@ export class Image extends Delta {
   }
 
   public drawing = (ctx: CanvasRenderingContext2D) => {
+    ctx.save();
     ctx.beginPath();
     ctx.rect(this.x, this.y, this.width, this.height);
     ctx.clip();
@@ -77,6 +78,7 @@ export class Image extends Delta {
       ctx.closePath();
     }
     ctx.closePath();
+    ctx.restore();
   };
 
   public setAttr(key: string, value: string | null): this {

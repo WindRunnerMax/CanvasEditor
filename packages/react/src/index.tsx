@@ -6,7 +6,6 @@ import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import ReactDOM from "react-dom";
 import type { ContentChangeEvent } from "sketching-core";
 import { Editor, EDITOR_EVENT, LOG_LEVEL } from "sketching-core";
-import type { DeltaSetLike } from "sketching-delta";
 import { DeltaSet } from "sketching-delta";
 import { Image, Rect, Text } from "sketching-plugin";
 import { storage } from "sketching-utils";
@@ -15,7 +14,8 @@ import { Body } from "./components/body";
 import { Header } from "./components/header";
 import { WithEditor } from "./hooks/use-editor";
 import { Background } from "./modules/background";
-import { EXAMPLE, STORAGE_KEY } from "./utils/constant";
+import type { LocalStorageData } from "./utils/storage";
+import { EXAMPLE, STORAGE_KEY } from "./utils/storage";
 
 DeltaSet.register(Rect);
 DeltaSet.register(Text);
@@ -24,8 +24,12 @@ DeltaSet.register(Image);
 const App: FC = () => {
   const ref = useRef<HTMLDivElement>(null);
   const editor = useMemo(() => {
-    const data = storage.local.get<DeltaSetLike>(STORAGE_KEY);
-    return new Editor({ deltaSet: new DeltaSet(data || EXAMPLE), logLevel: LOG_LEVEL.INFO });
+    const data = storage.local.get<LocalStorageData>(STORAGE_KEY) || EXAMPLE;
+    const deltaSetLike = data && data.deltaSetLike;
+    return new Editor({
+      deltaSet: new DeltaSet(deltaSetLike),
+      logLevel: LOG_LEVEL.INFO,
+    });
   }, []);
 
   useLayoutEffect(() => {
@@ -42,7 +46,9 @@ const App: FC = () => {
 
   useEffect(() => {
     const onContentChange = (e: ContentChangeEvent) => {
-      storage.local.set(STORAGE_KEY, e.current.getDeltas());
+      const deltaSetLike = e.current.getDeltas();
+      const storageData: LocalStorageData = { ...Background.rect, deltaSetLike };
+      storage.local.set(STORAGE_KEY, storageData);
     };
     editor.event.on(EDITOR_EVENT.CONTENT_CHANGE, onContentChange);
     return () => {

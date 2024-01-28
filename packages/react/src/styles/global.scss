@@ -3,6 +3,7 @@
 html,
 body {
   @include full-screen;
+  @include no-scrollbar;
 
   color: var(--color-text-1);
   margin: 0;
