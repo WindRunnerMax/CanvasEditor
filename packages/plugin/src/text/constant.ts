@@ -30,3 +30,5 @@ export const DEFAULT = {
   [TEXT_ATTRS.COLOR]: TEXT_1,
   [TEXT_ATTRS.LINE_HEIGHT]: 1.5,
 } as const;
+
+export const BACKGROUND_OFFSET = 2;

@@ -109,7 +109,7 @@ export class RichText {
       const offsetYBaseLine = offsetY + matrix.height;
       if (offsetYBaseLine > y + height) break;
       const middleOffsetY = offsetYBaseLine - matrix.originHeight / 2;
-      drawingList(ctx, matrix, matrix.config, offsetX, middleOffsetY);
+      drawingList(ctx, matrix.config, offsetX, middleOffsetY, offsetYBaseLine);
       offsetX = offsetX + matrix.offsetX;
       const gap = matrix.break
         ? 0
