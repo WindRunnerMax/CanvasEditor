@@ -54,12 +54,11 @@ export class History {
     if (!e.options.undoable) return void 0;
     this.redoStack = [];
     const { previous, changes } = e;
-    const inverts = changes
-      .map(change => change.op)
-      .map(change => change.invert(previous))
-      .filter(Boolean) as OpSetType[];
-    this.temp.push(...inverts);
-    this.timer = setTimeout(this.collectImmediately, this.DELAY);
+    const invert = changes.invert(previous);
+    if (invert) {
+      this.temp.push(invert);
+      this.timer = setTimeout(this.collectImmediately, this.DELAY);
+    }
   };
 
   public undo() {

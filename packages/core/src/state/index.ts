@@ -10,7 +10,7 @@ import { Range } from "../selection/modules/range";
 import { DeltaState } from "./modules/node";
 import { Shortcut } from "./modules/shortcut";
 import type { EDITOR_STATE } from "./utils/constant";
-import type { ApplyOptions, FlatOp } from "./utils/types";
+import type { ApplyOptions } from "./utils/types";
 
 export class EditorState {
   public readonly entry: DeltaState;
@@ -79,7 +79,7 @@ export class EditorState {
   public apply(op: OpSetType, applyOptions?: ApplyOptions) {
     const options = applyOptions || { source: "user", undoable: true };
     const previous = new DeltaSet(this.deltaSet.getDeltas());
-    const changes: FlatOp[] = [];
+    const changes: string[] = [];
 
     switch (op.type) {
       case OP_TYPE.INSERT: {
@@ -88,7 +88,7 @@ export class EditorState {
         const state = new DeltaState(this.editor, delta);
         this.deltas.set(delta.id, state);
         target && target.insert(state);
-        changes.push({ id: state.id, op });
+        changes.push(state.id);
         break;
       }
       case OP_TYPE.DELETE: {
@@ -97,7 +97,7 @@ export class EditorState {
         target && target.remove();
         this.deltas.delete(id);
         this.editor.selection.removeActiveDelta(id);
-        changes.push({ id, op });
+        changes.push(id);
         break;
       }
       case OP_TYPE.MOVE: {
@@ -105,7 +105,7 @@ export class EditorState {
         ids.forEach(id => {
           const target = this.getDeltaState(id);
           target && target.move(x, y);
-          changes.push({ id, op });
+          changes.push(id);
         });
         break;
       }
@@ -113,14 +113,14 @@ export class EditorState {
         const { id, x, y, width, height } = op.payload;
         const target = this.getDeltaState(id);
         target && target.resize(Range.from(x, y, x + width, y + height));
-        changes.push({ id, op });
+        changes.push(id);
         break;
       }
       case OP_TYPE.REVISE: {
         const { id, attrs } = op.payload;
         const target = this.getDeltaState(id);
         target && target.revise(attrs);
-        changes.push({ id, op });
+        changes.push(id);
         break;
       }
     }
@@ -128,12 +128,12 @@ export class EditorState {
     this.editor.event.trigger(EDITOR_EVENT.CONTENT_CHANGE, {
       previous,
       current: this.deltaSet,
-      changes,
+      changes: op,
       options,
     });
 
     Promise.resolve().then(() => {
-      const effects = changes.map(change => change.id);
+      const effects = changes;
       let range: Range | null = null;
       effects.forEach(id => {
         const prev = previous.get(id);
