@@ -17,6 +17,7 @@ export class Background {
     Background.canvas.style.background = "var(--color-fill-3)";
     Background.canvas.style.position = "absolute";
     Background.canvas.style.zIndex = "-1";
+    Background.setRect(dom.offsetWidth, dom.offsetHeight);
     if (standard) {
       Background.setRange(standard);
     } else {
@@ -27,6 +28,17 @@ export class Background {
     }
     dom.insertBefore(Background.canvas, dom.firstChild);
     editor.event.on(EDITOR_EVENT.CANVAS_RESET, Background.onReset);
+  }
+
+  public static setRect(width: number, height: number) {
+    const ctx = Background.ctx;
+    const canvas = Background.canvas;
+    const ratio = window.devicePixelRatio || 1;
+    canvas.width = width * ratio;
+    canvas.height = height * ratio;
+    canvas.style.width = width + "px";
+    canvas.style.height = height + "px";
+    ctx.scale(ratio, ratio);
   }
 
   public static setRange(range: Range) {
@@ -49,14 +61,8 @@ export class Background {
     const { range, offsetX, offsetY } = e;
     if (!range) return void 0;
     const ctx = Background.ctx;
-    const canvas = Background.canvas;
     const { height, width } = range.rect();
-    const ratio = window.devicePixelRatio || 1;
-    canvas.width = width * ratio;
-    canvas.height = height * ratio;
-    canvas.style.width = width + "px";
-    canvas.style.height = height + "px";
-    ctx.scale(ratio, ratio);
+    Background.setRect(width, height);
     ctx.translate(-offsetX, -offsetY);
     Background.render();
   }

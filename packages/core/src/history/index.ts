@@ -10,7 +10,7 @@ export class History {
   private temp: OpSetType[];
   private undoStack: OpSetType[][];
   private redoStack: OpSetType[][];
-  protected timer: ReturnType<typeof setTimeout> | null;
+  private timer: ReturnType<typeof setTimeout> | null;
 
   constructor(private editor: Editor) {
     this.temp = [];
@@ -29,6 +29,7 @@ export class History {
     this.undoStack.push(this.temp);
     this.temp = [];
     this.redoStack = [];
+    this.timer && clearTimeout(this.timer);
     this.timer = null;
     if (this.undoStack.length > this.STACK_SIZE) this.undoStack.shift();
   };
