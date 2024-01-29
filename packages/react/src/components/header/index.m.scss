@@ -37,6 +37,26 @@
   .externalGroup {
     @include flex-align-center;
 
+    .history {
+      @include flex-align-center;
+
+      margin-right: 10px;
+
+      :global {
+        .arco-btn-text {
+          @include flex-center;
+
+          color: var(--color-text-1);
+          cursor: pointer;
+          padding: 3px;
+
+          &.arco-btn-disabled {
+            color: var(--color-text-4);
+          }
+        }
+      }
+    }
+
     .github {
       color: var(--color-text-1);
       font-size: 20px;

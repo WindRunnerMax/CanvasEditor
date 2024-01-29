@@ -17,11 +17,27 @@ export class History {
     this.timer = null;
     this.redoStack = [];
     this.undoStack = [];
-    this.editor.event.on(EDITOR_EVENT.CONTENT_CHANGE, this.onContentChange);
+    this.editor.event.on(EDITOR_EVENT.CONTENT_CHANGE, this.onContentChange, 10);
   }
 
   destroy() {
     this.editor.event.off(EDITOR_EVENT.CONTENT_CHANGE, this.onContentChange);
+  }
+
+  public clear() {
+    this.temp = [];
+    this.undoStack = [];
+    this.redoStack = [];
+    this.timer && clearTimeout(this.timer);
+    this.timer = null;
+  }
+
+  public canUndo() {
+    return this.undoStack.length > 0 || this.temp.length > 0;
+  }
+
+  public canRedo() {
+    return this.redoStack.length > 0;
   }
 
   private collectImmediately = () => {
@@ -36,6 +52,7 @@ export class History {
 
   private onContentChange = (e: ContentChangeEvent) => {
     if (!e.options.undoable) return void 0;
+    this.redoStack = [];
     const { previous, changes } = e;
     const inverts = changes
       .map(change => change.op)
@@ -51,7 +68,9 @@ export class History {
     const ops = this.undoStack.pop();
     if (!ops) return void 0;
     this.editor.canvas.mask.clearWithOp();
-    this.redoStack.push(ops);
+    this.redoStack.push(
+      ops.map(op => op.invert(this.editor.deltaSet)).filter(Boolean) as OpSetType[]
+    );
     this.editor.logger.debug("UNDO", ops);
     ops.forEach(op => this.editor.state.apply(op, { source: "undo", undoable: false }));
   }
@@ -61,7 +80,9 @@ export class History {
     const ops = this.redoStack.pop();
     if (!ops) return void 0;
     this.editor.canvas.mask.clearWithOp();
-    this.undoStack.push(ops);
+    this.undoStack.push(
+      ops.map(op => op.invert(this.editor.deltaSet)).filter(Boolean) as OpSetType[]
+    );
     this.editor.logger.debug("REDO", ops);
     ops.forEach(op => this.editor.state.apply(op, { source: "redo", undoable: false }));
   }

@@ -7,7 +7,7 @@ import { cs } from "sketching-utils";
 
 import { useEditor } from "../../hooks/use-editor";
 import { Background } from "../../modules/background";
-import { NAV_ENUM } from "../header/constant";
+import { NAV_ENUM } from "../header/utils/constant";
 import { Image } from "./components/image";
 import { Rect } from "./components/rect";
 import { Text } from "./components/text";
