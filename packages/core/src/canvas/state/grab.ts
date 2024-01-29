@@ -26,6 +26,10 @@ export class Grab {
     return this._on;
   }
 
+  public setState(disable: boolean) {
+    this.disable = disable;
+  }
+
   public start() {
     if (this._on || this.disable) return void 0;
     this.engine.mask.clearWithOp();
@@ -35,15 +39,11 @@ export class Grab {
   }
 
   public close() {
-    if (!this._on || this.disable) return void 0;
+    if (!this._on) return void 0;
     this._on = false;
     this.engine.mask.setCursorState(null);
     this.editor.event.off(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDown);
     this.editor.event.trigger(EDITOR_EVENT.GRAB_STATE, { done: true });
-  }
-
-  public setState(state: boolean) {
-    this.disable = state;
   }
 
   private onTranslate = (e: WheelEvent) => {

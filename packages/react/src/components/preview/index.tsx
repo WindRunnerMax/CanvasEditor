@@ -26,6 +26,8 @@ export const Preview: FC = () => {
   useLayoutEffect(() => {
     window.editor = editor;
     const el = ref.current;
+    // @ts-expect-error private
+    editor.canvas.devicePixelRatio = window.devicePixelRatio * 2 || 2;
     el && editor.onMount(el);
     window.editor = editor;
     editor.canvas.grab.setState(true);
