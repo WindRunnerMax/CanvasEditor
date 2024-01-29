@@ -22,7 +22,11 @@ export class Editor {
   private container: HTMLDivElement;
 
   constructor(options: EditorOptions = {}) {
-    const { deltaSet = new DeltaSet(DEFAULT_DELTA_SET_LIKE), logLevel = LOG_LEVEL.ERROR } = options;
+    const {
+      deltaSet = new DeltaSet(DEFAULT_DELTA_SET_LIKE),
+      logLevel = LOG_LEVEL.ERROR,
+      readonly = false,
+    } = options;
     this.deltaSet = deltaSet;
     // Verify DeltaSet Rules
     if (!this.deltaSet.get(ROOT_DELTA)) {
@@ -37,6 +41,8 @@ export class Editor {
     this.selection = new Selection(this);
     this.canvas = new Canvas(this);
     this.history = new History(this);
+    // Update status
+    this.state.setReadOnly(readonly);
   }
 
   public onMount(container: HTMLDivElement) {

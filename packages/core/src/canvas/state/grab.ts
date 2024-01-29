@@ -8,11 +8,13 @@ import { CURSOR_TYPE, THE_CONFIG } from "../utils/constant";
 
 export class Grab {
   private _on: boolean;
+  private disable: boolean;
   private landing: Point | null;
 
   constructor(private editor: Editor, private engine: Canvas) {
     this.landing = null;
     this._on = false;
+    this.disable = false;
     this.editor.event.on(EDITOR_EVENT.MOUSE_WHEEL, this.onTranslate);
   }
 
@@ -25,7 +27,7 @@ export class Grab {
   }
 
   public start() {
-    if (this._on) return void 0;
+    if (this._on || this.disable) return void 0;
     this.engine.mask.clearWithOp();
     this._on = true;
     this.engine.mask.setCursorState(CURSOR_TYPE.GRAB);
@@ -33,20 +35,26 @@ export class Grab {
   }
 
   public close() {
-    if (!this._on) return void 0;
+    if (!this._on || this.disable) return void 0;
     this._on = false;
     this.engine.mask.setCursorState(null);
     this.editor.event.off(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDown);
     this.editor.event.trigger(EDITOR_EVENT.GRAB_STATE, { done: true });
   }
 
+  public setState(state: boolean) {
+    this.disable = state;
+  }
+
   private onTranslate = (e: WheelEvent) => {
+    if (this.disable) return void 0;
     e.preventDefault();
     const { deltaX, deltaY } = e;
     this.translate(deltaX, deltaY);
   };
 
   public translateImmediately = (x: number, y: number) => {
+    if (this.disable) return void 0;
     const { offsetX, offsetY } = this.engine.getRect();
     this.engine.setOffset(offsetX + x, offsetY + y);
     this.engine.reset();

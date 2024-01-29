@@ -2,6 +2,7 @@ import { isEmptyValue } from "sketching-utils";
 
 import type { Editor } from "../../editor";
 import { Range } from "../../selection/modules/range";
+import { EDITOR_STATE } from "../../state/utils/constant";
 import type { Node } from "../dom/node";
 import type { Canvas } from "../index";
 import type { DrawingEffectOptions } from "../types/paint";
@@ -50,6 +51,8 @@ export class Mask {
   }
 
   private drawing(effects: Set<Node>, range: Range) {
+    // 只读状态下不进行绘制
+    if (this.editor.state.get(EDITOR_STATE.READONLY)) return void 0;
     const { x, y, width, height } = range.rect();
     // 只绘制受影响的节点并且裁剪多余位置
     this.clear(range);

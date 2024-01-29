@@ -9,7 +9,7 @@ import { EDITOR_EVENT } from "../event/bus/action";
 import { Range } from "../selection/modules/range";
 import { DeltaState } from "./modules/node";
 import { Shortcut } from "./modules/shortcut";
-import type { EDITOR_STATE } from "./utils/constant";
+import { EDITOR_STATE } from "./utils/constant";
 import type { ApplyOptions } from "./utils/types";
 
 export class EditorState {
@@ -74,6 +74,14 @@ export class EditorState {
   public getDeltaState(deltaId: string): DeltaState | null;
   public getDeltaState(deltaId: string): DeltaState | null {
     return this.deltas.get(deltaId) || null;
+  }
+
+  public setReadOnly(next: boolean) {
+    const prev = !!this.editor.state.get(EDITOR_STATE.READONLY);
+    if (prev === next) return void 0;
+    next && this.editor.canvas.mask.clearWithOp();
+    this.editor.state.set(EDITOR_STATE.READONLY, next);
+    this.editor.event.trigger(EDITOR_EVENT.READONLY_CHANGE, { prev, next });
   }
 
   public apply(op: OpSetType, applyOptions?: ApplyOptions) {

@@ -48,6 +48,9 @@ export const Right: FC<{
           size="small"
         ></Button>
       </div>
+      <div className={styles.export} onClick={() => window.open("?preview", "_blank")}>
+        导出
+      </div>
       <a
         className={styles.github}
         target="_blank"

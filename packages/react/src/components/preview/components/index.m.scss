@@ -1,0 +1,13 @@
+.container {
+  .canvas {
+    border-right: 1px solid var(--color-border-3);
+  }
+}
+
+@media print {
+  .container {
+    .canvas {
+      border-right: unset;
+    }
+  }
+}

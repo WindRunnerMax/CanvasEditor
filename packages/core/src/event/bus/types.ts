@@ -43,3 +43,8 @@ export type CanvasResetEvent = {
   offsetX: number;
   offsetY: number;
 };
+
+export type ReadonlyStateEvent = {
+  prev: boolean;
+  next: boolean;
+};

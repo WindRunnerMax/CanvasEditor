@@ -1,5 +1,6 @@
 import type { Editor } from "../editor";
 import { EDITOR_EVENT } from "../event/bus/action";
+import { EDITOR_STATE } from "../state/utils/constant";
 import { Range } from "./modules/range";
 
 export class Selection {
@@ -24,6 +25,8 @@ export class Selection {
   }
 
   public set(range: Range | null) {
+    // 只读状态下无选区
+    if (this.editor.state.get(EDITOR_STATE.READONLY)) return void 0;
     const previous = this.current;
     if (Range.isEqual(previous, range)) return this;
     this.current = range;
