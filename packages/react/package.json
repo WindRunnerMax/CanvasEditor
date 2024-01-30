@@ -12,7 +12,8 @@
     "dist"
   ],
   "scripts": {
-    "dev": "rspack serve --config ./rspack.config.js"
+    "dev": "rspack serve --config ./rspack.config.js",
+    "build": "rspack build --config ./rspack.config.js"
   },
   "keywords": [],
   "author": "",

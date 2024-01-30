@@ -1,0 +1,39 @@
+name: deploy gh-pages
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          
+      - name: install node-v16
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.16.0'
+
+      - name: install dependencies
+        run: |
+          node -v
+          npm install -g pnpm@6.24.3
+          pnpm install --registry=https://registry.npmjs.org/
+
+      - name: build project
+        run: |
+          npm run build:react
+          cp README.md ./build
+
+      - name: deploy project
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: build
