@@ -81,7 +81,7 @@ module.exports = {
   target: "es5",
   devtool: isDev ? "source-map" : false,
   output: {
-    publicPath: "/",
+    publicPath: ".",
     chunkLoading: "jsonp",
     chunkFormat: "array-push",
     filename: isDev ? "[name].js" : "[name].[hash].js",
