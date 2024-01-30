@@ -28,6 +28,7 @@ export const drawingList = (
   middleOffsetY: number,
   offsetYBaseLine: number
 ) => {
+  if (attrs[TEXT_ATTRS.BREAK_LINE_START]) return void 0;
   if (attrs[TEXT_ATTRS.UNORDERED_LIST_LEVEL]) {
     const radius = 2.5;
     ctx.beginPath();

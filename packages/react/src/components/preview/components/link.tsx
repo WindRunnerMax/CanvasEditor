@@ -2,7 +2,7 @@ import type { FC } from "react";
 import React, { useMemo } from "react";
 import type { Editor, RangeRect } from "sketching-core";
 import type { RichTextLines } from "sketching-plugin";
-import { RichText, Text, TEXT_ATTRS } from "sketching-plugin";
+import { DIVIDING_LINE_OFFSET, RichText, Text, TEXT_ATTRS } from "sketching-plugin";
 import { TSON } from "sketching-utils";
 
 import { Background } from "../../../modules/background";
@@ -23,9 +23,15 @@ export const Links: FC<{
       const matrices = text.parse(lines || [], width);
       let offsetX = x;
       let offsetY = y;
+      // 迭代矩阵
       for (const matrix of matrices) {
         const offsetYBaseLine = offsetY + matrix.height;
         if (offsetYBaseLine > y + height) break;
+        if (matrix.config[TEXT_ATTRS.DIVIDING_LINE]) {
+          offsetX = x;
+          offsetY = offsetY + DIVIDING_LINE_OFFSET;
+          continue;
+        }
         offsetX = offsetX + matrix.offsetX;
         const gap = matrix.break
           ? 0
@@ -75,6 +81,7 @@ export const Links: FC<{
               display: "block",
               width: link.width + "px",
               height: link.height + "px",
+              // background: "rgba(0,0,0,0.4)",
             }}
             href={link.url}
             target="_blank"

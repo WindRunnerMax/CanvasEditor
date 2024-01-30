@@ -13,6 +13,7 @@
     border: 1px solid transparent;
     margin-top: -1px;
     padding: 7px 10px;
+    user-select: none;
 
     &.active {
       border-color: rgb(var(--arcoblue-4));

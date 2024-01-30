@@ -17,6 +17,7 @@ export const Body = forwardRef<HTMLDivElement, { editor: Editor }>((props, ref) 
       const linkDOM = linkRef.current;
       if (linkDOM) {
         ReactDOM.render(<Links editor={props.editor} />, linkDOM);
+        setTimeout(window.print, 0);
       }
     };
     props.editor.event.once(EDITOR_EVENT.PAINT, onPaint);

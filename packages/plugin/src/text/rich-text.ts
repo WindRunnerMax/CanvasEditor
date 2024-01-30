@@ -1,5 +1,6 @@
 import { TEXT_1 } from "sketching-utils";
 
+import { TRUE } from "../utils/constant";
 import { DEFAULT, DIVIDING_LINE_OFFSET, TEXT_ATTRS } from "./constant";
 import {
   drawingBackground,
@@ -54,7 +55,7 @@ export class RichText {
         width: 0,
         lineHeight,
         offsetX: lineOffset,
-        config: line.config,
+        config: { ...line.config },
         ascent: 0,
         descent: 0,
       });
@@ -75,6 +76,8 @@ export class RichText {
           group.push(matrix);
           // 重置行`matrix`
           matrix = getDefaultMatrix();
+          // 换行标记
+          matrix.config[TEXT_ATTRS.BREAK_LINE_START] = TRUE;
         }
         const fontHeight = metric.actualBoundingBoxAscent + metric.actualBoundingBoxDescent;
         text.height = fontHeight;

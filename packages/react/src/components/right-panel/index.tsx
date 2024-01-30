@@ -37,11 +37,11 @@ export const RightPanel: FC = () => {
     if (!state) return null;
     switch (state.key) {
       case NAV_ENUM.RECT:
-        return <Rect editor={editor} state={state}></Rect>;
+        return <Rect key={id} editor={editor} state={state}></Rect>;
       case NAV_ENUM.TEXT:
-        return <Text editor={editor} state={state}></Text>;
+        return <Text key={id} editor={editor} state={state}></Text>;
       case NAV_ENUM.IMAGE:
-        return <Image editor={editor} state={state}></Image>;
+        return <Image key={id} editor={editor} state={state}></Image>;
       default:
         return null;
     }

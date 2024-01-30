@@ -3,7 +3,7 @@ export { IMAGE_ATTRS, IMAGE_MODE } from "./image/constant";
 export { Rect } from "./rect";
 export { RECT_ATTRS } from "./rect/constant";
 export { Text } from "./text";
-export { TEXT_ATTRS } from "./text/constant";
+export { BACKGROUND_OFFSET, DEFAULT, DIVIDING_LINE_OFFSET, TEXT_ATTRS } from "./text/constant";
 export { RichText } from "./text/rich-text";
 export type {
   Attributes,
