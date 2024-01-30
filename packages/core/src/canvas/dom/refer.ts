@@ -36,7 +36,7 @@ export class ReferNode extends Node {
     if (!active) return void 0;
     const xLineMap = this.xLineMap;
     const yLineMap = this.yLineMap;
-    const deltas = this.editor.state.getDeltas();
+    const deltas = this.editor.state.getDeltaMap();
     deltas.forEach(state => {
       const range = state.toRange().normalize();
       if (active.has(state.id) || this.editor.canvas.isOutside(range) || state.id === ROOT_DELTA) {

@@ -32,7 +32,7 @@ export class Canvas {
     this.root = new Root(editor, this);
     this.mask = new Mask(editor, this);
     this.graph = new Graph(editor, this);
-    this.devicePixelRatio = window.devicePixelRatio || 1;
+    this.devicePixelRatio = Math.ceil(window.devicePixelRatio || 1);
     this.resizeObserver = new ResizeObserver(this.onResize);
     this.grab = new Grab(this.editor, this);
     this.insert = new Insert(this.editor, this);

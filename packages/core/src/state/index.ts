@@ -59,7 +59,7 @@ export class EditorState {
     return this;
   }
 
-  public getDeltas() {
+  public getDeltaMap() {
     return this.deltas;
   }
 

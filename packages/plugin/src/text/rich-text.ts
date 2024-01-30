@@ -123,7 +123,7 @@ export class RichText {
       const halfGap = gap / 2;
       for (let i = 0; i < matrix.items.length; ++i) {
         const item = matrix.items[i];
-        // DEBUG
+        // Debug Text Render
         // drawingDebugLine(ctx, matrix, item, halfGap, offsetX, offsetY, offsetYBaseLine);
         // 连续绘制背景
         drawingBackground(ctx, matrix, item, i, halfGap, offsetX, offsetYBaseLine);

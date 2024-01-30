@@ -27,7 +27,7 @@ export const Preview: FC = () => {
     window.editor = editor;
     const el = ref.current;
     // @ts-expect-error private
-    editor.canvas.devicePixelRatio = window.devicePixelRatio * 2 || 2;
+    editor.canvas.devicePixelRatio = Math.ceil(window.devicePixelRatio || 1);
     el && editor.onMount(el);
     window.editor = editor;
     editor.canvas.grab.setState(true);
