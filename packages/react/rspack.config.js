@@ -32,6 +32,7 @@ module.exports = {
     define: {
       "__DEV__": JSON.stringify(isDev),
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
+      "process.env.PUBLIC_URL": JSON.stringify("."),
     },
     pluginImport: [
       {

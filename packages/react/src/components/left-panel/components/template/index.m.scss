@@ -1,0 +1,53 @@
+@import '../../../../styles/variable';
+
+.container {
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 0 10px;
+
+  .row {
+    @include flex-align-center;
+
+    margin-top: 15px;
+  }
+
+  .item {
+    cursor: pointer;
+    margin: 0 15px;
+    width: 100%;
+
+    &.hidden {
+      cursor: none;
+    }
+  }
+
+  .preview {
+    color: var(--color-text-2);
+    overflow: hidden;
+
+    .imgContainer {
+      @include flex-center;
+
+      border: 3px solid var(--color-border-2);
+      box-sizing: border-box;
+      height: 130px;
+      overflow: hidden;
+      width: 100%;
+
+      img {
+        object-fit: contain;
+        width: 100%;
+      }
+    }
+
+    .name {
+      @include flex-center;
+
+      margin-top: 5px;
+    }
+  }
+}
+
+.modalContent {
+  text-align: center;
+}
