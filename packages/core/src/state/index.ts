@@ -13,14 +13,14 @@ import { EDITOR_STATE } from "./utils/constant";
 import type { ApplyOptions } from "./utils/types";
 
 export class EditorState {
-  public readonly entry: DeltaState;
+  public entry: DeltaState;
   public readonly shortcut: Shortcut;
   private status: Map<string, boolean> = new Map();
   private deltas: Map<string, DeltaState> = new Map();
 
-  constructor(private editor: Editor, private deltaSet: DeltaSet) {
+  constructor(private editor: Editor) {
     // Verify DeltaSet Rules
-    const entryDelta = this.deltaSet.get(ROOT_DELTA);
+    const entryDelta = this.editor.deltaSet.get(ROOT_DELTA);
     const entry = entryDelta || new EntryDelta(DEFAULT_DELTA_LIKE);
     this.deltas.set(entry.id, new DeltaState(editor, entry));
     this.entry = this.getDeltaState(ROOT_DELTA);
@@ -38,7 +38,7 @@ export class EditorState {
       const state = this.getDeltaState(delta.id);
       if (!state) return void 0;
       delta.children.forEach(id => {
-        const child = this.deltaSet.get(id);
+        const child = this.editor.deltaSet.get(id);
         if (!child) return void 0;
         // 按需创建`state`以及关联关系
         const childState = new DeltaState(this.editor, child);
@@ -59,7 +59,19 @@ export class EditorState {
     return this;
   }
 
-  public getDeltaMap() {
+  public setContent(deltaSet: DeltaSet) {
+    this.editor.deltaSet = deltaSet;
+    this.deltas.clear();
+    const entryDelta = deltaSet.get(ROOT_DELTA);
+    const entry = entryDelta || new EntryDelta(DEFAULT_DELTA_LIKE);
+    this.deltas.set(entry.id, new DeltaState(this.editor, entry));
+    this.entry = this.getDeltaState(ROOT_DELTA);
+    this.createDeltaStateTree();
+    this.editor.canvas.root.createNodeStateTree();
+    this.editor.canvas.reset();
+  }
+
+  public getDeltasMap() {
     return this.deltas;
   }
 
@@ -86,7 +98,7 @@ export class EditorState {
 
   public apply(op: OpSetType, applyOptions?: ApplyOptions) {
     const options = applyOptions || { source: "user", undoable: true };
-    const previous = new DeltaSet(this.deltaSet.getDeltas());
+    const previous = new DeltaSet(this.editor.deltaSet.getDeltas());
     const changes: string[] = [];
 
     switch (op.type) {
@@ -135,7 +147,7 @@ export class EditorState {
 
     this.editor.event.trigger(EDITOR_EVENT.CONTENT_CHANGE, {
       previous,
-      current: this.deltaSet,
+      current: this.editor.deltaSet,
       changes: op,
       options,
     });

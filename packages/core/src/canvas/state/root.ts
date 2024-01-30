@@ -40,7 +40,8 @@ export class Root extends Node {
     this.editor.event.off(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
   }
 
-  private createNodeStateTree() {
+  public createNodeStateTree() {
+    this.clearNodes();
     // 初始化构建整个`Node`状态树
     const queue: DeltaState[] = [];
     queue.push(this.editor.state.entry);

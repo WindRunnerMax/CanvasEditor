@@ -66,7 +66,7 @@ export class FrameNode extends Node {
       this.setRange(latest);
       // 获取获取与选区交叉的所有`State`节点
       const effects: string[] = [];
-      this.editor.state.getDeltaMap().forEach(state => {
+      this.editor.state.getDeltasMap().forEach(state => {
         if (latest.intersect(state.toRange())) effects.push(state.id);
       });
       this.editor.selection.setActiveDelta(...effects);

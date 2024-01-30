@@ -12,7 +12,7 @@ import { EntryDelta } from "./delta/entry";
 import { DEFAULT_DELTA_LIKE, DEFAULT_DELTA_SET_LIKE } from "./utils/constant";
 import type { EditorOptions } from "./utils/types";
 export class Editor {
-  public readonly deltaSet: DeltaSet;
+  public deltaSet: DeltaSet;
   public readonly state: EditorState;
   public readonly event: Event;
   public readonly logger: Logger;
@@ -36,7 +36,7 @@ export class Editor {
     this.container.setAttribute("data-type", "mock");
     // Modules
     this.event = new Event(this);
-    this.state = new EditorState(this, this.deltaSet);
+    this.state = new EditorState(this);
     this.logger = new Logger(logLevel);
     this.selection = new Selection(this);
     this.canvas = new Canvas(this);

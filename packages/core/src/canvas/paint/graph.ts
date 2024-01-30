@@ -32,7 +32,7 @@ export class Graph {
   private collectEffects(range: Range) {
     // 判定`range`范围内影响的节点
     const effects = new Set<DeltaState>();
-    this.editor.state.getDeltaMap().forEach(state => {
+    this.editor.state.getDeltasMap().forEach(state => {
       if (range.intersect(state.toRange())) {
         effects.add(state);
       }

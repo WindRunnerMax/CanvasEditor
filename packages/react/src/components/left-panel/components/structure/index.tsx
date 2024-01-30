@@ -15,7 +15,7 @@ export const Structure: FC<{ editor: Editor }> = ({ editor }) => {
 
   useEffect(() => {
     const onContentChange = () => {
-      const deltas = [...editor.state.getDeltaMap().values()];
+      const deltas = [...editor.state.getDeltasMap().values()];
       setDeltas(deltas.filter(delta => delta.id !== ROOT_DELTA));
     };
     const onSelectionChange = () => {
