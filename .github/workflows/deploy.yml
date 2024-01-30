@@ -29,7 +29,6 @@ jobs:
       - name: build project
         run: |
           npm run build:react
-          cp README.md ./build
 
       - name: deploy project
         uses: JamesIves/github-pages-deploy-action@releases/v3
