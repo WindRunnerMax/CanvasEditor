@@ -1,10 +1,12 @@
 import { Message, Modal } from "@arco-design/web-react";
 import type { FC } from "react";
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { Editor } from "sketching-core";
+import { Range } from "sketching-core";
 import { DeltaSet } from "sketching-delta";
 import { cs, storage } from "sketching-utils";
 
+import { Background } from "../../../../modules/background";
 import type { TemplateConfig } from "../../../../modules/template";
 import { loadTemplate, TEMPLATE_CONFIG } from "../../../../modules/template";
 import type { LocalStorageData } from "../../../../utils/storage";
@@ -52,6 +54,8 @@ export const Template: FC<{
         const deltaSetLike = res.deltaSetLike;
         const deltaSet = new DeltaSet(deltaSetLike);
         editor.state.setContent(deltaSet);
+        Background.setRange(Range.fromRect(res.x, res.y, res.width, res.height));
+        Background.render();
       },
     });
   };

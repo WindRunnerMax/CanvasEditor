@@ -12,6 +12,16 @@ export const TEMPLATE_CONFIG: TemplateConfig[] = [
     image: BATH_PATH + "Czy/index.jpeg",
     template: BATH_PATH + "Czy/index.json",
   },
+  {
+    name: "Hty",
+    image: BATH_PATH + "Hty/index.jpeg",
+    template: BATH_PATH + "Hty/index.json",
+  },
+  {
+    name: "Lbz",
+    image: BATH_PATH + "Lbz/index.jpeg",
+    template: BATH_PATH + "Lbz/index.json",
+  },
 ];
 
 export const loadTemplate = (src: string) => {

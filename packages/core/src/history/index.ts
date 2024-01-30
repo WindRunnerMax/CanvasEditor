@@ -5,7 +5,7 @@ import { EDITOR_EVENT } from "../event/bus/action";
 import type { ContentChangeEvent } from "../event/bus/types";
 
 export class History {
-  private readonly DELAY = 500;
+  private readonly DELAY = 800;
   private readonly STACK_SIZE = 100;
   private temp: OpSetType[];
   private undoStack: OpSetType[][];

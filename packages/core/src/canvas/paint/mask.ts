@@ -105,6 +105,7 @@ export class Mask {
 
   // ====== Canvas Actions ======
   public reset() {
+    this.clear();
     const { width, height } = this.engine.getRect();
     const ratio = this.engine.devicePixelRatio;
     this.canvas.width = width * ratio;
