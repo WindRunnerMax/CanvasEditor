@@ -6,6 +6,7 @@ import { storage } from "sketching-utils";
 import { Background } from "../../../modules/background";
 import type { LocalStorageData } from "../../../utils/storage";
 import { EXAMPLE, STORAGE_KEY } from "../../../utils/storage";
+import { parseLinks } from "./link";
 
 export const exportPDF = (DPI = 1) => {
   if (!window.PDFDocument || !window.blobStream) {
@@ -32,9 +33,12 @@ export const exportPDF = (DPI = 1) => {
     delta.drawing(ctx);
   });
   const base64 = canvas.toDataURL("image/jpeg");
-  document.body.appendChild(canvas);
+  const links = parseLinks(deltaSet);
   const doc = new window.PDFDocument({
     size: [width, height],
+  });
+  links.forEach(link => {
+    doc.link(link.x, link.y, link.width, link.height, link.url);
   });
   doc.image(base64, 0, 0, { width, height });
   const stream = doc.pipe(window.blobStream());
