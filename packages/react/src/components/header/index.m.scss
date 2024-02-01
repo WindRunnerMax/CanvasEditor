@@ -1,4 +1,4 @@
-@import '../../styles//variable';
+@import '../../styles/variable';
 
 .container {
   @include flex-align-center;
@@ -42,6 +42,8 @@
     .history {
       @include flex-align-center;
 
+      margin-right: 5px;
+
       :global {
         .arco-btn-text {
           @include flex-center;
@@ -56,7 +58,31 @@
     .github {
       color: var(--color-text-1);
       font-size: 20px;
-      margin-right: 5px;
+      margin-left: 5px;
+      margin-right: 10px;
+    }
+  }
+}
+
+.menu {
+  :global(.arco-dropdown-menu-item) {
+    font-size: 12px;
+  }
+}
+
+.resizeModal {
+  :global {
+    .arco-modal-header .arco-icon-exclamation-circle-fill {
+      display: none;
+    }
+  }
+
+  .modalContent {
+    @include flex-center;
+
+    .input {
+      margin-left: 10px;
+      width: 80px;
     }
   }
 }

@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import type { ContentChangeEvent } from "sketching-core";
-import { Editor, EDITOR_EVENT, LOG_LEVEL } from "sketching-core";
+import { Editor, EDITOR_EVENT, LOG_LEVEL, Range } from "sketching-core";
 import { DeltaSet } from "sketching-delta";
 import { storage } from "sketching-utils";
 
@@ -16,6 +16,7 @@ export const App: FC = () => {
   const ref = useRef<HTMLDivElement>(null);
   const editor = useMemo(() => {
     const data = storage.local.get<LocalStorageData>(STORAGE_KEY) || EXAMPLE;
+    Background.setRange(Range.fromRect(data.x, data.y, data.width, data.height));
     const deltaSetLike = data && data.deltaSetLike;
     return new Editor({
       deltaSet: new DeltaSet(deltaSetLike),

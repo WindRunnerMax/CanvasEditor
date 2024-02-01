@@ -1,12 +1,16 @@
-import { Button, Dropdown, Menu } from "@arco-design/web-react";
+import { Button, Dropdown, InputNumber, Menu, Modal } from "@arco-design/web-react";
+import type { RefInputType } from "@arco-design/web-react/es/Input";
 import { IconDown, IconGithub, IconRedo, IconUndo } from "@arco-design/web-react/icon";
 import { useMemoizedFn } from "ahooks";
 import type { FC } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Editor } from "sketching-core";
-import { EDITOR_EVENT } from "sketching-core";
-import { cs } from "sketching-utils";
+import { EDITOR_EVENT, Range } from "sketching-core";
+import { cs, storage } from "sketching-utils";
 
+import { Background } from "../../../modules/background";
+import type { LocalStorageData } from "../../../utils/storage";
+import { STORAGE_KEY } from "../../../utils/storage";
 import styles from "../index.m.scss";
 import { exportPDF } from "../utils/export";
 
@@ -15,6 +19,8 @@ export const Right: FC<{
 }> = ({ editor }) => {
   const [undoAble, setUndoAble] = useState<boolean>(false);
   const [redoAble, setRedoAble] = useState<boolean>(false);
+  const widthRef = useRef<RefInputType>(null);
+  const heightRef = useRef<RefInputType>(null);
 
   const query = useMemoizedFn(() => {
     setUndoAble(editor.history.canUndo());
@@ -28,6 +34,44 @@ export const Right: FC<{
       editor.event.off(EDITOR_EVENT.CONTENT_CHANGE, query);
     };
   }, [editor, query]);
+
+  const onResizeBackGround = () => {
+    const { x, y, width, height } = Background.rect;
+    Modal.confirm({
+      title: "调整画布大小",
+      className: styles.resizeModal,
+      content: (
+        <div className={styles.modalContent}>
+          <div>宽(width) x 高(height):</div>
+          <InputNumber
+            size="small"
+            ref={widthRef}
+            className={styles.input}
+            min={600}
+            max={2000}
+            defaultValue={width}
+          />
+          <InputNumber
+            size="small"
+            ref={heightRef}
+            className={styles.input}
+            min={1000}
+            max={4000}
+            defaultValue={height}
+          />
+        </div>
+      ),
+      onConfirm: () => {
+        if (!widthRef.current || !heightRef.current) return;
+        const width = Number(widthRef.current.dom.value);
+        const height = Number(heightRef.current.dom.value);
+        width && height && Background.setRange(Range.fromRect(x, y, width, height));
+        const deltaSetLike = editor.deltaSet.getDeltas();
+        const storageData: LocalStorageData = { ...Background.rect, deltaSetLike };
+        storage.local.set(STORAGE_KEY, storageData);
+      },
+    });
+  };
 
   return (
     <div className={cs(styles.externalGroup)}>
@@ -51,7 +95,25 @@ export const Right: FC<{
       </div>
       <Dropdown
         droplist={
-          <Menu>
+          <Menu className={styles.menu}>
+            <Menu.Item key="1">
+              <div className={styles.export} onClick={() => onResizeBackGround()}>
+                画布大小
+              </div>
+            </Menu.Item>
+          </Menu>
+        }
+        trigger="click"
+        position="br"
+      >
+        <Button size="mini" type="text">
+          操作
+          <IconDown />
+        </Button>
+      </Dropdown>
+      <Dropdown
+        droplist={
+          <Menu className={styles.menu}>
             <Menu.Item key="1">
               <div className={styles.export} onClick={() => exportPDF()}>
                 PDF

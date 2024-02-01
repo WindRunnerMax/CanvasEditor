@@ -9,7 +9,7 @@ export class Background {
   private static canvas: HTMLCanvasElement;
   private static ctx: CanvasRenderingContext2D;
 
-  public static init(editor: Editor, standard?: Range) {
+  public static init(editor: Editor) {
     const dom = editor.getContainer();
     dom.style.position = "relative";
     Background.canvas = document.createElement("canvas");
@@ -18,9 +18,7 @@ export class Background {
     Background.canvas.style.position = "absolute";
     Background.canvas.style.zIndex = "-1";
     Background.setRect(dom.offsetWidth, dom.offsetHeight);
-    if (standard) {
-      Background.setRange(standard);
-    } else {
+    if (!Background.range) {
       const opWidthPX = (A4.width * DPI) / 25.4;
       const opHeightPX = (A4.height * DPI) / 25.4;
       const range = Range.fromRect(PAGE_OFFSET.x, PAGE_OFFSET.y, opWidthPX, opHeightPX);
