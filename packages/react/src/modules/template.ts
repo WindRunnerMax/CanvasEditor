@@ -8,19 +8,24 @@ export type TemplateConfig = {
 
 export const TEMPLATE_CONFIG: TemplateConfig[] = [
   {
-    name: "Czy",
+    name: "FE-Czy",
     image: BATH_PATH + "Czy/index.jpeg",
     template: BATH_PATH + "Czy/index.json",
   },
   {
-    name: "Hty",
+    name: "FE-Hty",
     image: BATH_PATH + "Hty/index.jpeg",
     template: BATH_PATH + "Hty/index.json",
   },
   {
-    name: "Lbz",
+    name: "FE-Lbz",
     image: BATH_PATH + "Lbz/index.jpeg",
     template: BATH_PATH + "Lbz/index.json",
+  },
+  {
+    name: "BE-Lmz",
+    image: BATH_PATH + "Lmz/index.jpeg",
+    template: BATH_PATH + "Lmz/index.json",
   },
 ];
 
