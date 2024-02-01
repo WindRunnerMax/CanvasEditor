@@ -12,6 +12,10 @@ module.exports = {
   entry: {
     index: "./src/index.tsx",
   },
+  externals: {
+    "react": "React",
+    "react-dom": "ReactDOM",
+  },
   plugins: [
     new CopyPlugin([{ from: "./public", to: "." }]),
     new HtmlPlugin({
@@ -81,11 +85,13 @@ module.exports = {
   target: "es5",
   devtool: isDev ? "source-map" : false,
   output: {
-    publicPath: ".",
     chunkLoading: "jsonp",
     chunkFormat: "array-push",
-    filename: isDev ? "[name].js" : "[name].[hash].js",
+    publicPath: isDev ? "" : ".",
     path: path.resolve(__dirname, "build"),
+    filename: isDev ? "[name].bundle.js" : "[name].[contenthash].js",
+    chunkFilename: isDev ? "[name].chunk.js" : "[name].[contenthash].js",
+    assetModuleFilename: isDev ? "[name].[ext]" : "[name].[contenthash].[ext]",
   },
 };
 
