@@ -42,8 +42,15 @@ export class Background {
   }
 
   public static setRange(range: Range) {
-    Background.range = range;
-    Background.rect = range.rect();
+    const prevRect = range.rect();
+    const next = Range.fromRect(
+      prevRect.x,
+      prevRect.y,
+      Math.ceil(prevRect.width),
+      Math.ceil(prevRect.height)
+    );
+    Background.range = next;
+    Background.rect = next.rect();
   }
 
   public static render() {
