@@ -36,7 +36,8 @@
   "devDependencies": {
     "@rspack/cli": "0.2.5",
     "@rspack/plugin-html": "0.2.5",
-    "@types/node": "^20.11.10",
+    "@types/node": "20.11.10",
+    "@types/pdfkit": "0.13.3",
     "@types/react": "17.0.2",
     "@types/react-dom": "17.0.2",
     "copy-webpack-plugin": "5",

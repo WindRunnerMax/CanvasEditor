@@ -1,5 +1,5 @@
-import { Button } from "@arco-design/web-react";
-import { IconGithub, IconRedo, IconUndo } from "@arco-design/web-react/icon";
+import { Button, Dropdown, Menu } from "@arco-design/web-react";
+import { IconDown, IconGithub, IconRedo, IconUndo } from "@arco-design/web-react/icon";
 import { useMemoizedFn } from "ahooks";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import { EDITOR_EVENT } from "sketching-core";
 import { cs } from "sketching-utils";
 
 import styles from "../index.m.scss";
+import { exportPDF } from "../utils/export";
 
 export const Right: FC<{
   editor: Editor;
@@ -48,9 +49,29 @@ export const Right: FC<{
           size="small"
         ></Button>
       </div>
-      <div className={styles.export} onClick={() => window.open("?preview", "_blank")}>
-        导出
-      </div>
+      <Dropdown
+        droplist={
+          <Menu>
+            <Menu.Item key="1">
+              <div className={styles.export} onClick={() => exportPDF()}>
+                PDF
+              </div>
+            </Menu.Item>
+            <Menu.Item key="2">
+              <div className={styles.export} onClick={() => exportPDF(2)}>
+                PDF(高清)
+              </div>
+            </Menu.Item>
+          </Menu>
+        }
+        trigger="click"
+        position="br"
+      >
+        <Button size="mini" type="text">
+          导出
+          <IconDown />
+        </Button>
+      </Dropdown>
       <a
         className={styles.github}
         target="_blank"

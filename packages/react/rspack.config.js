@@ -15,6 +15,8 @@ module.exports = {
   externals: {
     "react": "React",
     "react-dom": "ReactDOM",
+    "blob-stream": "blobStream",
+    "pdfkit": "PDFDocument",
   },
   plugins: [
     new CopyPlugin([{ from: "./public", to: "." }]),

@@ -26,8 +26,8 @@ export class Grab {
     return this._on;
   }
 
-  public setState(disable: boolean) {
-    this.disable = disable;
+  public setState(enable: boolean) {
+    this.disable = !enable;
   }
 
   public start() {

@@ -46,30 +46,10 @@
         .arco-btn-text {
           @include flex-center;
 
-          color: var(--color-text-1);
           cursor: pointer;
           margin-top: -1px;
           padding: 3px;
-
-          &.arco-btn-disabled {
-            color: var(--color-text-4);
-          }
         }
-      }
-    }
-
-    .export {
-      border-radius: 3px;
-      color: var(--color-text-1);
-      cursor: pointer;
-      font-size: 12px;
-      margin-left: 3px;
-      margin-right: 8px;
-      margin-top: -1px;
-      padding: 3px 6px;
-
-      &:hover {
-        background-color: var(--color-fill-2);
       }
     }
 

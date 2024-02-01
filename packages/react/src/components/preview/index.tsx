@@ -28,7 +28,7 @@ export const Preview: FC = () => {
     const el = ref.current;
     el && editor.onMount(el);
     window.editor = editor;
-    editor.canvas.grab.setState(true);
+    editor.canvas.grab.setState(false);
     const { x, y } = Background.rect;
     editor.canvas.setOffset(x, y);
     return () => {
