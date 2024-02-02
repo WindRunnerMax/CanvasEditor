@@ -69,6 +69,7 @@ export const Right: FC<{
         const deltaSetLike = editor.deltaSet.getDeltas();
         const storageData: LocalStorageData = { ...Background.rect, deltaSetLike };
         storage.local.set(STORAGE_KEY, storageData);
+        Background.render();
       },
     });
   };

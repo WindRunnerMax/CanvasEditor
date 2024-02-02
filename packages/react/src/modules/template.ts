@@ -27,6 +27,11 @@ export const TEMPLATE_CONFIG: TemplateConfig[] = [
     image: BATH_PATH + "Lmz/index.jpeg",
     template: BATH_PATH + "Lmz/index.json",
   },
+  {
+    name: "FE-Wxy",
+    image: BATH_PATH + "Wxy/index.jpeg",
+    template: BATH_PATH + "Wxy/index.json",
+  },
 ];
 
 export const loadTemplate = (src: string) => {

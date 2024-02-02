@@ -139,6 +139,7 @@ export const Text: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
     <Modal
       visible={visible}
       footer={null}
+      focusLock={false}
       className={styles.modal}
       onCancel={() => setVisible(false)}
       title={<div className={styles.modalTitle}>富文本</div>}
