@@ -1,5 +1,7 @@
 import "doc-editor-light/dist/styles/index";
 
+import { Modal } from "@arco-design/web-react";
+import { IconLaunch } from "@arco-design/web-react/icon";
 import { useMemoizedFn } from "ahooks";
 import {
   BoldPlugin,
@@ -22,7 +24,7 @@ import {
   withSchema,
 } from "doc-editor-light";
 import type { FC } from "react";
-import React, { useMemo } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import type { DeltaState, Editor } from "sketching-core";
 import type { DeltaAttributes } from "sketching-delta";
 import { Op, OP_TYPE } from "sketching-delta";
@@ -40,13 +42,16 @@ import { blocksToLines } from "./slate-kit";
 
 export const Text: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state }) => {
   const { isMounted } = useIsMounted();
+  const [visible, setVisible] = useState(false);
+  const dataRef = useRef<BlockElement[]>([]);
   const richText = useMemo(() => withSchema(schema, withHistory(withReact(createEditor()))), []);
 
-  const initText = useMemo(() => {
+  useMemo(() => {
     const data = state.getAttr(TEXT_ATTRS.ORIGIN_DATA);
     const blocks = data && TSON.parse<BlockElement[]>(data);
-    if (blocks) return blocks;
-    return [{ children: [{ text: "" }] }] as BlockElement[];
+    if (blocks) dataRef.current = blocks;
+    else dataRef.current = [{ children: [{ text: "" }] }] as BlockElement[];
+    return dataRef;
   }, [state]);
 
   const onChange = useMemoizedFn((attrs: DeltaAttributes) => {
@@ -66,6 +71,7 @@ export const Text: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
   const updateText = useMemo(
     () =>
       debounce((text: Descendant[]) => {
+        dataRef.current = text as BlockElement[];
         // 双写-空间换时间
         // @ts-expect-error BlockElement
         if (text.length === 1 && text[0].children.length === 1 && !text[0].children[0].text) {
@@ -104,10 +110,15 @@ export const Text: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
     return register.apply();
   }, [richText]);
 
-  return (
-    <React.Fragment>
-      <div className={styles.title}>文本</div>
-      <Slate editor={richText} value={initText} onChange={updateText}>
+  const TextEditor = (
+    <React.Fragment key={state.id}>
+      {!visible && (
+        <div className={styles.title}>
+          富文本
+          <IconLaunch className={styles.launch} onClick={() => setVisible(true)} />
+        </div>
+      )}
+      <Slate editor={richText} value={dataRef.current} onChange={updateText}>
         <div onClick={e => e.stopPropagation()}>
           <MenuToolBar readonly={false} commands={commands} editor={richText}></MenuToolBar>
         </div>
@@ -122,5 +133,19 @@ export const Text: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
         />
       </Slate>
     </React.Fragment>
+  );
+
+  return visible ? (
+    <Modal
+      visible={visible}
+      footer={null}
+      className={styles.modal}
+      onCancel={() => setVisible(false)}
+      title={<div className={styles.modalTitle}>富文本</div>}
+    >
+      {TextEditor}
+    </Modal>
+  ) : (
+    TextEditor
   );
 };

@@ -5,6 +5,8 @@
 }
 
 .title {
+  @include flex-align-center;
+
   border-bottom: 1px solid var(--color-border-2);
   font-size: 15px;
   font-weight: bold;
@@ -13,6 +15,15 @@
 
   &:first-child {
     margin-top: 5px;
+  }
+
+  .launch {
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: normal;
+    margin-left: 1px;
+    margin-top: 3px;
+    padding: 2px;
   }
 }
 
@@ -52,5 +63,16 @@
 .radioGroup {
   :global(.arco-radio) {
     line-height: unset;
+  }
+}
+
+.modal {
+  .modalTitle {
+    margin-top: 3px;
+    text-align: left;
+  }
+
+  :global(.arco-modal-content) {
+    padding: 5px 15px 15px;
   }
 }
