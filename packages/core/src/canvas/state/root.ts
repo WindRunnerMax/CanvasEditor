@@ -18,6 +18,7 @@ import { NODE_EVENT } from "../types/event";
 import { THE_CONFIG } from "../utils/constant";
 
 export class Root extends Node {
+  public cursor: Point;
   public hover: ElementNode | ResizeNode | null;
   public readonly frame: FrameNode;
   public readonly select: SelectNode;
@@ -25,6 +26,7 @@ export class Root extends Node {
   constructor(private editor: Editor, private engine: Canvas) {
     super(Range.from(0, 0));
     this.hover = null;
+    this.cursor = Point.from(0, 0);
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);
     this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE, this.onMouseMoveController);
     this.editor.event.on(EDITOR_EVENT.MOUSE_UP, this.onMouseUpController);
@@ -105,6 +107,7 @@ export class Root extends Node {
   }
 
   private onMouseDownController = (e: globalThis.MouseEvent) => {
+    this.cursor = Point.from(e, this.editor);
     // 非默认状态下不执行事件
     if (!this.engine.isDefaultMode()) return void 0;
     // 按事件顺序获取节点
@@ -121,6 +124,7 @@ export class Root extends Node {
   };
 
   private onMouseMoveBasic = (e: globalThis.MouseEvent) => {
+    this.cursor = Point.from(e, this.editor);
     // 非默认状态下不执行事件
     if (!this.engine.isDefaultMode()) return void 0;
     // 按事件顺序获取节点

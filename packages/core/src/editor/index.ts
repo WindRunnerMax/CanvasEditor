@@ -2,6 +2,7 @@ import { DeltaSet } from "sketching-delta";
 import { ROOT_DELTA } from "sketching-utils";
 
 import { Canvas } from "../canvas";
+import { Clipboard } from "../clipboard";
 import { Event } from "../event";
 import { History } from "../history/";
 import { LOG_LEVEL, Logger } from "../log";
@@ -19,6 +20,7 @@ export class Editor {
   public readonly canvas: Canvas;
   public readonly selection: Selection;
   public readonly history: History;
+  public readonly clipboard: Clipboard;
   private container: HTMLDivElement;
 
   constructor(options: EditorOptions = {}) {
@@ -41,6 +43,7 @@ export class Editor {
     this.selection = new Selection(this);
     this.canvas = new Canvas(this);
     this.history = new History(this);
+    this.clipboard = new Clipboard(this);
     // Update status
     this.state.setReadOnly(readonly);
   }
@@ -62,6 +65,7 @@ export class Editor {
     this.state.set(EDITOR_STATE.MOUNTED, false);
     this.state.destroy();
     this.history.destroy();
+    this.clipboard.destroy();
   }
 
   public getContainer() {
