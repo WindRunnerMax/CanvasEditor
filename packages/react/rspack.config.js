@@ -82,6 +82,11 @@ module.exports = {
         ],
         type: "css",
       },
+      {
+        // 对`doc-editor-light`的`TreeShaking`有点问题
+        test: /doc-editor-light\/dist\/tslib.*\.js/,
+        sideEffects: true,
+      },
     ],
   },
   target: "es5",
@@ -89,7 +94,7 @@ module.exports = {
   output: {
     chunkLoading: "jsonp",
     chunkFormat: "array-push",
-    publicPath: isDev ? "" : ".",
+    publicPath: isDev ? "" : "./",
     path: path.resolve(__dirname, "build"),
     filename: isDev ? "[name].bundle.js" : "[name].[contenthash].js",
     chunkFilename: isDev ? "[name].chunk.js" : "[name].[contenthash].js",

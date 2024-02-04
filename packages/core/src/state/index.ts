@@ -61,6 +61,7 @@ export class EditorState {
 
   public setContent(deltaSet: DeltaSet) {
     this.editor.deltaSet = deltaSet;
+    this.editor.canvas.mask.clearWithOp();
     this.deltas.clear();
     const entryDelta = deltaSet.get(ROOT_DELTA);
     const entry = entryDelta || new EntryDelta(DEFAULT_DELTA_LIKE);
