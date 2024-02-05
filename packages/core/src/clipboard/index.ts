@@ -38,6 +38,7 @@ export class Clipboard {
       }
       const str = TSON.stringify(data);
       str && clipboardData.setData(Clipboard.KEY, str);
+      clipboardData.setData("text/plain", "请在编辑器中粘贴");
       isCut && this.editor.canvas.mask.clearWithOp();
       e.stopPropagation();
       e.preventDefault();
