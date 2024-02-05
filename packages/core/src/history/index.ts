@@ -3,6 +3,7 @@ import type { OpSetType } from "sketching-delta";
 import type { Editor } from "../editor";
 import { EDITOR_EVENT } from "../event/bus/action";
 import type { ContentChangeEvent } from "../event/bus/types";
+import { APPLY_SOURCE } from "../state/utils/constant";
 
 export class History {
   private readonly DELAY = 800;
@@ -47,7 +48,9 @@ export class History {
     this.redoStack = [];
     this.timer && clearTimeout(this.timer);
     this.timer = null;
-    if (this.undoStack.length > this.STACK_SIZE) this.undoStack.shift();
+    if (this.undoStack.length > this.STACK_SIZE) {
+      this.undoStack.shift();
+    }
   };
 
   private onContentChange = (e: ContentChangeEvent) => {
@@ -55,8 +58,9 @@ export class History {
     this.redoStack = [];
     const { previous, changes } = e;
     const invert = changes.invert(previous);
-    if (invert) {
-      this.temp.push(invert);
+    if (!invert) return void 0;
+    this.temp.push(invert);
+    if (!this.timer) {
       this.timer = setTimeout(this.collectImmediately, this.DELAY);
     }
   };
@@ -71,7 +75,9 @@ export class History {
       ops.map(op => op.invert(this.editor.deltaSet)).filter(Boolean) as OpSetType[]
     );
     this.editor.logger.debug("UNDO", ops);
-    ops.forEach(op => this.editor.state.apply(op, { source: "undo", undoable: false }));
+    ops.forEach(op =>
+      this.editor.state.apply(op, { source: APPLY_SOURCE.HISTORY, undoable: false })
+    );
   }
 
   public redo() {
@@ -83,6 +89,8 @@ export class History {
       ops.map(op => op.invert(this.editor.deltaSet)).filter(Boolean) as OpSetType[]
     );
     this.editor.logger.debug("REDO", ops);
-    ops.forEach(op => this.editor.state.apply(op, { source: "redo", undoable: false }));
+    ops.forEach(op =>
+      this.editor.state.apply(op, { source: APPLY_SOURCE.HISTORY, undoable: false })
+    );
   }
 }

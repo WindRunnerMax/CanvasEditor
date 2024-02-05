@@ -9,7 +9,7 @@ import { EDITOR_EVENT } from "../event/bus/action";
 import { Range } from "../selection/modules/range";
 import { DeltaState } from "./modules/node";
 import { Shortcut } from "./modules/shortcut";
-import { EDITOR_STATE } from "./utils/constant";
+import { APPLY_SOURCE, EDITOR_STATE } from "./utils/constant";
 import type { ApplyOptions } from "./utils/types";
 
 export class EditorState {
@@ -63,6 +63,7 @@ export class EditorState {
     this.editor.deltaSet = deltaSet;
     this.editor.canvas.mask.clearWithOp();
     this.deltas.clear();
+    this.editor.history.clear();
     const entryDelta = deltaSet.get(ROOT_DELTA);
     const entry = entryDelta || new EntryDelta(DEFAULT_DELTA_LIKE);
     this.deltas.set(entry.id, new DeltaState(this.editor, entry));
@@ -98,7 +99,7 @@ export class EditorState {
   }
 
   public apply(op: OpSetType, applyOptions?: ApplyOptions) {
-    const options = applyOptions || { source: "user", undoable: true };
+    const options = applyOptions || { source: APPLY_SOURCE.USER, undoable: true };
     const previous = new DeltaSet(this.editor.deltaSet.getDeltas());
     const changes: string[] = [];
 

@@ -5,3 +5,8 @@ export const EDITOR_STATE = {
   MOUSE_DOWN: "MOUSE_DOWN",
   FOCUS: "FOCUS",
 } as const;
+
+export const APPLY_SOURCE = {
+  USER: "USER",
+  HISTORY: "HISTORY",
+};
