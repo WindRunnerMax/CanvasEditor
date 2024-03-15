@@ -1,8 +1,11 @@
-import "doc-editor-light/dist/styles/index";
+import "doc-editor-plugin/dist/styles/index";
 
 import { Modal } from "@arco-design/web-react";
 import { IconLaunch } from "@arco-design/web-react/icon";
 import { useMemoizedFn } from "ahooks";
+import { EditorPlugin, makeEditor } from "doc-editor-core";
+import type { BaseNode, BlockElement } from "doc-editor-delta";
+import { Editable, EditorProvider } from "doc-editor-delta";
 import {
   BoldPlugin,
   DividingLinePlugin,
@@ -17,12 +20,10 @@ import {
   ParagraphPlugin,
   QuoteBlockPlugin,
   ShortCutPlugin,
-  SlatePlugins,
   StrikeThroughPlugin,
   UnderLinePlugin,
   UnorderedListPlugin,
-  withSchema,
-} from "doc-editor-light";
+} from "doc-editor-plugin";
 import type { FC } from "react";
 import React, { useMemo, useRef, useState } from "react";
 import type { DeltaState, Editor } from "sketching-core";
@@ -30,10 +31,6 @@ import type { DeltaAttributes } from "sketching-delta";
 import { Op, OP_TYPE } from "sketching-delta";
 import { TEXT_ATTRS } from "sketching-plugin";
 import { debounce, TSON } from "sketching-utils";
-import type { BlockElement, Descendant } from "slate";
-import { createEditor } from "slate";
-import { withHistory } from "slate-history";
-import { Editable, Slate, withReact } from "slate-react";
 
 import { useIsMounted } from "../../../../hooks/is-mounted";
 import styles from "../index.m.scss";
@@ -44,7 +41,7 @@ export const Text: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
   const { isMounted } = useIsMounted();
   const [visible, setVisible] = useState(false);
   const dataRef = useRef<BlockElement[]>([]);
-  const richText = useMemo(() => withSchema(schema, withHistory(withReact(createEditor()))), []);
+  const richText = useMemo(() => makeEditor(schema), []);
 
   useMemo(() => {
     const data = state.getAttr(TEXT_ATTRS.ORIGIN_DATA);
@@ -70,7 +67,7 @@ export const Text: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
 
   const updateText = useMemo(
     () =>
-      debounce((text: Descendant[]) => {
+      debounce((text: BaseNode[]) => {
         dataRef.current = text as BlockElement[];
         // 双写-空间换时间
         // @ts-expect-error BlockElement
@@ -78,7 +75,7 @@ export const Text: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
           onChange({ [TEXT_ATTRS.DATA]: null, [TEXT_ATTRS.ORIGIN_DATA]: null });
         } else {
           onChange({
-            [TEXT_ATTRS.DATA]: TSON.stringify(blocksToLines(text as BlockElement[])),
+            [TEXT_ATTRS.DATA]: TSON.stringify(blocksToLines(richText, text as BlockElement[])),
             [TEXT_ATTRS.ORIGIN_DATA]: TSON.stringify(text),
           });
         }
@@ -87,7 +84,7 @@ export const Text: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
   );
 
   const { renderElement, renderLeaf, onKeyDown, commands, onCopy } = useMemo(() => {
-    const register = new SlatePlugins(
+    const register = new EditorPlugin(
       ParagraphPlugin(),
       HeadingPlugin(richText),
       BoldPlugin(),
@@ -118,7 +115,7 @@ export const Text: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
           <IconLaunch className={styles.launch} onClick={() => setVisible(true)} />
         </div>
       )}
-      <Slate editor={richText} value={dataRef.current} onChange={updateText}>
+      <EditorProvider editor={richText} value={dataRef.current} onChange={updateText}>
         <div onClick={e => e.stopPropagation()}>
           <MenuToolBar readonly={false} commands={commands} editor={richText}></MenuToolBar>
         </div>
@@ -131,7 +128,7 @@ export const Text: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
           onKeyDown={onKeyDown}
           onCopy={e => onCopy(e, richText)}
         />
-      </Slate>
+      </EditorProvider>
     </React.Fragment>
   );
 

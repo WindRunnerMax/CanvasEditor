@@ -20,18 +20,18 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@arco-design/web-react": "2.59.1",
+    "@arco-design/web-react": "2.60.3",
     "ahooks": "3.7.8",
-    "doc-editor-light": "0.3.5",
+    "doc-editor-core": "1.0.1",
+    "doc-editor-delta": "1.0.1",
+    "doc-editor-plugin": "1.0.1",
+    "doc-editor-utils": "1.0.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "sketching-core": "workspace: *",
     "sketching-delta": "workspace: *",
     "sketching-plugin": "workspace: *",
-    "sketching-utils": "workspace: *",
-    "slate": "0.80.0",
-    "slate-history": "0.66.0",
-    "slate-react": "0.80.0"
+    "sketching-utils": "workspace: *"
   },
   "devDependencies": {
     "@rspack/cli": "0.2.5",
