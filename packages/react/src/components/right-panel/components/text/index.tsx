@@ -80,10 +80,10 @@ export const Text: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
           });
         }
       }, 300),
-    [onChange]
+    [onChange, richText]
   );
 
-  const { renderElement, renderLeaf, onKeyDown, commands, onCopy } = useMemo(() => {
+  const { renderElement, renderLeaf, onKeyDown, commands } = useMemo(() => {
     const register = new EditorPlugin(
       ParagraphPlugin(),
       HeadingPlugin(richText),
@@ -126,7 +126,6 @@ export const Text: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
           readOnly={false}
           placeholder="Enter text ..."
           onKeyDown={onKeyDown}
-          onCopy={e => onCopy(e, richText)}
         />
       </EditorProvider>
     </React.Fragment>

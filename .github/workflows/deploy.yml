@@ -23,7 +23,8 @@ jobs:
       - name: install dependencies
         run: |
           node -v
-          npm install -g pnpm@6.24.3
+          npm install -g pnpm
+          pnpm config set registry https://registry.npmjs.org/
           pnpm install --registry=https://registry.npmjs.org/
 
       - name: build project
