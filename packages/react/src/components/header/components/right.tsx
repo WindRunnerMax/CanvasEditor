@@ -13,6 +13,7 @@ import type { LocalStorageData } from "../../../utils/storage";
 import { STORAGE_KEY } from "../../../utils/storage";
 import styles from "../index.m.scss";
 import { exportJSON, exportPDF } from "../utils/export";
+import { importJSON } from "../utils/import";
 
 export const Right: FC<{
   editor: Editor;
@@ -105,6 +106,11 @@ export const Right: FC<{
             <Menu.Item key="1">
               <div className={styles.export} onClick={() => onResizeBackGround()}>
                 画布大小
+              </div>
+            </Menu.Item>
+            <Menu.Item key="2">
+              <div className={styles.export} onClick={() => importJSON(editor)}>
+                导入JSON
               </div>
             </Menu.Item>
           </Menu>
