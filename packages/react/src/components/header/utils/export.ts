@@ -1,7 +1,8 @@
 import { Message } from "@arco-design/web-react";
+import type { Editor } from "sketching-core";
 import { Range } from "sketching-core";
 import { DeltaSet } from "sketching-delta";
-import { storage } from "sketching-utils";
+import { DateTime, storage } from "sketching-utils";
 
 import { Background } from "../../../modules/background";
 import type { LocalStorageData } from "../../../utils/storage";
@@ -47,7 +48,21 @@ export const exportPDF = (DPI = 1) => {
     const url = stream.toBlobURL("application/pdf");
     const a = document.createElement("a");
     a.href = url;
-    a.download = "Resume.pdf";
+    const now = new DateTime().format("yyyyMMdd_hhmmss");
+    a.download = "RESUME_" + now + ".pdf";
     a.click();
   });
+};
+
+export const exportJSON = (editor: Editor) => {
+  const deltaSetLike = editor.deltaSet.getDeltas();
+  const storageData = { ...Background.rect, deltaSetLike };
+  const str = JSON.stringify(storageData, null, 2);
+  const blob = new Blob([str], { type: "application/json;charset=utf-8" });
+  const href = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = href;
+  const now = new DateTime().format("yyyyMMdd_hhmmss");
+  a.download = "RESUME_" + now + ".json";
+  a.click();
 };

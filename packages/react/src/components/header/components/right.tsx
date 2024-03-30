@@ -12,7 +12,7 @@ import { Background } from "../../../modules/background";
 import type { LocalStorageData } from "../../../utils/storage";
 import { STORAGE_KEY } from "../../../utils/storage";
 import styles from "../index.m.scss";
-import { exportPDF } from "../utils/export";
+import { exportJSON, exportPDF } from "../utils/export";
 
 export const Right: FC<{
   editor: Editor;
@@ -97,6 +97,11 @@ export const Right: FC<{
       <Dropdown
         droplist={
           <Menu className={styles.menu}>
+            <Menu.Item key="0">
+              <a href="?preview" target="_blank">
+                预览
+              </a>
+            </Menu.Item>
             <Menu.Item key="1">
               <div className={styles.export} onClick={() => onResizeBackGround()}>
                 画布大小
@@ -118,6 +123,11 @@ export const Right: FC<{
             <Menu.Item key="1">
               <div className={styles.export} onClick={() => exportPDF()}>
                 PDF
+              </div>
+            </Menu.Item>
+            <Menu.Item key="3">
+              <div className={styles.export} onClick={() => exportJSON(editor)}>
+                JSON
               </div>
             </Menu.Item>
             <Menu.Item key="2">

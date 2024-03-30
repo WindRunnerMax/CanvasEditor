@@ -1,6 +1,7 @@
 export { DEFAULT_PRIORITY, NOOP, ROOT_DELTA } from "./constant";
 export {
   cs,
+  DateTime,
   getUniqueId,
   isArray,
   isEmptyValue,
