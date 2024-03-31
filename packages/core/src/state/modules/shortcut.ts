@@ -45,6 +45,9 @@ export class Shortcut {
       e.preventDefault();
     } else if (e.key === "z" && (e.ctrlKey || e.metaKey)) {
       e.shiftKey ? this.editor.history.redo() : this.editor.history.undo();
+    } else if (e.key === "a" && (e.ctrlKey || e.metaKey)) {
+      this.editor.selection.selectAll();
+      e.preventDefault();
     }
   };
 

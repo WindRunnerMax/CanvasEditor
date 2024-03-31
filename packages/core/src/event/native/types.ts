@@ -18,6 +18,7 @@ export const NATIVE_EVENTS = {
   MOUSE_MOVE_GLOBAL: "mousemove-global",
   DROP: "drop",
   DROP_OVER: "dragover",
+  CONTEXT_MENU: "contextmenu",
 } as const;
 
 export type NativeEventMap = {
@@ -40,6 +41,7 @@ export type NativeEventMap = {
   [NATIVE_EVENTS.MOUSE_UP_GLOBAL]: MouseEvent;
   [NATIVE_EVENTS.DROP]: DragEvent;
   [NATIVE_EVENTS.DROP_OVER]: DragEvent;
+  [NATIVE_EVENTS.CONTEXT_MENU]: MouseEvent;
 };
 
 type NativeEventMapType = typeof NATIVE_EVENTS;
@@ -50,3 +52,9 @@ export type Listeners = {
   [T in NativeEventMapKeys]?: Listener<T>;
 };
 export type NormalEventHandler = (e: Event) => void;
+
+export const MOUSE_BUTTON = {
+  LEFT: 0,
+  MIDDLE: 1,
+  RIGHT: 2,
+} as const;

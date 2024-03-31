@@ -1,3 +1,5 @@
+import { ROOT_DELTA } from "sketching-utils";
+
 import type { Editor } from "../editor";
 import { EDITOR_EVENT } from "../event/bus/action";
 import { EDITOR_STATE } from "../state/utils/constant";
@@ -64,6 +66,12 @@ export class Selection {
     if (this.active.size === 0) return void 0;
     this.active.clear();
     this.set(null);
+  }
+
+  public selectAll() {
+    const map = this.editor.state.getDeltasMap();
+    const keys = Array.from(map.keys()).filter(key => key !== ROOT_DELTA);
+    this.setActiveDelta(...keys);
   }
 
   // ====== Range ======

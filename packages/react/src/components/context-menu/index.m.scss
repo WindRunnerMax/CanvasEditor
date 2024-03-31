@@ -1,0 +1,29 @@
+@import '../../styles/variable';
+
+.container {
+  @include frame-border;
+
+  color: var(--color-text-1);
+  font-size: 12px;
+  padding: 5px;
+  position: fixed;
+  user-select: none;
+  width: 200px;
+
+  > .item {
+    @include flex-align-center;
+    @include flex-justify-between;
+
+    border-radius: 3px;
+    cursor: pointer;
+    padding: 5px 10px;
+
+    &:hover {
+      background-color: var(--color-fill-2);
+    }
+  }
+
+  .shortcut {
+    color: var(--color-text-3);
+  }
+}

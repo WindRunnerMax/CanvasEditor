@@ -1,7 +1,7 @@
 import type { Editor } from "../../editor";
 import { EDITOR_STATE } from "../../state/utils/constant";
 import type { EventBus } from "../bus";
-import { NATIVE_EVENTS } from "./types";
+import { MOUSE_BUTTON, NATIVE_EVENTS } from "./types";
 
 export class NativeEvent {
   constructor(private event: EventBus, private editor: Editor) {}
@@ -61,15 +61,19 @@ export class NativeEvent {
   };
 
   private onMouseDown = (e: MouseEvent) => {
+    // 对于主按键相反的鼠标设置 不需要额外处理
+    if (e.button !== MOUSE_BUTTON.LEFT) return void 0;
     this.editor.state.set(EDITOR_STATE.MOUSE_DOWN, true);
     this.event.trigger(NATIVE_EVENTS.MOUSE_DOWN, e);
   };
 
   private onMouseMove = (e: MouseEvent) => {
+    if (e.button !== MOUSE_BUTTON.LEFT) return void 0;
     this.event.trigger(NATIVE_EVENTS.MOUSE_MOVE, e);
   };
 
   private onMouseUp = (e: MouseEvent) => {
+    if (e.button !== MOUSE_BUTTON.LEFT) return void 0;
     this.editor.state.set(EDITOR_STATE.MOUSE_DOWN, false);
     this.event.trigger(NATIVE_EVENTS.MOUSE_UP, e);
   };
@@ -96,6 +100,11 @@ export class NativeEvent {
     e.preventDefault();
   };
 
+  private onContextMenu = (e: MouseEvent) => {
+    e.preventDefault();
+    this.event.trigger(NATIVE_EVENTS.CONTEXT_MENU, e);
+  };
+
   public bind() {
     this.unbind();
     const container = this.editor.getContainer();
@@ -110,6 +119,7 @@ export class NativeEvent {
     container.addEventListener(NATIVE_EVENTS.MOUSE_WHEEL, this.onMouseWheel);
     container.addEventListener(NATIVE_EVENTS.DROP, this.onDrop);
     container.addEventListener(NATIVE_EVENTS.DROP_OVER, this.onDropOver);
+    container.addEventListener(NATIVE_EVENTS.CONTEXT_MENU, this.onContextMenu);
     document.addEventListener(NATIVE_EVENTS.COPY, this.onCopy);
     document.addEventListener(NATIVE_EVENTS.CUT, this.onCut);
     document.addEventListener(NATIVE_EVENTS.PASTE, this.onPaste);
@@ -133,6 +143,7 @@ export class NativeEvent {
     container.removeEventListener(NATIVE_EVENTS.MOUSE_WHEEL, this.onMouseWheel);
     container.removeEventListener(NATIVE_EVENTS.DROP, this.onDrop);
     container.removeEventListener(NATIVE_EVENTS.DROP_OVER, this.onDropOver);
+    container.removeEventListener(NATIVE_EVENTS.CONTEXT_MENU, this.onContextMenu);
     document.removeEventListener(NATIVE_EVENTS.COPY, this.onCopy);
     document.removeEventListener(NATIVE_EVENTS.CUT, this.onCut);
     document.removeEventListener(NATIVE_EVENTS.PASTE, this.onPaste);

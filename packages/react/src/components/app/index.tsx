@@ -10,6 +10,7 @@ import { Background } from "../../modules/background";
 import type { LocalStorageData } from "../../utils/storage";
 import { EXAMPLE, STORAGE_KEY } from "../../utils/storage";
 import { Body } from "../body";
+import { ContextMenu } from "../context-menu";
 import { Header } from "../header";
 
 export const App: FC = () => {
@@ -52,6 +53,7 @@ export const App: FC = () => {
     <WithEditor editor={editor}>
       <Header></Header>
       <Body ref={ref}></Body>
+      <ContextMenu></ContextMenu>
     </WithEditor>
   );
 };
