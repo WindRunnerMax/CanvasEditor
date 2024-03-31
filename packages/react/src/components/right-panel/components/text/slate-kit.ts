@@ -18,7 +18,7 @@ import { TRUE } from "sketching-plugin";
 import { GRAY_2 } from "sketching-utils";
 import { BLUE_6 } from "sketching-utils";
 
-import { COLOR_PEER } from "./constant";
+import { COLOR_PEER } from "./config/constant";
 
 export const pickAttrs = (block: TextElement): TextElement => {
   const copy = { ...block };

@@ -8,7 +8,6 @@ import type { BaseNode, BlockElement } from "doc-editor-delta";
 import { Editable, EditorProvider } from "doc-editor-delta";
 import {
   BoldPlugin,
-  DividingLinePlugin,
   FontBasePlugin,
   HeadingPlugin,
   HyperLinkPlugin,
@@ -34,7 +33,8 @@ import { debounce, TSON } from "sketching-utils";
 
 import { useIsMounted } from "../../../../hooks/is-mounted";
 import styles from "../index.m.scss";
-import { schema } from "./schema";
+import { schema } from "./config/schema";
+import { DividingLinePlugin } from "./plugins/dividing-line";
 import { blocksToLines } from "./slate-kit";
 
 export const Text: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state }) => {
