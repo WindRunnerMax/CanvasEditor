@@ -55,13 +55,13 @@ export class Node {
 
   public setZ(z: number) {
     if (this.z !== z) {
+      this._z = z;
       const parent = this._parent;
       if (parent) {
         // 先移除后添加保证顺序
         parent.removeChild(this);
         parent.append(this);
       }
-      this._z = z;
     }
   }
 

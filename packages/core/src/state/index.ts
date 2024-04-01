@@ -139,9 +139,9 @@ export class EditorState {
         break;
       }
       case OP_TYPE.REVISE: {
-        const { id, attrs } = op.payload;
+        const { id, attrs, z } = op.payload;
         const target = this.getDeltaState(id);
-        target && target.revise(attrs);
+        target && target.revise(attrs, z);
         changes.push(id);
         break;
       }

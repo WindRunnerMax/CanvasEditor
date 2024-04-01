@@ -9,6 +9,7 @@
   position: fixed;
   user-select: none;
   width: 200px;
+  z-index: 2;
 
   > .item {
     @include flex-align-center;
@@ -16,7 +17,7 @@
 
     border-radius: 3px;
     cursor: pointer;
-    padding: 5px 10px;
+    padding: 8px;
 
     &:hover {
       background-color: var(--color-fill-2);

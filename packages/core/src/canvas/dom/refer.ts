@@ -8,6 +8,7 @@ import { Shape } from "../utils/shape";
 import { Node } from "./node";
 
 export class ReferNode extends Node {
+  private matched: boolean;
   private dragged: Range | null;
   private sortedX: number[] = [];
   private sortedY: number[] = [];
@@ -17,6 +18,7 @@ export class ReferNode extends Node {
   constructor(private editor: Editor) {
     super(Range.reset());
     this.dragged = null;
+    this.matched = false;
     this.setIgnoreEvent(true);
     this.setZ(MAX_Z_INDEX - 1);
   }
@@ -32,6 +34,7 @@ export class ReferNode extends Node {
   }
 
   public onMouseDownController = () => {
+    this.matched = false;
     const active = this.editor.selection.getActiveDeltaIds();
     if (!active) return void 0;
     const xLineMap = this.xLineMap;
@@ -128,6 +131,7 @@ export class ReferNode extends Node {
       node.setIgnoreEvent(true);
       node.drawingMask = this.drawingMaskDispatch;
       this.append(node);
+      this.matched = true;
     };
     // 吸附功能
     const next = nextSelection;
@@ -186,7 +190,7 @@ export class ReferNode extends Node {
 
   public onMouseUpController = () => {
     this.clear();
-    this.clearNodes();
+    this.matched && this.clearNodes();
     this.dragged && this.editor.canvas.mask.drawingEffect(this.dragged);
     this.dragged = null;
   };

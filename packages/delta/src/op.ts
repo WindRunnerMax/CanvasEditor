@@ -42,11 +42,12 @@ export class Op<T extends OpType> {
         const { id, attrs } = payload;
         const delta = prev.get(id);
         if (!delta) return null;
+        const z = delta.getZ();
         const prevAttrs: DeltaAttributes = {};
         for (const key of Object.keys(attrs)) {
           prevAttrs[key] = delta.getAttr(key);
         }
-        return new Op(OP_TYPE.REVISE, { id, attrs: prevAttrs });
+        return new Op(OP_TYPE.REVISE, { id, attrs: prevAttrs, z });
       }
       default:
         break;

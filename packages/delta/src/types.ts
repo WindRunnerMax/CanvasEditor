@@ -39,7 +39,7 @@ export type OpPayload = {
   [OP_TYPE.DELETE]: { id: string; parentId: string };
   [OP_TYPE.MOVE]: { ids: string[]; x: number; y: number };
   [OP_TYPE.RESIZE]: { id: string; x: number; y: number; width: number; height: number };
-  [OP_TYPE.REVISE]: { id: string; attrs: DeltaAttributes };
+  [OP_TYPE.REVISE]: { id: string; attrs: DeltaAttributes; z?: number };
 };
 
 export type OpRecord = { [K in OpType]: Op<K> };

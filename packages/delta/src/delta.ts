@@ -41,10 +41,9 @@ export abstract class Delta {
     return this;
   }
 
-  setRect(x: number, y: number, width: number, height: number, z: number = 0) {
+  setRect(x: number, y: number, width: number, height: number) {
     this.x = x;
     this.y = y;
-    this.z = z;
     this.width = width;
     this.height = height;
     return this;
@@ -89,6 +88,14 @@ export abstract class Delta {
 
   public getRect() {
     return { x: this.x, y: this.y, width: this.width, height: this.height, z: this.z };
+  }
+
+  public getZ() {
+    return this.z;
+  }
+
+  public setZ(z: number) {
+    this.z = z;
   }
 
   public clone(): this {

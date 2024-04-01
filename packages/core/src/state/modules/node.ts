@@ -1,4 +1,5 @@
 import type { Delta, DeltaAttributes } from "sketching-delta";
+import { isEmptyValue } from "sketching-utils";
 
 import { ElementNode } from "../../canvas/dom/element";
 import type { Editor } from "../../editor";
@@ -40,6 +41,10 @@ export class DeltaState {
 
   public getAttr(key: string): string | null {
     return this.delta.getAttr(key);
+  }
+
+  public getZ(): number {
+    return this.delta.getZ();
   }
 
   public drawing(ctx: CanvasRenderingContext2D) {
@@ -101,9 +106,18 @@ export class DeltaState {
     return this;
   }
 
-  public revise(attrs: DeltaAttributes) {
+  public revise(attrs: DeltaAttributes, z?: number) {
     for (const [key, value] of Object.entries(attrs)) {
       this.delta.setAttr(key, value);
+    }
+    const node = NSBridge.get(this);
+    if (!node) {
+      this.editor.logger.warning(`Node Not Found - ${this.delta.id}`);
+      return void 0;
+    }
+    if (!isEmptyValue(z) && this.delta.getZ() !== z) {
+      this.delta.setZ(z);
+      node.setZ(z);
     }
   }
 }

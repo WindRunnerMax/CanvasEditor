@@ -61,8 +61,6 @@ export class NativeEvent {
   };
 
   private onMouseDown = (e: MouseEvent) => {
-    // 对于主按键相反的鼠标设置 不需要额外处理
-    if (e.button !== MOUSE_BUTTON.LEFT) return void 0;
     this.editor.state.set(EDITOR_STATE.MOUSE_DOWN, true);
     this.event.trigger(NATIVE_EVENTS.MOUSE_DOWN, e);
   };
