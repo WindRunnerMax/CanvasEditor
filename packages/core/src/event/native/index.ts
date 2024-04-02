@@ -66,12 +66,11 @@ export class NativeEvent {
   };
 
   private onMouseMove = (e: MouseEvent) => {
-    if (e.button !== MOUSE_BUTTON.LEFT) return void 0;
+    if (e.button !== MOUSE_BUTTON.MAIN) return void 0;
     this.event.trigger(NATIVE_EVENTS.MOUSE_MOVE, e);
   };
 
   private onMouseUp = (e: MouseEvent) => {
-    if (e.button !== MOUSE_BUTTON.LEFT) return void 0;
     this.editor.state.set(EDITOR_STATE.MOUSE_DOWN, false);
     this.event.trigger(NATIVE_EVENTS.MOUSE_UP, e);
   };
@@ -81,6 +80,7 @@ export class NativeEvent {
   };
 
   private onMouseMoveGlobal = (e: MouseEvent) => {
+    if (e.button !== MOUSE_BUTTON.MAIN) return void 0;
     this.event.trigger(NATIVE_EVENTS.MOUSE_MOVE_GLOBAL, e);
   };
 

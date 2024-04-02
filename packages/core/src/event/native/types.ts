@@ -54,7 +54,7 @@ export type Listeners = {
 export type NormalEventHandler = (e: Event) => void;
 
 export const MOUSE_BUTTON = {
-  LEFT: 0,
-  MIDDLE: 1,
-  RIGHT: 2,
+  MAIN: 0,
+  ROLLER: 1,
+  MINOR: 2,
 } as const;

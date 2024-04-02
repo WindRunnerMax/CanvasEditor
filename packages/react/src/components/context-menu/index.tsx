@@ -20,8 +20,8 @@ export const ContextMenu: FC = () => {
   useEffect(() => {
     const onEnableVisible = (e: MouseEvent) => {
       setVisible(true);
-      setTop(e.clientY);
-      setLeft(e.clientX);
+      setTop(e.clientY + 1);
+      setLeft(e.clientX + 1);
       setActive([...editor.selection.getActiveDeltaIds()]);
     };
     const onDisableVisible = () => setVisible(false);
