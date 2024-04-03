@@ -1,3 +1,5 @@
+import "./index.scss";
+
 import type { Plugin } from "doc-editor-core";
 import { EDITOR_ELEMENT_TYPE } from "doc-editor-core";
 import { useFocused, useSelected } from "doc-editor-delta";
