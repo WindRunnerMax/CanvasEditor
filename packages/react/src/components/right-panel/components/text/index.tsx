@@ -3,9 +3,8 @@ import "doc-editor-plugin/dist/styles/index";
 import { Modal } from "@arco-design/web-react";
 import { IconLaunch } from "@arco-design/web-react/icon";
 import { useMemoizedFn } from "ahooks";
-import { EditorPlugin, makeEditor } from "doc-editor-core";
+import { Editable, useMakeEditor } from "doc-editor-core";
 import type { BaseNode, BlockElement } from "doc-editor-delta";
-import { Editable, EditorProvider } from "doc-editor-delta";
 import {
   BoldPlugin,
   FontBasePlugin,
@@ -41,15 +40,34 @@ export const Text: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
   const { isMounted } = useIsMounted();
   const [visible, setVisible] = useState(false);
   const dataRef = useRef<BlockElement[]>([]);
-  const richText = useMemo(() => makeEditor(schema), []);
 
   useMemo(() => {
     const data = state.getAttr(TEXT_ATTRS.ORIGIN_DATA);
     const blocks = data && TSON.parse<BlockElement[]>(data);
     if (blocks) dataRef.current = blocks;
     else dataRef.current = [{ children: [{ text: "" }] }] as BlockElement[];
-    return dataRef;
   }, [state]);
+
+  const richText = useMakeEditor(schema, dataRef.current);
+  useMemo(() => {
+    richText.plugin.register(
+      ParagraphPlugin(),
+      HeadingPlugin(richText),
+      BoldPlugin(),
+      QuoteBlockPlugin(richText),
+      HyperLinkPlugin(richText, false),
+      UnderLinePlugin(),
+      StrikeThroughPlugin(),
+      ItalicPlugin(),
+      InlineCodePlugin(),
+      OrderedListPlugin(richText),
+      UnorderedListPlugin(richText),
+      DividingLinePlugin(),
+      FontBasePlugin(),
+      LineHeightPlugin(),
+      ShortCutPlugin(richText)
+    );
+  }, [richText]);
 
   const onChange = useMemoizedFn((attrs: DeltaAttributes) => {
     // COMPAT: 避免初始化时即触发`onChange`
@@ -83,30 +101,6 @@ export const Text: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
     [onChange, richText]
   );
 
-  const { renderElement, renderLeaf, onKeyDown, commands } = useMemo(() => {
-    const register = new EditorPlugin(
-      ParagraphPlugin(),
-      HeadingPlugin(richText),
-      BoldPlugin(),
-      QuoteBlockPlugin(richText),
-      HyperLinkPlugin(richText, false),
-      UnderLinePlugin(),
-      StrikeThroughPlugin(),
-      ItalicPlugin(),
-      InlineCodePlugin(),
-      OrderedListPlugin(richText),
-      UnorderedListPlugin(richText),
-      DividingLinePlugin(),
-      FontBasePlugin(),
-      LineHeightPlugin()
-    );
-
-    const commands = register.getCommands();
-    register.add(ShortCutPlugin(richText, commands));
-
-    return register.apply();
-  }, [richText]);
-
   const TextEditor = (
     <React.Fragment key={state.id}>
       {!visible && (
@@ -115,19 +109,10 @@ export const Text: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
           <IconLaunch className={styles.launch} onClick={() => setVisible(true)} />
         </div>
       )}
-      <EditorProvider editor={richText} value={dataRef.current} onChange={updateText}>
-        <div onClick={e => e.stopPropagation()}>
-          <MenuToolBar readonly={false} commands={commands} editor={richText}></MenuToolBar>
-        </div>
-        <Editable
-          className={styles.richText}
-          renderElement={renderElement}
-          renderLeaf={renderLeaf}
-          readOnly={false}
-          placeholder="Enter text ..."
-          onKeyDown={onKeyDown}
-        />
-      </EditorProvider>
+      <div onClick={e => e.stopPropagation()}>
+        <MenuToolBar readonly={false} editor={richText}></MenuToolBar>
+      </div>
+      <Editable editor={richText} onChange={updateText} placeholder="Enter text ..."></Editable>
     </React.Fragment>
   );
 
