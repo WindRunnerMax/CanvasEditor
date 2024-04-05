@@ -87,6 +87,8 @@ export const Text: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
     () =>
       debounce((text: BaseNode[]) => {
         dataRef.current = text as BlockElement[];
+        // fix: 切换面板会重建`Editable`需要更新初始值
+        richText.init = dataRef.current;
         // 双写-空间换时间
         // @ts-expect-error BlockElement
         if (text.length === 1 && text[0].children.length === 1 && !text[0].children[0].text) {

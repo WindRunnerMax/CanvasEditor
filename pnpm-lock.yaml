@@ -162,17 +162,17 @@ importers:
         specifier: 3.7.8
         version: 3.7.8(react@17.0.2)
       doc-editor-core:
-        specifier: 1.0.5
-        version: 1.0.5(react-dom@17.0.2)(react@17.0.2)
+        specifier: 1.0.6
+        version: 1.0.6(react-dom@17.0.2)(react@17.0.2)
       doc-editor-delta:
-        specifier: 1.0.5
-        version: 1.0.5(react-dom@17.0.2)(react@17.0.2)
+        specifier: 1.0.6
+        version: 1.0.6(react-dom@17.0.2)(react@17.0.2)
       doc-editor-plugin:
-        specifier: 1.0.5
-        version: 1.0.5(@testing-library/dom@9.3.4)(@types/react@17.0.2)(eslint@7.11.0)(react-dom@17.0.2)(react@17.0.2)(sass@1.52.3)
+        specifier: 1.0.6
+        version: 1.0.6(@testing-library/dom@9.3.4)(@types/react@17.0.2)(eslint@7.11.0)(react-dom@17.0.2)(react@17.0.2)(sass@1.52.3)
       doc-editor-utils:
-        specifier: 1.0.5
-        version: 1.0.5(react-dom@17.0.2)(react@17.0.2)
+        specifier: 1.0.6
+        version: 1.0.6(react-dom@17.0.2)(react@17.0.2)
       react:
         specifier: 17.0.2
         version: 17.0.2
@@ -6513,20 +6513,20 @@ packages:
       buffer-indexof: 1.1.1
     dev: false
 
-  /doc-editor-core@1.0.5(react-dom@17.0.2)(react@17.0.2):
-    resolution: {integrity: sha512-o3ghDDMRr9tKuerdDfh0Qa33oNxQjNb8TUUeb1nPsknc3CmJwem4+8x3XTtYf/vsM7SOOhr47Iat9/c+6Hvqzg==}
+  /doc-editor-core@1.0.6(react-dom@17.0.2)(react@17.0.2):
+    resolution: {integrity: sha512-1OzgTg4olyuwHF/E9oyWJhoyXPwffJpb/RhpXV4yokmMwOLdDyMwWXWsj9qQDYPDq3OWr5Cq9VWNE+Le3W0igg==}
     peerDependencies:
       react: '>=16'
     dependencies:
-      doc-editor-delta: 1.0.5(react-dom@17.0.2)(react@17.0.2)
-      doc-editor-utils: 1.0.5(react-dom@17.0.2)(react@17.0.2)
+      doc-editor-delta: 1.0.6(react-dom@17.0.2)(react@17.0.2)
+      doc-editor-utils: 1.0.6(react-dom@17.0.2)(react@17.0.2)
       react: 17.0.2
     transitivePeerDependencies:
       - react-dom
     dev: false
 
-  /doc-editor-delta@1.0.5(react-dom@17.0.2)(react@17.0.2):
-    resolution: {integrity: sha512-RtYtTUoxbRmSrRvkrpr/m1T6hjtObn1aookqKN0fSrOYAbWc2Bxk6D9XxmUgnjp/kPy2KhiqXdoSx7m6uFOcig==}
+  /doc-editor-delta@1.0.6(react-dom@17.0.2)(react@17.0.2):
+    resolution: {integrity: sha512-dCXKB9jPem8YoBv8CFTMvfnAmSU8Mtst8z+JFzxXkntFmIvR5XJQ1ORwLBnrY1Xp2BcAZZ9PNkVVZvLip/Go3g==}
     dependencies:
       slate: 0.80.0
       slate-history: 0.66.0(slate@0.80.0)
@@ -6536,17 +6536,17 @@ packages:
       - react-dom
     dev: false
 
-  /doc-editor-plugin@1.0.5(@testing-library/dom@9.3.4)(@types/react@17.0.2)(eslint@7.11.0)(react-dom@17.0.2)(react@17.0.2)(sass@1.52.3):
-    resolution: {integrity: sha512-rPx5q9GipKh+xwRUuwB/BZbWvybVgh94o3meDbcsFWIzCR0uaAYHW4UEXKPlpPCKeHjOKFtvWiRMCc456z9doA==}
+  /doc-editor-plugin@1.0.6(@testing-library/dom@9.3.4)(@types/react@17.0.2)(eslint@7.11.0)(react-dom@17.0.2)(react@17.0.2)(sass@1.52.3):
+    resolution: {integrity: sha512-K9qyU2IMZjvam1NwIcDqqk1C6jPPo0o+neMWwc/Pk9djm6j3kYjAECAWD5YW5athGDuk30iVqScuU+5BUYx4bA==}
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
     dependencies:
       '@arco-design/web-react': 2.60.3(@types/react@17.0.2)(react-dom@17.0.2)(react@17.0.2)
       ahooks: 3.3.13(react@17.0.2)
-      doc-editor-core: 1.0.5(react-dom@17.0.2)(react@17.0.2)
-      doc-editor-delta: 1.0.5(react-dom@17.0.2)(react@17.0.2)
-      doc-editor-utils: 1.0.5(react-dom@17.0.2)(react@17.0.2)
+      doc-editor-core: 1.0.6(react-dom@17.0.2)(react@17.0.2)
+      doc-editor-delta: 1.0.6(react-dom@17.0.2)(react@17.0.2)
+      doc-editor-utils: 1.0.6(react-dom@17.0.2)(react@17.0.2)
       embed-drawio: 0.0.14(@testing-library/dom@9.3.4)(eslint@7.11.0)(sass@1.52.3)
       lodash-es: 4.17.21
       prismjs: 1.29.0
@@ -6578,12 +6578,12 @@ packages:
       - webpack-plugin-serve
     dev: false
 
-  /doc-editor-utils@1.0.5(react-dom@17.0.2)(react@17.0.2):
-    resolution: {integrity: sha512-frwRV/dhDpr4/0x+pxYZ8nT/o41M5iKYVge6VNwu0cmw4nxOCFGFNv49lB4lz+5e3ofYvCOp9liYyPH4F6PJGw==}
+  /doc-editor-utils@1.0.6(react-dom@17.0.2)(react@17.0.2):
+    resolution: {integrity: sha512-a+xBlBqxpsB1dhfmiS5iDgGitzuHg3x37fB4iBl2XBLHLtX7+iixGozFmtGJ9wRAh2fv0mqKv6DdXhaKnCm0oA==}
     peerDependencies:
       react: '>=16'
     dependencies:
-      doc-editor-delta: 1.0.5(react-dom@17.0.2)(react@17.0.2)
+      doc-editor-delta: 1.0.6(react-dom@17.0.2)(react@17.0.2)
       laser-utils: 0.0.2-alpha.13
       react: 17.0.2
     transitivePeerDependencies:
