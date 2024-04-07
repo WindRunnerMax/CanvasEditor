@@ -47,8 +47,8 @@ export class DeltaState {
     return this.delta.getZ();
   }
 
-  public drawing(ctx: CanvasRenderingContext2D) {
-    this.delta.drawing(ctx);
+  public async drawing(ctx: CanvasRenderingContext2D) {
+    return await this.delta.drawing(ctx);
   }
 
   public insert(state: DeltaState) {

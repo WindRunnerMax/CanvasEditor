@@ -5,6 +5,7 @@ import type { DeltaState } from "../../state/modules/node";
 import type { Canvas } from "../index";
 
 export class Graph {
+  private queue: Range[] = [];
   private canvas: HTMLCanvasElement;
   public ctx: CanvasRenderingContext2D;
 
@@ -40,7 +41,9 @@ export class Graph {
     return effects;
   }
 
-  public drawingEffect(range: Range) {
+  private async drawing() {
+    const range = this.queue.shift();
+    if (!range) return void 0;
     // COMPAT: 选区范围未能完全覆盖
     const current = range.zoom(1);
     // 增量绘制`range`范围内的节点
@@ -52,18 +55,32 @@ export class Graph {
     this.ctx.beginPath();
     this.ctx.rect(x, y, width, height);
     this.ctx.clip();
-    effects.forEach(state => {
+    for (const state of effects) {
       // 画布范围外的元素不绘制 可通过交替绘制来优化交互
       if (this.engine.isOutside(state.toRange())) {
-        return void 0;
+        continue;
       }
       this.ctx.save();
-      state.drawing(this.ctx);
+      try {
+        await state.drawing(this.ctx);
+      } catch (error) {
+        this.editor.logger.error("Drawing Error", error, state);
+      }
       this.ctx.restore();
-    });
+    }
     this.ctx.closePath();
     this.ctx.restore();
-    this.editor.event.trigger(EDITOR_EVENT.PAINT, {});
+    // 校验队列情况
+    if (this.queue.length) {
+      this.drawing();
+    } else {
+      this.editor.event.trigger(EDITOR_EVENT.PAINT, {});
+    }
+  }
+
+  public async drawingEffect(range: Range) {
+    this.queue.push(range);
+    this.drawing();
   }
 
   public isActive() {

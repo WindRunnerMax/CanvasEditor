@@ -7,12 +7,13 @@ import { EMPTY, IMAGE_ATTRS, IMAGE_MODE } from "./constant";
 export class Image extends Delta {
   public static KEY = "image";
   public key = Image.KEY;
+  private loaded = false;
   private image: HTMLImageElement;
 
   public constructor(options: DeltaOptions) {
     super(options);
     this.image = new globalThis.Image(this.width, this.height);
-    this.image.src = this.getAttr(IMAGE_ATTRS.SRC) || EMPTY;
+    this.updateImage(this.getAttr(IMAGE_ATTRS.SRC));
   }
 
   setRect(x: number, y: number, width: number, height: number, z: number = 0) {
@@ -26,7 +27,8 @@ export class Image extends Delta {
     return this;
   }
 
-  public drawing = (ctx: CanvasRenderingContext2D) => {
+  public drawing = async (ctx: CanvasRenderingContext2D) => {
+    console.log("1111 :>> ", 1111);
     ctx.save();
     ctx.beginPath();
     ctx.rect(this.x, this.y, this.width, this.height);
@@ -74,16 +76,36 @@ export class Image extends Delta {
           x = x + (rectWidth - width) / 2;
         }
       }
-      ctx.drawImage(this.image, x, y, width, height);
+      const image = await this.getLoadedImage();
+      ctx.drawImage(image, x, y, width, height);
       ctx.closePath();
     }
     ctx.closePath();
     ctx.restore();
   };
 
+  private updateImage(value: string | null) {
+    this.loaded = false;
+    this.image.src = value || EMPTY;
+    this.image.onload = () => (this.loaded = true);
+  }
+
+  private getLoadedImage() {
+    return new Promise<HTMLImageElement>(resolve => {
+      if (this.loaded) {
+        resolve(this.image);
+      } else {
+        this.image.onload = () => {
+          this.loaded = true;
+          Promise.resolve(this.image).then(resolve);
+        };
+      }
+    });
+  }
+
   public setAttr(key: string, value: string | null): this {
     super.setAttr(key, value);
-    if (key === IMAGE_ATTRS.SRC) this.image.src = value || EMPTY;
+    if (key === IMAGE_ATTRS.SRC) this.updateImage(value);
     return this;
   }
 
