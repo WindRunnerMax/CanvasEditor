@@ -12,6 +12,7 @@ $width: 300px;
   right: 16px;
   top: 16px;
   transition: right 0.2s linear;
+  user-select: none;
   width: $width;
   z-index: 1;
 

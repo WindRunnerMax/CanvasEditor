@@ -62,6 +62,7 @@
 
 .radioGroup {
   :global(.arco-radio) {
+    font-size: 13px;
     line-height: unset;
   }
 }
@@ -75,4 +76,9 @@
   :global(.arco-modal-content) {
     padding: 5px 15px 15px;
   }
+}
+
+.uploadImage {
+  color: rgb(var(--arcoblue-6));
+  cursor: pointer;
 }

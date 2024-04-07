@@ -11,9 +11,9 @@ import { GrabIcon } from "../../../static/grab";
 import { ImageIcon } from "../../../static/image";
 import { RectIcon } from "../../../static/rect";
 import { TextIcon } from "../../../static/text";
-import { IMAGE_INPUT_DOM_ID } from "../../../utils/constant";
 import styles from "../index.m.scss";
 import { NAV_ENUM } from "../utils/constant";
+import { uploadImage } from "../utils/upload";
 
 export const Left: FC<{
   editor: Editor;
@@ -37,32 +37,11 @@ export const Left: FC<{
       editor.canvas.insert.start(deltaLike);
     }
     if (index === NAV_ENUM.IMAGE) {
-      const deltaLike: DeltaLike = { key: NAV_ENUM.IMAGE, ...empty };
-      let input = document.getElementById(IMAGE_INPUT_DOM_ID) as HTMLInputElement;
-      if (!input) {
-        input = document.createElement("input");
-        input.setAttribute("type", "file");
-        input.setAttribute("id", IMAGE_INPUT_DOM_ID);
-        input.setAttribute("accept", "image/png, image/jpeg, image/svg+xml");
-        input.style.display = "none";
-        document.body.append(input);
-      }
-      input.value = "";
-      input.onchange = e => {
-        const target = e.target as HTMLInputElement;
-        document.body.removeChild(input);
-        const files = target.files;
-        if (files && files[0]) {
-          const reader = new FileReader();
-          reader.onloadend = function () {
-            const src = reader.result as string;
-            deltaLike.attrs = { src };
-            editor.canvas.insert.start(deltaLike);
-          };
-          reader.readAsDataURL(files[0]);
-        }
-      };
-      input.click();
+      uploadImage().then(src => {
+        const deltaLike: DeltaLike = { key: NAV_ENUM.IMAGE, ...empty };
+        deltaLike.attrs = { src };
+        editor.canvas.insert.start(deltaLike);
+      });
     }
     setActive(index);
   });
