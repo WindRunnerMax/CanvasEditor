@@ -3,6 +3,7 @@ import { EDITOR_EVENT } from "../../event/bus/action";
 import { Range } from "../../selection/modules/range";
 import type { DeltaState } from "../../state/modules/node";
 import type { Canvas } from "../index";
+import type { AsyncDrawingTask, DrawingGraphEffectOptions } from "../types/paint";
 
 export class Graph {
   private canvas: HTMLCanvasElement;
@@ -23,12 +24,6 @@ export class Graph {
     dom.removeChild(this.canvas);
   }
 
-  public drawingAll() {
-    this.clear();
-    const { width, height, offsetX, offsetY } = this.engine.getRect();
-    this.drawingEffect(Range.from(offsetX, offsetY, offsetX + width, offsetY + height));
-  }
-
   private collectEffects(range: Range) {
     // 判定`range`范围内影响的节点
     const effects = new Set<DeltaState>();
@@ -40,30 +35,58 @@ export class Graph {
     return effects;
   }
 
-  public drawingEffect(range: Range) {
+  private drawingAsyncTasks(tasks: AsyncDrawingTask[], options: DrawingGraphEffectOptions) {
+    Promise.all(tasks)
+      .then(deltas => {
+        deltas.forEach(delta => {
+          const rect = delta.getRect();
+          const range = Range.fromRect(rect.x, rect.y, rect.width, rect.height);
+          this.drawingEffect(range, { ...options, isAsyncTask: true });
+        });
+      })
+      .then(() => {
+        this.editor.event.trigger(EDITOR_EVENT.PAINT, {});
+      });
+  }
+
+  public drawingEffect(range: Range, options?: DrawingGraphEffectOptions) {
+    const { isAsyncTask = false } = options || {};
     // COMPAT: 选区范围未能完全覆盖
     const current = range.zoom(1);
     // 增量绘制`range`范围内的节点
     const effects = this.collectEffects(current);
     const { x, y, width, height } = current.rect();
+    // TODO: 考虑异步+队列来避免卡交互且保证绘制顺序
     // 只绘制受影响的节点并且裁剪多余位置
     this.clear(current);
     this.ctx.save();
     this.ctx.beginPath();
     this.ctx.rect(x, y, width, height);
     this.ctx.clip();
+    const tasks: AsyncDrawingTask[] = [];
     effects.forEach(state => {
       // 画布范围外的元素不绘制 可通过交替绘制来优化交互
       if (this.engine.isOutside(state.toRange())) {
         return void 0;
       }
       this.ctx.save();
-      state.drawing(this.ctx);
+      const task = state.drawing(this.ctx);
+      task && tasks.push(task);
       this.ctx.restore();
     });
     this.ctx.closePath();
     this.ctx.restore();
-    this.editor.event.trigger(EDITOR_EVENT.PAINT, {});
+    if (!tasks.length) {
+      !isAsyncTask && this.editor.event.trigger(EDITOR_EVENT.PAINT, {});
+    } else {
+      this.drawingAsyncTasks(tasks, options || {});
+    }
+  }
+
+  public drawingAll() {
+    this.clear();
+    const { width, height, offsetX, offsetY } = this.engine.getRect();
+    this.drawingEffect(Range.from(offsetX, offsetY, offsetX + width, offsetY + height));
   }
 
   public isActive() {

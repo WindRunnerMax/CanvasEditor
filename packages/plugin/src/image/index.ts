@@ -7,12 +7,13 @@ import { EMPTY, IMAGE_ATTRS, IMAGE_MODE } from "./constant";
 export class Image extends Delta {
   public static KEY = "image";
   public key = Image.KEY;
+  private loaded = false;
   private image: HTMLImageElement;
 
   public constructor(options: DeltaOptions) {
     super(options);
     this.image = new globalThis.Image(this.width, this.height);
-    this.image.src = this.getAttr(IMAGE_ATTRS.SRC) || EMPTY;
+    this.updateImage(this.getAttr(IMAGE_ATTRS.SRC));
   }
 
   setRect(x: number, y: number, width: number, height: number, z: number = 0) {
@@ -79,11 +80,25 @@ export class Image extends Delta {
     }
     ctx.closePath();
     ctx.restore();
+    if (this.loaded) return void 0;
+    // 避免图片异步加载问题
+    return new Promise<Delta>(resolve => {
+      this.image.onload = () => {
+        this.loaded = true;
+        resolve(this);
+      };
+    });
   };
+
+  private updateImage(value: string | null) {
+    this.loaded = false;
+    this.image.src = value || EMPTY;
+    this.image.onload = () => (this.loaded = true);
+  }
 
   public setAttr(key: string, value: string | null): this {
     super.setAttr(key, value);
-    if (key === IMAGE_ATTRS.SRC) this.image.src = value || EMPTY;
+    if (key === IMAGE_ATTRS.SRC) this.updateImage(value);
     return this;
   }
 
