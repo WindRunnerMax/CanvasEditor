@@ -1,6 +1,7 @@
 import { Message } from "@arco-design/web-react";
 import type { Editor } from "sketching-core";
 import { Range } from "sketching-core";
+import type { Delta } from "sketching-delta";
 import { DeltaSet } from "sketching-delta";
 import { DateTime, storage } from "sketching-utils";
 
@@ -9,7 +10,7 @@ import type { LocalStorageData } from "../../../utils/storage";
 import { EXAMPLE, STORAGE_KEY } from "../../../utils/storage";
 import { parseLinks } from "./link";
 
-export const exportPDF = (DPI = 1) => {
+export const exportPDF = async (DPI = 1) => {
   if (!window.PDFDocument || !window.blobStream) {
     Message.warning("PDF模块未加载完成，请稍后");
   }
@@ -30,8 +31,16 @@ export const exportPDF = (DPI = 1) => {
   ctx.fillStyle = "#fff";
   ctx.fillRect(0, 0, width, height);
   ctx.translate(-x, -y);
-  deltaSet.forEach((_, delta) => {
-    delta.drawing(ctx);
+  const deltas: Delta[] = [];
+  const tasks: Promise<Delta>[] = [];
+  deltaSet.forEach((_, delta) => deltas.push(delta));
+  deltas.sort((a, b) => a.getZ() - b.getZ());
+  deltas.forEach(delta => {
+    const task = delta.drawing(ctx);
+    task && tasks.push(task);
+  });
+  await Promise.all(tasks).then(delta => {
+    delta.forEach(it => it.drawing(ctx));
   });
   const base64 = canvas.toDataURL("image/jpeg");
   const links = parseLinks(deltaSet);
