@@ -1,6 +1,6 @@
 # CanvasEditor
 
- [Github](https://github.com/WindrunnerMax/CanvasEditor) ｜ [Editor DEMO](https://windrunnermax.github.io/CanvasEditor/) ｜ [NOTE](./NOTE.md) ｜ [TODO](./TODO.md)
+ [GitHub](https://github.com/WindrunnerMax/CanvasEditor) ｜ [Editor DEMO](https://windrunnermax.github.io/CanvasEditor/) ｜ [NOTE](./NOTE.md) ｜ [TODO](./TODO.md) ｜ [BLOG](https://github.com/WindrunnerMax/CanvasEditor/issues/2)
 
 基于`Canvas`实现的的简历编辑器。
 
