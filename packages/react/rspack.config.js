@@ -54,17 +54,22 @@ module.exports = {
     ],
   },
   module: {
+    // https://www.rspack.dev/zh/config/module#rule
     rules: [
       { test: /\.svg$/, type: "asset" },
       {
-        test: /^(?!.*\.module\.scss$)(?!.*\.m\.scss$).*\.scss$/,
-        use: [{ loader: "sass-loader" }],
-        type: "css",
-      },
-      {
-        test: /\.(m|module).scss$/,
-        use: [{ loader: "sass-loader" }],
-        type: "css/module",
+        test: /.scss$/,
+        oneOf: [
+          {
+            resource: /(module|m)\.scss$/,
+            use: "sass-loader",
+            type: "css/module",
+          },
+          {
+            use: "sass-loader",
+            type: "css",
+          },
+        ],
       },
       {
         test: /\.less$/,
