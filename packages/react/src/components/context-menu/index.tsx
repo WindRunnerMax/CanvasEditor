@@ -41,12 +41,19 @@ export const ContextMenu: FC = () => {
     e.preventDefault();
   };
 
+  const onCopy = (e: React.MouseEvent) => {
+    editor.canvas.mask.focus();
+    document.execCommand("copy");
+    e.preventDefault();
+  };
+
   const onClipBoard = (e: React.MouseEvent) => {
     Message.info("请使用快捷键的方式操作");
     e.preventDefault();
   };
 
   const onSelectAll = (e: React.MouseEvent) => {
+    editor.canvas.mask.focus();
     editor.selection.selectAll();
     e.preventDefault();
   };
@@ -66,7 +73,7 @@ export const ContextMenu: FC = () => {
     <Portal>
       <div className={styles.container} onClick={onClickProxy} style={{ top, left }}>
         {active.length !== 0 && (
-          <div className={styles.item} onClick={onClipBoard}>
+          <div className={styles.item} onClick={onCopy}>
             <div>复制</div>
             <div className={styles.shortcut}>Ctrl+C</div>
           </div>

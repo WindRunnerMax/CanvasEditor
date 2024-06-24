@@ -99,6 +99,10 @@ export class Mask {
     return this;
   }
 
+  public focus() {
+    this.canvas.focus();
+  }
+
   public isActive() {
     return this.canvas === document.activeElement;
   }
