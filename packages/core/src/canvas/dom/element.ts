@@ -1,4 +1,4 @@
-import { BLUE_3 } from "sketching-utils";
+import { BLUE_4 } from "sketching-utils";
 
 import type { Editor } from "../../editor";
 import type { DeltaState } from "../../state/modules/node";
@@ -51,13 +51,12 @@ export class ElementNode extends Node {
       !this.editor.state.get(EDITOR_STATE.MOUSE_DOWN)
     ) {
       const { x, y, width, height } = this.range.rect();
-      Shape.rect(ctx, {
+      Shape.frame(ctx, {
         x: x,
         y: y,
         width: width,
         height: height,
-        borderColor: BLUE_3,
-        borderWidth: 1,
+        borderColor: BLUE_4,
       });
     }
   };

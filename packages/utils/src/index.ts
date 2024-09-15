@@ -20,6 +20,7 @@ export { debounce, throttle };
 export { toFixedNumber } from "./calculator";
 export {
   BLUE_3,
+  BLUE_4,
   BLUE_5,
   BLUE_6,
   BLUE_6_6,

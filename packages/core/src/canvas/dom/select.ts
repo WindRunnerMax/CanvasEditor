@@ -1,6 +1,5 @@
 import { Op, OP_TYPE } from "sketching-delta";
-import { throttle } from "sketching-utils";
-import { BLUE_5 } from "sketching-utils";
+import { BLUE_6, throttle } from "sketching-utils";
 
 import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
@@ -143,11 +142,13 @@ export class SelectNode extends Node {
     const selection = this.editor.selection.get();
     if (this._isDragging) {
       const { x, y, width, height } = this.range.rect();
-      Shape.rect(ctx, { x, y, width, height, borderColor: BLUE_5 });
+      Shape.rect(ctx, { x, y, width, height, borderColor: BLUE_6 });
     }
     if (selection) {
       const { x, y, width, height } = selection.rect();
-      Shape.rect(ctx, { x, y, width, height, borderColor: BLUE_5 });
+      Shape.frame(ctx, { x, y, width, height, borderColor: BLUE_6 });
+      // COMPAT: 实际上内部的 Resize Children 节点会被 DrawEffects 调度
+      // 但是会偶现渲染顺序不一致导致覆盖的问题 因此依然主动调度渲染
       this.children.forEach(node => node.drawingMask?.(ctx));
     }
   };

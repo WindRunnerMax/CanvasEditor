@@ -10,10 +10,10 @@ import {
   DEFAULT_BORDER_COLOR,
   DEFAULT_BORDER_WIDTH,
   DEFAULT_FILL_COLOR,
-  FALSE,
-  isTrue,
+  FALSY,
+  isTruly,
   RECT_ATTRS,
-  TRUE,
+  TRULY,
 } from "sketching-plugin";
 
 import { useIsMounted } from "../../../../hooks/is-mounted";
@@ -54,26 +54,26 @@ export const Rect: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state 
         <div>状态</div>
         <div>
           <Checkbox
-            defaultChecked={isTrue(state.getAttr(RECT_ATTRS.T))}
-            onChange={v => onChange(RECT_ATTRS.T, v ? TRUE : FALSE)}
+            defaultChecked={isTruly(state.getAttr(RECT_ATTRS.T))}
+            onChange={v => onChange(RECT_ATTRS.T, v ? TRULY : FALSY)}
           >
             T
           </Checkbox>
           <Checkbox
-            defaultChecked={isTrue(state.getAttr(RECT_ATTRS.L))}
-            onChange={v => onChange(RECT_ATTRS.L, v ? TRUE : FALSE)}
+            defaultChecked={isTruly(state.getAttr(RECT_ATTRS.L))}
+            onChange={v => onChange(RECT_ATTRS.L, v ? TRULY : FALSY)}
           >
             L
           </Checkbox>
           <Checkbox
-            defaultChecked={isTrue(state.getAttr(RECT_ATTRS.R))}
-            onChange={v => onChange(RECT_ATTRS.R, v ? TRUE : FALSE)}
+            defaultChecked={isTruly(state.getAttr(RECT_ATTRS.R))}
+            onChange={v => onChange(RECT_ATTRS.R, v ? TRULY : FALSY)}
           >
             R
           </Checkbox>
           <Checkbox
-            defaultChecked={isTrue(state.getAttr(RECT_ATTRS.B))}
-            onChange={v => onChange(RECT_ATTRS.B, v ? TRUE : FALSE)}
+            defaultChecked={isTruly(state.getAttr(RECT_ATTRS.B))}
+            onChange={v => onChange(RECT_ATTRS.B, v ? TRULY : FALSY)}
           >
             B
           </Checkbox>

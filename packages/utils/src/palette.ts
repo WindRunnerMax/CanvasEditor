@@ -1,8 +1,9 @@
 export const WHITE = "#FFFFFF";
-export const BLUE_3 = "#94BFFF";
-export const BLUE_5 = "#4080FF";
+export const BLUE_3 = "rgb(148,191,255)";
+export const BLUE_4 = "rgb(106,161,255)";
+export const BLUE_5 = "rgb(64,128,255)";
 export const BLUE_6 = "rgb(22,93,255)";
-export const BLUE_7 = "#0E42D2";
+export const BLUE_7 = "rgb(14,66,210)";
 export const GRAY_2 = "rgb(242,243,245)";
 export const GRAY_3 = "#e5e6eb";
 export const GRAY_4 = "rgb(201,205,212)";

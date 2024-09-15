@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import type { Editor } from "sketching-core";
 import { DRAG_KEY, EDITOR_EVENT } from "sketching-core";
 import type { DeltaLike } from "sketching-delta";
+import { DEFAULT_BORDER_COLOR, RECT_ATTRS } from "sketching-plugin";
 import { cs, TSON } from "sketching-utils";
 
 import { CursorIcon } from "../../../static/cursor";
@@ -29,7 +30,13 @@ export const Left: FC<{
     }
     const empty = { x: 0, y: 0, width: 0, height: 0 };
     if (index === NAV_ENUM.RECT) {
-      const deltaLike: DeltaLike = { key: NAV_ENUM.RECT, ...empty };
+      const deltaLike: DeltaLike = {
+        key: NAV_ENUM.RECT,
+        ...empty,
+        attrs: {
+          [RECT_ATTRS.BORDER_COLOR]: DEFAULT_BORDER_COLOR,
+        },
+      };
       editor.canvas.insert.start(deltaLike);
     }
     if (index === NAV_ENUM.TEXT) {

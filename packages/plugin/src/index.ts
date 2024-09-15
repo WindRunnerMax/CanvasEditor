@@ -17,7 +17,7 @@ export {
   DEFAULT_BORDER_COLOR,
   DEFAULT_BORDER_WIDTH,
   DEFAULT_FILL_COLOR,
-  FALSE,
-  TRUE,
+  FALSY,
+  TRULY,
 } from "./utils/constant";
-export { isFalse, isTrue } from "./utils/is";
+export { isFalsy, isTruly } from "./utils/is";

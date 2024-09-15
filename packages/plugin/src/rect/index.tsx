@@ -1,8 +1,8 @@
 import type { DeltaOptions } from "sketching-delta";
 import { Delta } from "sketching-delta";
 
-import { DEFAULT_BORDER_COLOR, DEFAULT_BORDER_WIDTH, TRUE } from "../utils/constant";
-import { isTrue } from "../utils/is";
+import { DEFAULT_BORDER_COLOR, DEFAULT_BORDER_WIDTH, TRULY } from "../utils/constant";
+import { isTruly } from "../utils/is";
 import { RECT_ATTRS } from "./constant";
 
 export class Rect extends Delta {
@@ -34,16 +34,16 @@ export class Rect extends Delta {
       const B = this.getAttr(RECT_ATTRS.B);
       const width = Math.min(this.width, this.height, borderWidth);
       ctx.fillStyle = borderColor;
-      if (isTrue(L)) {
+      if (isTruly(L)) {
         ctx.fillRect(this.x, this.y, width, this.height);
       }
-      if (isTrue(R)) {
+      if (isTruly(R)) {
         ctx.fillRect(this.x + this.width - width, this.y, width, this.height);
       }
-      if (isTrue(T)) {
+      if (isTruly(T)) {
         ctx.fillRect(this.x, this.y, this.width, width);
       }
-      if (isTrue(B)) {
+      if (isTruly(B)) {
         ctx.fillRect(this.x, this.y + this.height - width, this.width, width);
       }
     }
@@ -58,10 +58,10 @@ export class Rect extends Delta {
     const T = rect.getAttr(RECT_ATTRS.T);
     const B = rect.getAttr(RECT_ATTRS.B);
     if (!L && !R && !T && !B) {
-      rect.setAttr(RECT_ATTRS.L, TRUE);
-      rect.setAttr(RECT_ATTRS.R, TRUE);
-      rect.setAttr(RECT_ATTRS.T, TRUE);
-      rect.setAttr(RECT_ATTRS.B, TRUE);
+      rect.setAttr(RECT_ATTRS.L, TRULY);
+      rect.setAttr(RECT_ATTRS.R, TRULY);
+      rect.setAttr(RECT_ATTRS.T, TRULY);
+      rect.setAttr(RECT_ATTRS.B, TRULY);
     }
     return rect;
   };

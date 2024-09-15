@@ -1,7 +1,8 @@
 import { Op, OP_TYPE } from "sketching-delta";
 import { throttle } from "sketching-utils";
-import { GRAY_5, GRAY_7, WHITE } from "sketching-utils";
+import { WHITE } from "sketching-utils";
 
+import { GRAY_5 } from "../../../../utils/src/palette";
 import type { Editor } from "../../editor";
 import { EDITOR_EVENT } from "../../event/bus/action";
 import { Point } from "../../selection/modules/point";
@@ -258,7 +259,7 @@ export class ResizeNode extends Node {
       case RESIZE_TYPE.LT:
       case RESIZE_TYPE.RB:
       case RESIZE_TYPE.RT:
-        Shape.arc(ctx, { x, y, borderColor: GRAY_7, fillColor, radius, borderWidth });
+        Shape.arc(ctx, { x, y, borderColor: GRAY_5, fillColor, radius, borderWidth });
         break;
       case RESIZE_TYPE.B:
       case RESIZE_TYPE.R:

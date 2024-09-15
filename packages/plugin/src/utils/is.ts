@@ -1,9 +1,9 @@
-import { FALSE, TRUE } from "./constant";
+import { FALSY, TRULY } from "./constant";
 
-export const isTrue = (value: unknown) => {
-  return value === TRUE;
+export const isTruly = (value: unknown) => {
+  return value === TRULY;
 };
 
-export const isFalse = (value: unknown) => {
-  return !value || value === FALSE;
+export const isFalsy = (value: unknown) => {
+  return !value || value === FALSY;
 };
