@@ -1,7 +1,10 @@
-export const RESIZE_OFS = 5;
-export const RESIZE_LEN = 10;
+/* COMPAT: 数值常量如果会被计算出小数值 则尽可能在常量定义时就避免 */
+
+export const RESIZE_OFS = 6;
+export const RESIZE_LEN = 12;
 export const SELECT_BIAS = 3;
 export const REFER_BIAS = 5;
+export const FINE_TUNE = 0.5;
 
 export const THE_CONFIG = [30, { trailing: false }] as const;
 export const MAX_Z_INDEX = 999999;

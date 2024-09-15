@@ -72,6 +72,7 @@ export class Shape {
    * @param options
    */
   public static frame(ctx: CanvasRenderingContext2D, options: FrameProps) {
+    // https://stackoverflow.com/questions/36615592/canvas-inner-stroke
     ctx.save();
     ctx.beginPath();
     const frame = [options.x - 1, options.y - 1, options.width + 2, options.height + 2] as const;

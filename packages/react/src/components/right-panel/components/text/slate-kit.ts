@@ -14,7 +14,7 @@ import {
 import { isText, isTextBlock } from "doc-editor-utils";
 import type { Attributes, RichTextLine, RichTextLines } from "sketching-plugin";
 import { TEXT_ATTRS } from "sketching-plugin";
-import { TRUE } from "sketching-plugin";
+import { TRULY } from "sketching-plugin";
 import { GRAY_2 } from "sketching-utils";
 import { BLUE_6 } from "sketching-utils";
 
@@ -53,7 +53,7 @@ export const blocksToLines = (editor: EditorSuite, blocks: BaseNode[]) => {
           lineAttrs[TEXT_ATTRS.LINE_HEIGHT] = current[LINE_HEIGHT_KEY].toString();
         }
         if (current[DIVIDING_LINE_KEY]) {
-          lineAttrs[TEXT_ATTRS.DIVIDING_LINE] = TRUE;
+          lineAttrs[TEXT_ATTRS.DIVIDING_LINE] = TRULY;
         }
         const line: RichTextLine = { chars: [], config: lineAttrs };
         for (const text of current.children) {
@@ -63,8 +63,8 @@ export const blocksToLines = (editor: EditorSuite, blocks: BaseNode[]) => {
           // 需要处理行内格式标识 -> Attributes
           if (attrs.bold) target[TEXT_ATTRS.WEIGHT] = "bold";
           if (attrs.italic) target[TEXT_ATTRS.STYLE] = "italic";
-          if (attrs[UNDERLINE_KEY]) target[TEXT_ATTRS.UNDERLINE] = TRUE;
-          if (attrs[STRIKE_THROUGH_KEY]) target[TEXT_ATTRS.STRIKE_THROUGH] = TRUE;
+          if (attrs[UNDERLINE_KEY]) target[TEXT_ATTRS.UNDERLINE] = TRULY;
+          if (attrs[STRIKE_THROUGH_KEY]) target[TEXT_ATTRS.STRIKE_THROUGH] = TRULY;
           if (attrs[INLINE_CODE_KEY]) target[TEXT_ATTRS.BACKGROUND] = GRAY_2;
           if (attrs[HYPER_LINK_KEY]) {
             const href = attrs[HYPER_LINK_KEY].href;

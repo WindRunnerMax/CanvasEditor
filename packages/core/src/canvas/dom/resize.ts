@@ -12,6 +12,7 @@ import type { MouseEvent } from "../event/mouse";
 import type { ResizeType } from "../types/dom";
 import { noZero } from "../utils/cipher";
 import {
+  FINE_TUNE,
   MAX_Z_INDEX,
   RESIZE_LEN,
   RESIZE_OFS,
@@ -72,28 +73,48 @@ export class ResizeNode extends Node {
         const range = Range.from(startX, startY, startX, endY);
         const { x, y } = range.center();
         const offset = RESIZE_OFS / 2;
-        target = Range.from(x - offset, y - RESIZE_OFS, x + offset, y + RESIZE_OFS);
+        target = Range.from(
+          x - offset - FINE_TUNE,
+          y - RESIZE_OFS,
+          x + offset - FINE_TUNE,
+          y + RESIZE_OFS
+        );
         break;
       }
       case RESIZE_TYPE.R: {
         const range = Range.from(endX, startY, endX, endY);
         const { x, y } = range.center();
         const offset = RESIZE_OFS / 2;
-        target = Range.from(x - offset, y - RESIZE_OFS, x + offset, y + RESIZE_OFS);
+        target = Range.from(
+          x - offset + FINE_TUNE,
+          y - RESIZE_OFS,
+          x + offset + FINE_TUNE,
+          y + RESIZE_OFS
+        );
         break;
       }
       case RESIZE_TYPE.T: {
         const range = Range.from(startX, startY, endX, startY);
         const { x, y } = range.center();
         const offset = RESIZE_OFS / 2;
-        target = Range.from(x - RESIZE_OFS, y - offset, x + RESIZE_OFS, y + offset);
+        target = Range.from(
+          x - RESIZE_OFS,
+          y - offset - FINE_TUNE,
+          x + RESIZE_OFS,
+          y + offset - FINE_TUNE
+        );
         break;
       }
       case RESIZE_TYPE.B: {
         const range = Range.from(startX, endY, endX, endY);
         const { x, y } = range.center();
         const offset = RESIZE_OFS / 2;
-        target = Range.from(x - RESIZE_OFS, y - offset, x + RESIZE_OFS, y + offset);
+        target = Range.from(
+          x - RESIZE_OFS,
+          y - offset + FINE_TUNE,
+          x + RESIZE_OFS,
+          y + offset + FINE_TUNE
+        );
         break;
       }
     }
