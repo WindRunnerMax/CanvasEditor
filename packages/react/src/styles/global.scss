@@ -8,6 +8,7 @@ body {
   color: var(--color-text-1);
   margin: 0;
   padding: 0;
+  user-select: none;
 }
 
 // :global(#root) {}
