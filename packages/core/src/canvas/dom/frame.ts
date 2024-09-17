@@ -73,10 +73,10 @@ export class FrameNode extends Node {
         if (latest.intersect(state.toRange())) effects.push(state.id);
       });
       this.editor.selection.setActiveDelta(...effects);
-      // 重绘拖拽过的最大区域
-      const zoomed = latest.zoom(RESIZE_OFS);
-      this.dragged = this.dragged ? this.dragged.compose(zoomed) : zoomed;
-      this.editor.canvas.mask.drawingEffect(this.dragged);
+      const prev = this.dragged || latest;
+      const zoomed = latest.compose(prev).zoom(RESIZE_OFS);
+      this.dragged = latest;
+      this.editor.canvas.mask.drawingEffect(zoomed);
     }
   };
   private onMouseMoveController = throttle(this.onMouseMoveBridge, ...THE_CONFIG);

@@ -4,12 +4,18 @@ import type { Range } from "../../selection/modules/range";
 import type { MouseEvent } from "../event/mouse";
 
 export class Node {
-  protected _z: number;
+  /** 节点 Range */
   private _range: Range;
+  /** 父节点引用 */
   private _parent: Node | null;
+  /** 层级 */
+  protected _z: number;
+  /** 忽略事件触发 */
   protected _ignoreEvent: boolean;
-  public readonly children: Node[];
+  /** 当前树结构的所有子节点 */
   protected flatNodes: Node[] | null;
+  /** 当前节点的直属子节点 */
+  public readonly children: Node[];
 
   // 尽可能简单地实现事件流
   // 直接通过`bubble`来决定捕获/冒泡
@@ -114,9 +120,14 @@ export class Node {
     this.clearFlatNodeOnLink();
   }
 
-  // ====== Flat Node ======
+  /**
+   * 获取当前节点树的所有子节点
+   * @returns
+   */
   public getFlatNode() {
-    if (this.flatNodes) return this.flatNodes;
+    if (this.flatNodes) {
+      return this.flatNodes;
+    }
     // 右子树优先后序遍历 保证事件调用的顺序
     const nodes: Node[] = [];
     const reverse = [...this.children].reverse();

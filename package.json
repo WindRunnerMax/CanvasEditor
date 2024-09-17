@@ -5,7 +5,8 @@
     "dev": "pnpm --filter sketching-react run dev",
     "dev:react": "pnpm --filter sketching-react run dev",
     "build:react": "pnpm --filter sketching-react run build",
-    "build:workspace": "pnpm --filter '*' run build"
+    "build:workspace": "pnpm --filter '*' run build",
+    "lint:ts": "pnpm --filter '*' run lint:ts"
   },
   "repository": {
     "type": "git",

@@ -11,7 +11,8 @@
   "scripts": {
     "dev": "rspack serve --config ./rspack.config.js",
     "build": "tsc -p tsconfig.build.json",
-    "release": "./publish.sh"
+    "release": "./publish.sh",
+    "lint:ts": "../../node_modules/typescript/bin/tsc --noEmit"
   },
   "keywords": [],
   "author": "",

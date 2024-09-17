@@ -64,10 +64,14 @@ export class ReferNode extends Node {
     this.sortedY = Array.from(yLineMap.keys()).sort((a, b) => a - b);
   };
 
+  /**
+   * 拖拽选区的鼠标移动事件
+   * @param latest 拖拽选区的最新 Range
+   * @description 作为 SelectNode 的子元素 Node 事件
+   * 基于父元素的事件调用链执行当前的事件绑定
+   * 避免多次对父元素的 Range 修改来保证值唯一
+   */
   public onMouseMoveController = (latest: Range) => {
-    // COMPAT: 作为`SelectNode`的子元素`Node`事件
-    //         基于父元素的事件调用链执行当前的事件绑定
-    //         避免多次对父元素的`Range`修改来保证值唯一
     this.clearNodes();
     if (!latest || !this.editor.canvas.root.select.isDragging) return void 0;
     if (this.sortedX.length === 0 && this.sortedY.length === 0) {
@@ -121,12 +125,15 @@ export class ReferNode extends Node {
     if (isEmptyValue(offsetX) && isEmptyValue(offsetY)) {
       // 未命中参考线需要清理
       this.dragged && this.editor.canvas.mask.drawingEffect(this.dragged);
+      this.dragged = null;
       return void 0;
     }
     const nextSelection = latest.move(offsetX || 0, offsetY || 0).normalize();
-    // 参考线绘制
-    const composeNodeRange = (range: Range) => {
-      this.dragged = nextSelection.compose(this.dragged).compose(range);
+    const prevPaintRange = this.dragged || nextSelection;
+    let nextPaintRange = nextSelection.compose(prevPaintRange);
+    // 构建参考线节点
+    const createReferNode = (range: Range) => {
+      nextPaintRange = nextPaintRange.compose(range);
       const node = new Node(range);
       node.setIgnoreEvent(true);
       node.drawingMask = this.drawingMaskDispatch;
@@ -143,21 +150,21 @@ export class ReferNode extends Node {
         const minY = Math.min(...ys, next.start.y);
         const maxY = Math.max(...ys, next.end.y);
         const range = Range.from(next.start.x, minY, next.start.x, maxY);
-        composeNodeRange(range);
+        createReferNode(range);
       }
       if (this.isNear(offsetX, closestMidX - midX) && this.xLineMap.has(closestMidX)) {
         const ys = this.xLineMap.get(closestMidX) || [-1];
         const minY = Math.min(...ys, next.start.y);
         const maxY = Math.max(...ys, next.end.y);
         const range = Range.from(nextMid.x, minY, nextMid.x, maxY);
-        composeNodeRange(range);
+        createReferNode(range);
       }
       if (this.isNear(offsetX, closestMaxX - endX) && this.xLineMap.has(closestMaxX)) {
         const ys = this.xLineMap.get(closestMaxX) || [-1];
         const minY = Math.min(...ys, next.start.y);
         const maxY = Math.max(...ys, next.end.y);
         const range = Range.from(next.end.x, minY, next.end.x, maxY);
-        composeNodeRange(range);
+        createReferNode(range);
       }
     }
     if (!isEmptyValue(offsetY)) {
@@ -167,24 +174,25 @@ export class ReferNode extends Node {
         const minX = Math.min(...xs, next.start.x);
         const maxX = Math.max(...xs, next.end.x);
         const range = Range.from(minX, next.start.y, maxX, next.start.y);
-        composeNodeRange(range);
+        createReferNode(range);
       }
       if (this.isNear(offsetY, closestMidY - midY) && this.yLineMap.has(closestMidY)) {
         const xs = this.yLineMap.get(closestMidY) || [-1];
         const minX = Math.min(...xs, next.start.x);
         const maxX = Math.max(...xs, next.end.x);
         const range = Range.from(minX, nextMid.y, maxX, nextMid.y);
-        composeNodeRange(range);
+        createReferNode(range);
       }
       if (this.isNear(offsetY, closestMaxY - endY) && this.yLineMap.has(closestMaxY)) {
         const xs = this.yLineMap.get(closestMaxY) || [-1];
         const minX = Math.min(...xs, next.start.x);
         const maxX = Math.max(...xs, next.end.x);
         const range = Range.from(minX, next.end.y, maxX, next.end.y);
-        composeNodeRange(range);
+        createReferNode(range);
       }
     }
-    this.dragged && this.editor.canvas.mask.drawingEffect(this.dragged);
+    this.dragged = nextPaintRange;
+    nextPaintRange && this.editor.canvas.mask.drawingEffect(nextPaintRange);
     return { x: offsetX || 0, y: offsetY || 0 };
   };
 

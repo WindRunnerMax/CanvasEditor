@@ -84,9 +84,9 @@ export class Insert {
       endX: this.landing.x + x,
       endY: this.landing.y + y,
     }).normalize();
+    const prev = this.range || latest;
     this.range = latest;
-    // 重绘拖拽过的最大区域
-    this.dragged = this.dragged ? this.dragged.compose(latest) : latest;
+    this.dragged = prev.compose(latest);
     this.drawingMask();
   };
   private onMouseMoveController = throttle(this.onMouseMoveBasic, ...THE_CONFIG);
@@ -128,6 +128,7 @@ export class Insert {
 
   public drawingMask(finish = false) {
     if (this.dragged) {
+      // 清空当前区域内的绘制 相当于避免上次绘制的内容留存
       this.engine.mask.clear(this.dragged.zoom(this.engine.devicePixelRatio));
     }
     if (this.range && this.delta) {

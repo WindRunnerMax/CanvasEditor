@@ -14,7 +14,8 @@
   "scripts": {
     "dev": "rspack serve --config ./rspack.config.js",
     "build": "rspack build --config ./rspack.config.js",
-    "analyze": "rspack build --config ./rspack.config.js --analyze"
+    "analyze": "rspack build --config ./rspack.config.js --analyze",
+    "lint:ts": "../../node_modules/typescript/bin/tsc --noEmit"
   },
   "keywords": [],
   "author": "",

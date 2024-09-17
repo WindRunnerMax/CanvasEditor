@@ -25,12 +25,30 @@ export class DeltaSet {
       );
   }
 
+  /**
+   * 通过 key 获取 delta
+   * @param key
+   * @returns
+   */
   public get(key: string) {
-    // TODO: Limit Return Types With Interface Extensions
-    if (!this.deltas[key]) return null;
-    return this.deltas[key];
+    return this.deltas[key] || null;
   }
 
+  /**
+   * 判断是否存在目标 key
+   * @param key
+   * @returns
+   */
+  public has(key: string) {
+    return !!this.deltas[key];
+  }
+
+  /**
+   * 添加目标 Delta 到 DeltaSet
+   * @param delta 目标 Delta
+   * @param to 目标 Delta 的父 Delta Id
+   * @returns
+   */
   public add(delta: Delta, to?: string) {
     this.deltas[delta.id] = delta;
     delta.getDeltaSet = () => this;

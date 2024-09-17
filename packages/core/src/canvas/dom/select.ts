@@ -114,16 +114,18 @@ export class SelectNode extends Node {
     if (!this.landing || !selection) return void 0;
     const point = Point.from(e.clientX, e.clientY);
     const { x, y } = this.landing.diff(point);
+    // 超过阈值才认为正在触发拖拽
     if (!this._isDragging && (Math.abs(x) > SELECT_BIAS || Math.abs(y) > SELECT_BIAS)) {
-      // 拖拽阈值
       this._isDragging = true;
     }
     if (this._isDragging && selection) {
+      // 获取上次绘制的选区位置
+      const prev = this.dragged || selection;
       const latest = selection.move(x, y);
-      const zoomed = latest.zoom(RESIZE_OFS);
-      // 重绘拖拽过的最大区域
-      this.dragged = this.dragged ? this.dragged.compose(zoomed) : zoomed;
-      this.editor.canvas.mask.drawingEffect(this.dragged);
+      this.dragged = latest;
+      // 重绘上次绘制到本次绘制的组合区域
+      const zoomed = latest.compose(prev).zoom(RESIZE_OFS);
+      this.editor.canvas.mask.drawingEffect(zoomed);
       const offset = this.refer.onMouseMoveController(latest);
       this.setRange(offset ? latest.move(offset.x, offset.y) : latest);
     }

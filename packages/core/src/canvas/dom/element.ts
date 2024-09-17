@@ -8,7 +8,9 @@ import { Shape } from "../utils/shape";
 import { Node } from "./node";
 
 export class ElementNode extends Node {
-  private readonly id: string;
+  /** 节点 id */
+  public readonly id: string;
+  /** Hover 状态 */
   private isHovering: boolean;
 
   constructor(private editor: Editor, state: DeltaState) {
@@ -56,6 +58,8 @@ export class ElementNode extends Node {
   public drawingMask = (ctx: CanvasRenderingContext2D) => {
     if (
       this.isHovering &&
+      // FIX: 避免全选删除后的 Hover 绘制
+      this.editor.deltaSet.has(this.id) &&
       !this.editor.selection.has(this.id) &&
       !this.editor.state.get(EDITOR_STATE.MOUSE_DOWN)
     ) {

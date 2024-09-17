@@ -11,7 +11,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "release": "./publish.sh",
-    "test": "jest"
+    "test": "jest",
+    "lint:ts": "../../node_modules/typescript/bin/tsc --noEmit"
   },
   "keywords": [],
   "author": "",

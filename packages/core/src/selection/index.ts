@@ -16,10 +16,9 @@ export class Selection {
   }
 
   public destroy() {
-    // Placeholder
+    // placeholder
   }
 
-  // ====== Selection ======
   public has(id: string) {
     return this.active.has(id);
   }
@@ -41,7 +40,6 @@ export class Selection {
     return this;
   }
 
-  // ====== Active ======
   public getActiveDeltaIds() {
     return this.active;
   }
@@ -64,8 +62,14 @@ export class Selection {
     this.compose();
   }
 
+  /**
+   * 清理选区内容
+   * @returns
+   */
   public clearActiveDeltas() {
-    if (this.active.size === 0) return void 0;
+    if (this.active.size === 0) {
+      return void 0;
+    }
     this.active.clear();
     this.set(null);
   }
@@ -76,9 +80,11 @@ export class Selection {
     this.setActiveDelta(...keys);
   }
 
-  // ====== Range ======
+  /**
+   * 组合当前选区节点的 Range
+   * @returns
+   */
   public compose() {
-    // Multiple to be combined
     const active = this.active;
     if (active.size === 0) {
       this.set(null);
