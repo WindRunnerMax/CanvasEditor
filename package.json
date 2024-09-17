@@ -2,6 +2,7 @@
   "name": "cv-sketching",
   "version": "1.0.0",
   "scripts": {
+    "dev": "pnpm --filter sketching-react run dev",
     "dev:react": "pnpm --filter sketching-react run dev",
     "build:react": "pnpm --filter sketching-react run build",
     "build:workspace": "pnpm --filter '*' run build"

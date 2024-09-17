@@ -226,8 +226,8 @@ importers:
   packages/utils:
     dependencies:
       laser-utils:
-        specifier: 0.0.2-alpha.9
-        version: 0.0.2-alpha.9
+        specifier: 0.0.5-alpha.8
+        version: 0.0.5-alpha.8
       lodash-es:
         specifier: 4.17.21
         version: 4.17.21
@@ -10510,8 +10510,8 @@ packages:
     resolution: {integrity: sha512-9Ke74rX3URh6V6XRI2E4sjQCohlZsgN4ELls8Uh/nOiTa5ko9hLXswjBeD70N1JXbmFdRlflzlsqtW1VKzlQEQ==}
     dev: false
 
-  /laser-utils@0.0.2-alpha.9:
-    resolution: {integrity: sha512-MXeKJn4us9G3/aOWtO9quLLJsUjOfTMrHRSvo89F8iDWc1gjf6Lywt5kUQhJVHMuuXxTUqpLCw1rJcDM9pGnOQ==}
+  /laser-utils@0.0.5-alpha.8:
+    resolution: {integrity: sha512-fHxXumdzKlaH7mZBLlcj60o5FDln70VldC0Z0PYjBIaSgL4OOwHLENnYCtEZFylxHqrfHZNgqY8CwdRcSqjHsg==}
     dev: false
 
   /last-call-webpack-plugin@3.0.0:

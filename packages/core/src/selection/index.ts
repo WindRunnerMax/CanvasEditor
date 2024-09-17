@@ -6,7 +6,9 @@ import { EDITOR_STATE } from "../state/utils/constant";
 import { Range } from "./modules/range";
 
 export class Selection {
+  /** 当前选区 Range */
   private current: Range | null;
+  /** 选中的 Delta Id 组 */
   private active = new Set<string>();
 
   constructor(protected editor: Editor) {
@@ -28,7 +30,7 @@ export class Selection {
 
   public set(range: Range | null) {
     // 只读状态下无选区
-    if (this.editor.state.get(EDITOR_STATE.READONLY)) return void 0;
+    if (this.editor.state.get(EDITOR_STATE.READONLY)) return this;
     const previous = this.current;
     if (Range.isEqual(previous, range)) return this;
     this.current = range;

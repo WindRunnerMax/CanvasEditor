@@ -6,7 +6,7 @@ import type { FC } from "react";
 import { useEffect, useRef, useState } from "react";
 import type { Editor } from "sketching-core";
 import { EDITOR_EVENT, Range } from "sketching-core";
-import { cs, storage } from "sketching-utils";
+import { cs, Storage } from "sketching-utils";
 
 import { Background } from "../../../modules/background";
 import type { LocalStorageData } from "../../../utils/storage";
@@ -69,7 +69,7 @@ export const Right: FC<{
         width && height && Background.setRange(Range.fromRect(x, y, width, height));
         const deltaSetLike = editor.deltaSet.getDeltas();
         const storageData: LocalStorageData = { ...Background.rect, deltaSetLike };
-        storage.local.set(STORAGE_KEY, storageData);
+        Storage.local.set(STORAGE_KEY, storageData);
         Background.render();
       },
     });

@@ -5,7 +5,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const isDev = process.env.NODE_ENV === "development";
 
 /**
- * @type {import('@rspack/cli').Configuration}
+ * @type {import("@rspack/cli").Configuration}
  */
 module.exports = {
   context: __dirname,
@@ -94,9 +94,10 @@ module.exports = {
       },
     ],
   },
-  target: "es5",
+  target: isDev ? undefined : "es5",
   devtool: isDev ? "source-map" : false,
   output: {
+    clean: true,
     chunkLoading: "jsonp",
     chunkFormat: "array-push",
     publicPath: isDev ? "" : "./",

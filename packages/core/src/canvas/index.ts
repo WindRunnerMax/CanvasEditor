@@ -113,6 +113,10 @@ export class Canvas {
     return this.mask.isActive() || this.graph.isActive();
   }
 
+  /**
+   * 判断是否默认模式
+   * @description 根据状态判断拖拽、插入状态
+   */
   public isDefaultMode() {
     return !this.grab.on && !this.insert.on;
   }

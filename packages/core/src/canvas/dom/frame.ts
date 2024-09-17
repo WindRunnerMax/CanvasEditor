@@ -40,6 +40,9 @@ export class FrameNode extends Node {
     this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE_GLOBAL, this.onMouseMoveController);
   };
 
+  /**
+   * 框选事件的起始
+   */
   private onRootMouseDown = (e: MouseEvent) => {
     this.savedRootMouseDown(e);
     this.unbindOpEvents();

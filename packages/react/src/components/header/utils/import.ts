@@ -2,13 +2,14 @@ import { Message } from "@arco-design/web-react";
 import type { Editor } from "sketching-core";
 import { Range } from "sketching-core";
 import { DeltaSet } from "sketching-delta";
-import { isString, storage, TSON } from "sketching-utils";
+import { isString, Storage, TSON } from "sketching-utils";
 
 import { Background } from "../../../modules/background";
 import type { LocalStorageData } from "../../../utils/storage";
 import { STORAGE_KEY } from "../../../utils/storage";
 
 const id = "__sketching-core_input__";
+
 export const importJSON = async (editor: Editor) => {
   let input = document.getElementById(id) as HTMLInputElement;
   if (!input) {
@@ -32,7 +33,7 @@ export const importJSON = async (editor: Editor) => {
               editor.state.setContent(deltaSet);
               Background.setRange(Range.fromRect(json.x, json.y, json.width, json.height));
               Background.render();
-              storage.local.set(STORAGE_KEY, json);
+              Storage.local.set(STORAGE_KEY, json);
             } else {
               Message.error("导入失败，请检查文件");
             }

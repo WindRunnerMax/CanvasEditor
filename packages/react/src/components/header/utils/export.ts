@@ -3,7 +3,7 @@ import type { Editor } from "sketching-core";
 import { Range } from "sketching-core";
 import type { Delta } from "sketching-delta";
 import { DeltaSet } from "sketching-delta";
-import { DateTime, storage } from "sketching-utils";
+import { DateTime, Storage } from "sketching-utils";
 
 import { Background } from "../../../modules/background";
 import type { LocalStorageData } from "../../../utils/storage";
@@ -14,7 +14,7 @@ export const exportPDF = async (DPI = 1) => {
   if (!window.PDFDocument || !window.blobStream) {
     Message.warning("PDF模块未加载完成，请稍后");
   }
-  const data = storage.local.get<LocalStorageData>(STORAGE_KEY) || EXAMPLE;
+  const data = Storage.local.get<LocalStorageData>(STORAGE_KEY) || EXAMPLE;
   const deltaSetLike = data && data.deltaSetLike;
   Background.setRange(Range.fromRect(data.x, data.y, data.width, data.height));
   const deltaSet = new DeltaSet(deltaSetLike);

@@ -14,9 +14,13 @@ import { ReferNode } from "./refer";
 import { ResizeNode } from "./resize";
 
 export class SelectNode extends Node {
+  /** 拖拽标识 */
   private _isDragging: boolean;
+  /** 拖拽点击落点 */
   private landing: Point | null;
+  /** 上次绘制区域 */
   private dragged: Range | null;
+  /** 参考线模块引用 */
   public readonly refer: ReferNode;
 
   constructor(private editor: Editor) {
@@ -26,6 +30,8 @@ export class SelectNode extends Node {
     this._isDragging = false;
     this._z = MAX_Z_INDEX - 2;
     this.refer = new ReferNode(this.editor);
+    // COMPAT: 这里需要用原生事件绑定 而非编辑器分发事件
+    // 事件需要在选区完成后再执行 否则交互上就必须要先点选再拖拽
     this.editor.event.on(EDITOR_EVENT.MOUSE_DOWN, this.onMouseDownController);
     this.editor.event.on(EDITOR_EVENT.SELECTION_CHANGE, this.onSelectionChange, 10);
     Object.keys(RESIZE_TYPE).forEach(key => {
@@ -71,12 +77,18 @@ export class SelectNode extends Node {
     }
   };
 
-  private bindOpEvents = () => {
+  /**
+   * 绑定拖拽事件的触发器
+   */
+  private bindDragEvents = () => {
     this.editor.event.on(EDITOR_EVENT.MOUSE_UP_GLOBAL, this.onMouseUpController);
     this.editor.event.on(EDITOR_EVENT.MOUSE_MOVE_GLOBAL, this.onMouseMoveController);
   };
 
-  private unbindOpEvents = () => {
+  /**
+   * 取消拖拽事件的触发器
+   */
+  private unbindDragEvents = () => {
     this.editor.event.off(EDITOR_EVENT.MOUSE_UP_GLOBAL, this.onMouseUpController);
     this.editor.event.off(EDITOR_EVENT.MOUSE_MOVE_GLOBAL, this.onMouseMoveController);
   };
@@ -85,16 +97,15 @@ export class SelectNode extends Node {
     // 非默认状态下不执行事件
     if (!this.editor.canvas.isDefaultMode()) return void 0;
     // 取消已有事件绑定
-    this.unbindOpEvents();
+    this.unbindDragEvents();
     const selection = this.editor.selection.get();
-    // 这里需要用原生事件绑定 需要在选区完成后再执行 否则交互上就必须要先点选再拖拽
     // 选区 & 严格点击区域判定
     if (!selection || !this.isInSelectRange(Point.from(e, this.editor), this.range)) {
       return void 0;
     }
     this.dragged = selection;
     this.landing = Point.from(e.clientX, e.clientY);
-    this.bindOpEvents();
+    this.bindDragEvents();
     this.refer.onMouseDownController();
   };
 
@@ -120,7 +131,7 @@ export class SelectNode extends Node {
   private onMouseMoveController = throttle(this.onMouseMoveBasic, ...THE_CONFIG);
 
   private onMouseUpController = () => {
-    this.unbindOpEvents();
+    this.unbindDragEvents();
     this.refer.onMouseUpController();
     const selection = this.editor.selection.get();
     if (this._isDragging && selection) {
@@ -142,7 +153,7 @@ export class SelectNode extends Node {
     const selection = this.editor.selection.get();
     if (this._isDragging) {
       const { x, y, width, height } = this.range.rect();
-      Shape.rect(ctx, { x, y, width, height, borderColor: BLUE_6 });
+      Shape.frame(ctx, { x, y, width, height, borderColor: BLUE_6 });
     }
     if (selection) {
       const { x, y, width, height } = selection.rect();

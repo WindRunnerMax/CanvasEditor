@@ -2,7 +2,7 @@ import type { FC } from "react";
 import { useLayoutEffect, useMemo, useRef } from "react";
 import { Editor, LOG_LEVEL, Range } from "sketching-core";
 import { DeltaSet } from "sketching-delta";
-import { storage } from "sketching-utils";
+import { Storage } from "sketching-utils";
 
 import { WithEditor } from "../../hooks/use-editor";
 import { Background } from "../../modules/background";
@@ -13,7 +13,7 @@ import { Body } from "./components/body";
 export const Preview: FC = () => {
   const ref = useRef<HTMLDivElement>(null);
   const editor = useMemo(() => {
-    const data = storage.local.get<LocalStorageData>(STORAGE_KEY) || EXAMPLE;
+    const data = Storage.local.get<LocalStorageData>(STORAGE_KEY) || EXAMPLE;
     const deltaSetLike = data && data.deltaSetLike;
     Background.setRange(Range.fromRect(data.x, data.y, data.width, data.height));
     return new Editor({

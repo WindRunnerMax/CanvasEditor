@@ -18,9 +18,13 @@ import { NODE_EVENT } from "../types/event";
 import { THE_CONFIG } from "../utils/constant";
 
 export class Root extends Node {
+  /** 鼠标指针位置 */
   public cursor: Point;
+  /** Hover 节点 */
   public hover: ElementNode | ResizeNode | null;
+  /** 框选节点引用 */
   public readonly frame: FrameNode;
+  /** 选择节点引用 */
   public readonly select: SelectNode;
 
   constructor(private editor: Editor, private engine: Canvas) {
@@ -139,7 +143,7 @@ export class Root extends Node {
         break;
       }
     }
-    // 如果命中节点且没有暂存的`hover`节点
+    // 如果命中的节点与先前 Hover 的节点不一致
     if (this.hover !== next) {
       const prev = this.hover;
       this.hover = next;

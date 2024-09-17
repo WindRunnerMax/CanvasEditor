@@ -29,6 +29,10 @@ export class ElementNode extends Node {
     }
   };
 
+  /**
+   * 触发节点的 Hover 效果
+   * @description Root - MouseLeave
+   */
   protected onMouseEnter = () => {
     this.isHovering = true;
     if (this.editor.selection.has(this.id)) {
@@ -37,11 +41,16 @@ export class ElementNode extends Node {
     this.editor.canvas.mask.drawingEffect(this.range);
   };
 
+  /**
+   * 移除节点的 Hover 效果
+   * @description Root - MouseLeave
+   */
   protected onMouseLeave = () => {
     this.isHovering = false;
-    if (!this.editor.selection.has(this.id)) {
-      this.editor.canvas.mask.drawingEffect(this.range);
+    if (this.editor.selection.has(this.id)) {
+      return void 0;
     }
+    this.editor.canvas.mask.drawingEffect(this.range);
   };
 
   public drawingMask = (ctx: CanvasRenderingContext2D) => {

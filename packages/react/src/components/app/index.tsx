@@ -3,7 +3,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import type { ContentChangeEvent } from "sketching-core";
 import { Editor, EDITOR_EVENT, LOG_LEVEL, Range } from "sketching-core";
 import { DeltaSet } from "sketching-delta";
-import { storage } from "sketching-utils";
+import { Storage } from "sketching-utils";
 
 import { WithEditor } from "../../hooks/use-editor";
 import { Background } from "../../modules/background";
@@ -13,10 +13,13 @@ import { Body } from "../body";
 import { ContextMenu } from "../context-menu";
 import { Header } from "../header";
 
+// COMPAT: 避免升级的不兼容问题
+Storage.setSuffix("");
+
 export const App: FC = () => {
   const ref = useRef<HTMLDivElement>(null);
   const editor = useMemo(() => {
-    const data = storage.local.get<LocalStorageData>(STORAGE_KEY) || EXAMPLE;
+    const data = Storage.local.get<LocalStorageData>(STORAGE_KEY) || EXAMPLE;
     Background.setRange(Range.fromRect(data.x, data.y, data.width, data.height));
     const deltaSetLike = data && data.deltaSetLike;
     return new Editor({
@@ -41,7 +44,7 @@ export const App: FC = () => {
     const onContentChange = (e: ContentChangeEvent) => {
       const deltaSetLike = e.current.getDeltas();
       const storageData: LocalStorageData = { ...Background.rect, deltaSetLike };
-      storage.local.set(STORAGE_KEY, storageData);
+      Storage.local.set(STORAGE_KEY, storageData);
     };
     editor.event.on(EDITOR_EVENT.CONTENT_CHANGE, onContentChange);
     return () => {

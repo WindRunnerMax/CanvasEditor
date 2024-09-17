@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import type { Editor } from "sketching-core";
 import { Range } from "sketching-core";
 import { DeltaSet } from "sketching-delta";
-import { cs, storage } from "sketching-utils";
+import { cs, Storage } from "sketching-utils";
 
 import { Background } from "../../../../modules/background";
 import type { TemplateConfig } from "../../../../modules/template";
@@ -50,7 +50,7 @@ export const Template: FC<{
         const res: LocalStorageData | null = await loadTemplate(item.template);
         setLoading(false);
         if (!res) return Message.error("模版加载失败");
-        storage.local.set(STORAGE_KEY, res);
+        Storage.local.set(STORAGE_KEY, res);
         const deltaSetLike = res.deltaSetLike;
         const deltaSet = new DeltaSet(deltaSetLike);
         editor.state.setContent(deltaSet);
