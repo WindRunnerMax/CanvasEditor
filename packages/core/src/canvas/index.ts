@@ -1,4 +1,4 @@
-import ResizeObserver from "resize-observer-polyfill";
+import ResizePolyfill from "resize-observer-polyfill";
 import { throttle } from "sketching-utils";
 
 import type { Editor } from "../editor";
@@ -33,6 +33,7 @@ export class Canvas {
     this.mask = new Mask(editor, this);
     this.graph = new Graph(editor, this);
     this.devicePixelRatio = Math.ceil(window.devicePixelRatio || 1);
+    const ResizeObserver = window.ResizeObserver || ResizePolyfill;
     this.resizeObserver = new ResizeObserver(this.onResize);
     this.grab = new Grab(this.editor, this);
     this.insert = new Insert(this.editor, this);
