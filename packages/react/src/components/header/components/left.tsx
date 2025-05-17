@@ -1,4 +1,4 @@
-import { useMemoizedFn } from "ahooks";
+import { useMemoFn } from "@block-kit/utils/dist/es/hooks";
 import type { FC } from "react";
 import React, { useEffect, useState } from "react";
 import type { Editor } from "sketching-core";
@@ -21,7 +21,7 @@ export const Left: FC<{
 }> = ({ editor }) => {
   const [active, setActive] = useState<string>(NAV_ENUM.DEFAULT);
 
-  const switchIndex = useMemoizedFn((index: string) => {
+  const switchIndex = useMemoFn((index: string) => {
     if (index === active) return void 0;
     editor.canvas.grab.close();
     editor.canvas.insert.close();

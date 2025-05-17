@@ -1,7 +1,7 @@
 import { Button, Dropdown, InputNumber, Menu, Modal } from "@arco-design/web-react";
 import type { RefInputType } from "@arco-design/web-react/es/Input";
 import { IconDown, IconGithub, IconRedo, IconUndo } from "@arco-design/web-react/icon";
-import { useMemoizedFn } from "ahooks";
+import { useMemoFn } from "@block-kit/utils/dist/es/hooks";
 import type { FC } from "react";
 import { useEffect, useRef, useState } from "react";
 import type { Editor } from "sketching-core";
@@ -23,7 +23,7 @@ export const Right: FC<{
   const widthRef = useRef<RefInputType>(null);
   const heightRef = useRef<RefInputType>(null);
 
-  const query = useMemoizedFn(() => {
+  const query = useMemoFn(() => {
     setUndoAble(editor.history.canUndo());
     setRedoAble(editor.history.canRedo());
   });

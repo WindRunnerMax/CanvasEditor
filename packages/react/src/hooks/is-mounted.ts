@@ -10,5 +10,5 @@ export const useIsMounted = () => {
     };
   }, []);
 
-  return { isMounted: () => mounted.current };
+  return { isMounted: () => mounted.current, mounted };
 };

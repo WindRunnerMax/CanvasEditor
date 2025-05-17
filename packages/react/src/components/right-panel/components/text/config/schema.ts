@@ -1,8 +1,14 @@
-import type { EditorSchema } from "doc-editor-core";
-import { DIVIDING_LINE_KEY } from "doc-editor-plugin";
+import type { EditorSchema } from "@block-kit/core";
 
 export const schema: EditorSchema = {
-  [DIVIDING_LINE_KEY]: {
-    void: true,
-  },
+  "bold": { mark: true },
+  "italic": { mark: true },
+  "underline": { mark: true },
+  "strike": { mark: true },
+  "inline-code": { mark: true, inline: true },
+  "link": { mark: true, inline: true },
+  "color": { mark: true },
+  "font-size": { mark: true },
+  "background": { mark: true },
+  "divider": { block: true, void: true },
 };

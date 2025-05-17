@@ -1,7 +1,12 @@
 export type Attributes = Record<string, string>;
 
 export type RichTextLine = {
-  chars: { char: string; config: Attributes }[];
+  chars: {
+    /** 文本组 */
+    char: string;
+    /** 文本样式 */
+    config: Attributes;
+  }[];
   config: Attributes;
 };
 export type RichTextLines = RichTextLine[];
@@ -15,6 +20,7 @@ export type TextMatrixItem = {
   ascent: number;
   descent: number;
 };
+
 export type TextMatrix = {
   config: Attributes;
   items: TextMatrixItem[];
@@ -27,4 +33,5 @@ export type TextMatrix = {
   ascent: number;
   descent: number;
 };
+
 export type TextMatrices = TextMatrix[];

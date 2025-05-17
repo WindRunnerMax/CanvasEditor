@@ -1,6 +1,6 @@
 import { BLUE_6, GREEN_7, ORANGE_7, TEXT_1 } from "sketching-utils";
+import { GRAY_4 } from "sketching-utils/src/palette";
 
-import { GRAY_4 } from "../../../utils/src/palette";
 import { formatListSerial } from "../utils/list";
 import { BACKGROUND_OFFSET, DIVIDING_LINE_OFFSET, TEXT_ATTRS } from "./constant";
 import type { Attributes, RichTextLine, TextMatrix, TextMatrixItem } from "./types";

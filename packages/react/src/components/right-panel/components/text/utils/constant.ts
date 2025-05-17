@@ -1,3 +1,5 @@
+import { Delta } from "@block-kit/delta";
+
 export const COLOR_PEER: Record<string, string> = {
   "var(--color-white)": "#fff",
   "var(--color-black)": "#000",
@@ -9,3 +11,5 @@ export const COLOR_PEER: Record<string, string> = {
   "rgb(var(--magenta-6))": "rgb(245,49,157)",
   "rgb(var(--pinkpurple-6))": "rgb(217,26,217)",
 };
+
+export const getDefaultTextDelta = () => new Delta().insertEOL();
