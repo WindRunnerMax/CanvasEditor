@@ -102,7 +102,7 @@ export const RichTextEditor: FC<{
     e && setMountDOM(blockEditor, e);
   });
 
-  const overridePosition = (l: number, t: number) => {
+  const overridePosition = () => {
     const rect = blockEditor.rect.getRawSelectionRect();
     if (rect) {
       const t = rect.top - 8;
@@ -112,7 +112,7 @@ export const RichTextEditor: FC<{
       }
       return { top: t, left: l };
     }
-    return { top: t, left: l };
+    return { top: -999999, left: -999999 };
   };
 
   return (

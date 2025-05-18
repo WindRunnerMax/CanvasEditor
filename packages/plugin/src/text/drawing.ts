@@ -110,13 +110,14 @@ export const drawingBackground = (
     let backgroundWidth = item.width + halfGap;
     let isStart = true;
     let isEnd = true;
-    
+
     // 检查是否是代码块的开始和结束
     if (i > 0) {
       const prev = matrix.items[i - 1];
-      isStart = !prev.config[TEXT_ATTRS.BACKGROUND] || prev.config[TEXT_ATTRS.BACKGROUND] !== background;
+      isStart =
+        !prev.config[TEXT_ATTRS.BACKGROUND] || prev.config[TEXT_ATTRS.BACKGROUND] !== background;
     }
-    
+
     // 合并连续的相同背景色
     for (let k = i + 1; k < matrix.items.length; ++k) {
       const next = matrix.items[k];
@@ -128,16 +129,17 @@ export const drawingBackground = (
         break;
       }
     }
-    
+
     ctx.fillStyle = background;
-    
+
     // 计算代码块的位置和尺寸，添加水平内边距
     const x = offsetX - halfGap - (isStart ? HORIZONTAL_PADDING : 0);
     const y = offsetYBaseLine - matrix.originHeight - BACKGROUND_OFFSET - 1;
-    const width = backgroundWidth + (isStart ? HORIZONTAL_PADDING : 0) + (isEnd ? HORIZONTAL_PADDING : 0);
+    const width =
+      backgroundWidth + (isStart ? HORIZONTAL_PADDING : 0) + (isEnd ? HORIZONTAL_PADDING : 0);
     const height = matrix.originHeight + BACKGROUND_OFFSET * 2;
     const borderRadius = 4;
-    
+
     // 根据是否是代码块的开始和结束来调整圆角
     if (isStart && isEnd) {
       // 单个字符的代码块，四个角都是圆角
@@ -172,7 +174,7 @@ export const drawingBackground = (
       // 代码块中间，没有圆角
       ctx.rect(x, y, width, height);
     }
-    
+
     ctx.fill();
     ctx.closePath();
   }

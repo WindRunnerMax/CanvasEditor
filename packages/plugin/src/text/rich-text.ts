@@ -63,7 +63,7 @@ export class RichText {
       let matrix: TextMatrix = getDefaultMatrix();
       for (const fragment of line.chars) {
         for (const character of fragment.char) {
-          const item = { char: character, config: fragment.config };
+          const item = { char: character, config: { ...fragment.config } };
           const { metric, font } = this.measure(item.char, item.config);
           if (!metric) continue;
           const text: TextMatrixItem = {
