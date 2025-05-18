@@ -92,6 +92,9 @@ export const drawingDividingLine = (
   return false;
 };
 
+// 代码块水平内边距
+export const HORIZONTAL_PADDING = 1;
+
 export const drawingBackground = (
   ctx: CanvasRenderingContext2D,
   matrix: TextMatrix,
@@ -105,22 +108,72 @@ export const drawingBackground = (
     ctx.beginPath();
     const background = item.config[TEXT_ATTRS.BACKGROUND];
     let backgroundWidth = item.width + halfGap;
+    let isStart = true;
+    let isEnd = true;
+    
+    // 检查是否是代码块的开始和结束
+    if (i > 0) {
+      const prev = matrix.items[i - 1];
+      isStart = !prev.config[TEXT_ATTRS.BACKGROUND] || prev.config[TEXT_ATTRS.BACKGROUND] !== background;
+    }
+    
+    // 合并连续的相同背景色
     for (let k = i + 1; k < matrix.items.length; ++k) {
       const next = matrix.items[k];
       if (next.config[TEXT_ATTRS.BACKGROUND] === background) {
         backgroundWidth = backgroundWidth + next.width + halfGap;
         next.config[TEXT_ATTRS.BACKGROUND] = "";
       } else {
+        isEnd = true;
         break;
       }
     }
+    
     ctx.fillStyle = background;
-    ctx.fillRect(
-      offsetX - halfGap,
-      offsetYBaseLine - matrix.originHeight - BACKGROUND_OFFSET - 1,
-      backgroundWidth,
-      matrix.originHeight + BACKGROUND_OFFSET * 2
-    );
+    
+    // 计算代码块的位置和尺寸，添加水平内边距
+    const x = offsetX - halfGap - (isStart ? HORIZONTAL_PADDING : 0);
+    const y = offsetYBaseLine - matrix.originHeight - BACKGROUND_OFFSET - 1;
+    const width = backgroundWidth + (isStart ? HORIZONTAL_PADDING : 0) + (isEnd ? HORIZONTAL_PADDING : 0);
+    const height = matrix.originHeight + BACKGROUND_OFFSET * 2;
+    const borderRadius = 4;
+    
+    // 根据是否是代码块的开始和结束来调整圆角
+    if (isStart && isEnd) {
+      // 单个字符的代码块，四个角都是圆角
+      ctx.moveTo(x + borderRadius, y);
+      ctx.lineTo(x + width - borderRadius, y);
+      ctx.arcTo(x + width, y, x + width, y + borderRadius, borderRadius);
+      ctx.lineTo(x + width, y + height - borderRadius);
+      ctx.arcTo(x + width, y + height, x + width - borderRadius, y + height, borderRadius);
+      ctx.lineTo(x + borderRadius, y + height);
+      ctx.arcTo(x, y + height, x, y + height - borderRadius, borderRadius);
+      ctx.lineTo(x, y + borderRadius);
+      ctx.arcTo(x, y, x + borderRadius, y, borderRadius);
+    } else if (isStart) {
+      // 代码块开始，只有左边是圆角
+      ctx.moveTo(x + borderRadius, y);
+      ctx.lineTo(x + width, y);
+      ctx.lineTo(x + width, y + height);
+      ctx.lineTo(x + borderRadius, y + height);
+      ctx.arcTo(x, y + height, x, y + height - borderRadius, borderRadius);
+      ctx.lineTo(x, y + borderRadius);
+      ctx.arcTo(x, y, x + borderRadius, y, borderRadius);
+    } else if (isEnd) {
+      // 代码块结束，只有右边是圆角
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + width - borderRadius, y);
+      ctx.arcTo(x + width, y, x + width, y + borderRadius, borderRadius);
+      ctx.lineTo(x + width, y + height - borderRadius);
+      ctx.arcTo(x + width, y + height, x + width - borderRadius, y + height, borderRadius);
+      ctx.lineTo(x, y + height);
+      ctx.lineTo(x, y);
+    } else {
+      // 代码块中间，没有圆角
+      ctx.rect(x, y, width, height);
+    }
+    
+    ctx.fill();
     ctx.closePath();
   }
 };
