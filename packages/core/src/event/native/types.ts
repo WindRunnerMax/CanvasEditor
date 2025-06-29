@@ -19,6 +19,7 @@ export const NATIVE_EVENTS = {
   DROP: "drop",
   DROP_OVER: "dragover",
   CONTEXT_MENU: "contextmenu",
+  CLICK: "click",
 } as const;
 
 export type NativeEventMap = {
@@ -42,6 +43,7 @@ export type NativeEventMap = {
   [NATIVE_EVENTS.DROP]: DragEvent;
   [NATIVE_EVENTS.DROP_OVER]: DragEvent;
   [NATIVE_EVENTS.CONTEXT_MENU]: MouseEvent;
+  [NATIVE_EVENTS.CLICK]: MouseEvent;
 };
 
 type NativeEventMapType = typeof NATIVE_EVENTS;

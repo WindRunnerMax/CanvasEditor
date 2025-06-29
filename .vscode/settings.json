@@ -4,6 +4,7 @@
         "COMPAT",
         "pako",
         "pnpm",
+        "rspack",
         "TSON",
         "undoable",
         "webrtc"

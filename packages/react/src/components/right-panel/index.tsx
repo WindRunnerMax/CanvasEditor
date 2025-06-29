@@ -32,9 +32,8 @@ export const RightPanel: FC = () => {
 
   const loadEditor = () => {
     const id = active.length === 1 && active[0];
-    if (!id) return null;
-    const state = editor.state.getDeltaState(id);
-    if (!state) return null;
+    const state = id && editor.state.getDeltaState(id);
+    if (!id || !state) return null;
     switch (state.key) {
       case NAV_ENUM.RECT:
         return <Rect key={id} editor={editor} state={state}></Rect>;

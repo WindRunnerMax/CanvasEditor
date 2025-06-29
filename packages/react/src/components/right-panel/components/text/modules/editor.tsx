@@ -20,13 +20,12 @@ import {
   LineHeightPlugin,
   LinkPlugin,
   OrderListPlugin,
-  setMountDOM,
   Shortcut,
   StrikePlugin,
   ToolBarMixin as Tools,
   UnderlinePlugin,
 } from "@block-kit/plugin";
-import { BlockKit, Editable } from "@block-kit/react";
+import { BlockKit, Editable, MountNode } from "@block-kit/react";
 import { useMemoFn } from "@block-kit/utils/dist/es/hooks";
 import type { FC } from "react";
 import React, { useEffect, useMemo } from "react";
@@ -99,7 +98,7 @@ export const RichTextEditor: FC<{
   }, [blockEditor.event, dataRef, onSaveChange]);
 
   const onMountRef = useMemoFn((e: HTMLElement | null) => {
-    e && setMountDOM(blockEditor, e);
+    e && MountNode.set(blockEditor, e);
   });
 
   const overridePosition = () => {

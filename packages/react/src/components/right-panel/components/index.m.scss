@@ -19,7 +19,7 @@
 
   .launch {
     cursor: pointer;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: normal;
     margin-left: 1px;
     margin-top: 3px;
@@ -68,6 +68,7 @@
 }
 
 .modal {
+  position: relative;
   width: 700px;
 
   .modalTitle {
@@ -77,6 +78,15 @@
 
   :global(.arco-modal-content) {
     padding: 5px 15px 15px;
+  }
+
+  .resize {
+    bottom: 0;
+    cursor: col-resize;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 7px;
   }
 }
 

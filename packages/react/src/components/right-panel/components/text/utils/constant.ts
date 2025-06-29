@@ -13,3 +13,5 @@ export const COLOR_PEER: Record<string, string> = {
 };
 
 export const getDefaultTextDelta = () => new Delta().insertEOL();
+
+export const DEFAULT_MODAL_WIDTH = 700;

@@ -103,6 +103,10 @@ export class NativeEvent {
     this.event.trigger(NATIVE_EVENTS.CONTEXT_MENU, e);
   };
 
+  private onClick = (e: MouseEvent) => {
+    this.event.trigger(NATIVE_EVENTS.CLICK, e);
+  };
+
   public bind() {
     this.unbind();
     const container = this.editor.getContainer();
@@ -117,7 +121,7 @@ export class NativeEvent {
     container.addEventListener(NATIVE_EVENTS.MOUSE_WHEEL, this.onMouseWheel);
     container.addEventListener(NATIVE_EVENTS.DROP, this.onDrop);
     container.addEventListener(NATIVE_EVENTS.DROP_OVER, this.onDropOver);
-    container.addEventListener(NATIVE_EVENTS.CONTEXT_MENU, this.onContextMenu);
+    container.addEventListener(NATIVE_EVENTS.CLICK, this.onClick);
     document.addEventListener(NATIVE_EVENTS.COPY, this.onCopy);
     document.addEventListener(NATIVE_EVENTS.CUT, this.onCut);
     document.addEventListener(NATIVE_EVENTS.PASTE, this.onPaste);
@@ -142,6 +146,7 @@ export class NativeEvent {
     container.removeEventListener(NATIVE_EVENTS.DROP, this.onDrop);
     container.removeEventListener(NATIVE_EVENTS.DROP_OVER, this.onDropOver);
     container.removeEventListener(NATIVE_EVENTS.CONTEXT_MENU, this.onContextMenu);
+    container.removeEventListener(NATIVE_EVENTS.CLICK, this.onClick);
     document.removeEventListener(NATIVE_EVENTS.COPY, this.onCopy);
     document.removeEventListener(NATIVE_EVENTS.CUT, this.onCut);
     document.removeEventListener(NATIVE_EVENTS.PASTE, this.onPaste);
