@@ -33,7 +33,7 @@
   margin-top: 10px;
 }
 
-.input {
+.input:global(.arco-input-group-wrapper) {
   width: 70px;
 }
 
