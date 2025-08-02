@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import type { Editor } from "sketching-core";
 import { DRAG_KEY, EDITOR_EVENT } from "sketching-core";
 import type { DeltaLike } from "sketching-delta";
-import { DEFAULT_BORDER_COLOR, RECT_ATTRS } from "sketching-plugin";
+import { DEFAULT_BORDER_COLOR, IMAGE_MODE, RECT_ATTRS } from "sketching-plugin";
 import { cs, TSON } from "sketching-utils";
 
 import { CursorIcon } from "../../../static/cursor";
@@ -13,8 +13,7 @@ import { ImageIcon } from "../../../static/image";
 import { RectIcon } from "../../../static/rect";
 import { TextIcon } from "../../../static/text";
 import styles from "../index.m.scss";
-import { NAV_ENUM } from "../utils/constant";
-import { uploadImage } from "../utils/upload";
+import { DEFAULT_IMAGE, NAV_ENUM } from "../utils/constant";
 
 export const Left: FC<{
   editor: Editor;
@@ -44,11 +43,14 @@ export const Left: FC<{
       editor.canvas.insert.start(deltaLike);
     }
     if (index === NAV_ENUM.IMAGE) {
-      uploadImage().then(src => {
-        const deltaLike: DeltaLike = { key: NAV_ENUM.IMAGE, ...empty };
-        deltaLike.attrs = { src };
-        editor.canvas.insert.start(deltaLike);
-      });
+      const deltaLike: DeltaLike = { key: NAV_ENUM.IMAGE, ...empty };
+      deltaLike.attrs = {
+        src: DEFAULT_IMAGE,
+        mode: IMAGE_MODE.COVER,
+        [RECT_ATTRS.BORDER_WIDTH]: "1",
+        [RECT_ATTRS.BORDER_COLOR]: "#DADADA",
+      };
+      editor.canvas.insert.start(deltaLike);
     }
     setActive(index);
   });
@@ -61,6 +63,24 @@ export const Left: FC<{
       y: 0,
       width: 100,
       height: 50,
+    };
+    e.dataTransfer.setData(DRAG_KEY, TSON.encode(deltaLike) || "");
+  };
+
+  const onDragImage = (e: React.DragEvent<HTMLDivElement>) => {
+    if (active !== NAV_ENUM.DEFAULT) return false;
+    const deltaLike: DeltaLike = {
+      key: NAV_ENUM.IMAGE,
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 100,
+      attrs: {
+        src: DEFAULT_IMAGE,
+        mode: IMAGE_MODE.COVER,
+        [RECT_ATTRS.BORDER_WIDTH]: "1",
+        [RECT_ATTRS.BORDER_COLOR]: "#DADADA",
+      },
     };
     e.dataTransfer.setData(DRAG_KEY, TSON.encode(deltaLike) || "");
   };
@@ -115,6 +135,9 @@ export const Left: FC<{
         {RectIcon}
       </div>
       <div
+        draggable={active === NAV_ENUM.DEFAULT}
+        onDragStart={onDragImage}
+        onDragEnd={onDragEnd}
         className={cs(styles.op, active === NAV_ENUM.IMAGE && styles.active)}
         onClick={() => switchIndex(NAV_ENUM.IMAGE)}
       >

@@ -44,7 +44,7 @@ export const Image: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state
           min={0}
           max={10}
           size="mini"
-          onChange={v => onChange(RECT_ATTRS.BORDER_WIDTH, v.toString())}
+          onChange={v => onChange(RECT_ATTRS.BORDER_WIDTH, (v || 0).toString())}
           defaultValue={state.getAttr(RECT_ATTRS.BORDER_WIDTH) || 0}
         />
       </div>
@@ -52,7 +52,7 @@ export const Image: FC<{ editor: Editor; state: DeltaState }> = ({ editor, state
       <div className={styles.item}>
         <div>图片</div>
         <div className={styles.uploadImage} onClick={onPickImage}>
-          选择
+          上传图片
         </div>
       </div>
       <div className={styles.item}>
