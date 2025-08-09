@@ -61,6 +61,8 @@ export class NativeEvent {
   };
 
   private onMouseDown = (e: MouseEvent) => {
+    // 非鼠标主按键不认为是 MouseDown
+    if (e.button !== MOUSE_BUTTON.MAIN) return void 0;
     this.editor.state.set(EDITOR_STATE.MOUSE_DOWN, true);
     this.event.trigger(NATIVE_EVENTS.MOUSE_DOWN, e);
   };
@@ -121,6 +123,7 @@ export class NativeEvent {
     container.addEventListener(NATIVE_EVENTS.MOUSE_WHEEL, this.onMouseWheel);
     container.addEventListener(NATIVE_EVENTS.DROP, this.onDrop);
     container.addEventListener(NATIVE_EVENTS.DROP_OVER, this.onDropOver);
+    container.addEventListener(NATIVE_EVENTS.CONTEXT_MENU, this.onContextMenu);
     container.addEventListener(NATIVE_EVENTS.CLICK, this.onClick);
     document.addEventListener(NATIVE_EVENTS.COPY, this.onCopy);
     document.addEventListener(NATIVE_EVENTS.CUT, this.onCut);

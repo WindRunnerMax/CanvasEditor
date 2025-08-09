@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/WindrunnerMax/CVEditor.git"
+    "url": "git+https://github.com/WindRunnerMax/CanvasEditor.git"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/WindrunnerMax/CVEditor/issues"
+    "url": "https://github.com/WindRunnerMax/CanvasEditor/issues"
   },
-  "homepage": "https://github.com/WindrunnerMax/CVEditor",
+  "homepage": "https://github.com/WindRunnerMax/CanvasEditor",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "6.12.0",
     "@typescript-eslint/parser": "6.12.0",
