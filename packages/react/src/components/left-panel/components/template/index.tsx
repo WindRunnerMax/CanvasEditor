@@ -43,13 +43,13 @@ export const Template: FC<{
     Modal.confirm({
       title: "警告",
       simple: true,
-      content: <div className={styles.modalContent}>确定要加载模版吗，当前的数据将会被覆盖。</div>,
+      content: <div className={styles.modalContent}>确定要加载模板吗，当前的数据将会被覆盖。</div>,
       confirmLoading: loading,
       onConfirm: async () => {
         setLoading(true);
         const res: LocalStorageData | null = await loadTemplate(item.template);
         setLoading(false);
-        if (!res) return Message.error("模版加载失败");
+        if (!res) return Message.error("模板加载失败");
         Storage.local.set(STORAGE_KEY, res);
         const deltaSetLike = res.deltaSetLike;
         const deltaSet = new DeltaSet(deltaSetLike);

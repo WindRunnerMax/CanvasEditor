@@ -13,7 +13,7 @@ export const LeftPanel: FC = () => {
   return (
     <div className={styles.container}>
       <Tabs destroyOnHide>
-        <TabPane key="template" title="模版">
+        <TabPane key="template" title="模板">
           <Template editor={editor}></Template>
         </TabPane>
         <TabPane key="structure" title="结构">
