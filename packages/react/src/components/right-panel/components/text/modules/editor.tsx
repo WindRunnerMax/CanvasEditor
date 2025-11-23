@@ -1,5 +1,4 @@
 import "./index.scss";
-import "@block-kit/plugin/dist/styles/index.css";
 
 import type { ContentChangeEvent } from "@block-kit/core";
 import { Editor as BlockEditor, EDITOR_EVENT } from "@block-kit/core";
@@ -56,9 +55,9 @@ export const RichTextEditor: FC<{
       logLevel: LOG_LEVEL.ERROR,
       schema,
     });
-    instance.plugin.register(
-      new BoldPlugin(instance),
-      new ItalicPlugin(instance),
+    instance.plugin.register([
+      new BoldPlugin(),
+      new ItalicPlugin(),
       new UnderlinePlugin(instance),
       new StrikePlugin(instance),
       new ImagePlugin(instance),
@@ -72,8 +71,8 @@ export const RichTextEditor: FC<{
       new OrderListPlugin(instance),
       new IndentPlugin(instance),
       new LinkPlugin(instance),
-      new Shortcut(instance, PRESET_SHORTCUT)
-    );
+      new Shortcut(instance, PRESET_SHORTCUT),
+    ]);
     return instance;
   }, [dataRef]);
 

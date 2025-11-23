@@ -159,20 +159,20 @@ importers:
         specifier: 2.60.3
         version: 2.60.3(@types/react@17.0.2)(react-dom@17.0.2)(react@17.0.2)
       '@block-kit/core':
-        specifier: 1.0.10
-        version: 1.0.10
+        specifier: 1.0.18
+        version: 1.0.18
       '@block-kit/delta':
-        specifier: 1.0.10
-        version: 1.0.10
+        specifier: 1.0.18
+        version: 1.0.18
       '@block-kit/plugin':
-        specifier: 1.0.10
-        version: 1.0.10(@types/react@17.0.2)(react-dom@17.0.2)(react@17.0.2)
+        specifier: 1.0.18
+        version: 1.0.18(@types/react@17.0.2)(react-dom@17.0.2)(react@17.0.2)
       '@block-kit/react':
-        specifier: 1.0.10
-        version: 1.0.10(react-dom@17.0.2)(react@17.0.2)
+        specifier: 1.0.18
+        version: 1.0.18(react-dom@17.0.2)(react@17.0.2)
       '@block-kit/utils':
-        specifier: 1.0.10
-        version: 1.0.10
+        specifier: 1.0.18
+        version: 1.0.18
       react:
         specifier: 17.0.2
         version: 17.0.2
@@ -1677,31 +1677,31 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@block-kit/core@1.0.10:
-    resolution: {integrity: sha512-0neGs7D41MdWbbibDDR3+7RhAOLmEDRVKltx/D5ASYsKjYy9B3fHr0jp2NSeOnPy0360ZYVaBcLRIvkpGBTy4w==}
+  /@block-kit/core@1.0.18:
+    resolution: {integrity: sha512-K1ZlB5GWLeBzRI+1dMN7T0p4HZaLNDcwT+vv9mB2Wi1TSbZsTqoNoFAdyI2+cCkz0JGvP1OlG9ovq4hWTWgmdQ==}
     dependencies:
-      '@block-kit/delta': 1.0.10
-      '@block-kit/utils': 1.0.10
+      '@block-kit/delta': 1.0.18
+      '@block-kit/utils': 1.0.18
     dev: false
 
-  /@block-kit/delta@1.0.10:
-    resolution: {integrity: sha512-HesD+UYmdr3I+tZScOqMwH5JCXtxoQngmAt/tov+R6mX0rfVyZFvqdHSBFRRc2AePeQN0qAVo4EVC5mvvAzZ7w==}
+  /@block-kit/delta@1.0.18:
+    resolution: {integrity: sha512-cRf2f363ySzDOLq3qX9/zarAsQhRQscoK0VFLifJVctrrO/NME94a8EhMzTMfrRRxc71AlHnhkLg96i7r10u1w==}
     dependencies:
-      '@block-kit/utils': 1.0.10
+      '@block-kit/utils': 1.0.18
       fast-diff: 1.3.0
     dev: false
 
-  /@block-kit/plugin@1.0.10(@types/react@17.0.2)(react-dom@17.0.2)(react@17.0.2):
-    resolution: {integrity: sha512-xJiFKY1ec1LwWQ43l22gOVIIipSN1bqN+Z6ibsm8du4oW69mWVgZU3u+ABxM07srMON5rB00HDRgXYUDOHhF0g==}
+  /@block-kit/plugin@1.0.18(@types/react@17.0.2)(react-dom@17.0.2)(react@17.0.2):
+    resolution: {integrity: sha512-7AWTGeW2HaiOewyM7T9uHkWtMaVvja2SGF0pQ0belsGiRInTYzGTMhC78IiQnqiZDriNAFJS2xz0RybNaxWtsg==}
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
     dependencies:
       '@arco-design/web-react': 2.64.0(@types/react@17.0.2)(react-dom@17.0.2)(react@17.0.2)
-      '@block-kit/core': 1.0.10
-      '@block-kit/delta': 1.0.10
-      '@block-kit/react': 1.0.10(react-dom@17.0.2)(react@17.0.2)
-      '@block-kit/utils': 1.0.10
+      '@block-kit/core': 1.0.18
+      '@block-kit/delta': 1.0.18
+      '@block-kit/react': 1.0.18(react-dom@17.0.2)(react@17.0.2)
+      '@block-kit/utils': 1.0.18
       '@emoji-mart/data': 1.2.1
       '@emoji-mart/react': 1.1.1(emoji-mart@5.6.0)(react@17.0.2)
       emoji-mart: 5.6.0
@@ -1711,21 +1711,21 @@ packages:
       - '@types/react'
     dev: false
 
-  /@block-kit/react@1.0.10(react-dom@17.0.2)(react@17.0.2):
-    resolution: {integrity: sha512-Ra7vf47muVTWrLWpDcs/wMVB6rhzpZiHAY6YVBosqWatmZ+bvmXfw5WK/gN+yh7FopO612w/EgxWLpxX6/0JhA==}
+  /@block-kit/react@1.0.18(react-dom@17.0.2)(react@17.0.2):
+    resolution: {integrity: sha512-eeYDCqZ4izK978EW+0QOdzfQlA9uw3arX+PcqKB8VE8aFBt+yIOQbJFqpCSNXobBmrPQF+D42v7DiDo8IVrCKQ==}
     peerDependencies:
       react: '>=16'
       react-dom: '>=16'
     dependencies:
-      '@block-kit/core': 1.0.10
-      '@block-kit/delta': 1.0.10
-      '@block-kit/utils': 1.0.10
+      '@block-kit/core': 1.0.18
+      '@block-kit/delta': 1.0.18
+      '@block-kit/utils': 1.0.18
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
     dev: false
 
-  /@block-kit/utils@1.0.10:
-    resolution: {integrity: sha512-Sm6EOA+cuRgFur43YijbUl6vQTCPwSEnqVz8f0V4GcookQtdtFfEnmNUj/FRCXoB4+de41FdSNSpj7/OMua3Fw==}
+  /@block-kit/utils@1.0.18:
+    resolution: {integrity: sha512-QRP3p6ZzAJdJTk+yibWHfgPulbIIAoiluuQ55HNDCf0iFwEygbxuTFiZhXkbMulOxAZ5juKDieKeOkgRZmmUgA==}
     dependencies:
       laser-utils: 0.0.5-alpha.27
     dev: false
