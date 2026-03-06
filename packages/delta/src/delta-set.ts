@@ -82,12 +82,14 @@ export class DeltaSet {
   }
 
   private static DeltaTypeStore: Record<string, DeltaStatic> = {};
+
   public static register(delta: DeltaStatic) {
     if (!delta.KEY) {
       throw new TypeError("Please implements DeltaStatic Type");
     }
     DeltaSet.DeltaTypeStore[delta.KEY] = delta;
   }
+
   public static create(delta: DeltaLike) {
     const DeltaType = DeltaSet.DeltaTypeStore[delta.key];
     return DeltaType ? DeltaType.create(delta) : null;

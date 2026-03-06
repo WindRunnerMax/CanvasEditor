@@ -55,7 +55,7 @@ export class Op<T extends OpType> {
     return null;
   }
 
-  static from<T extends OpType>(type: T, payload: OpPayload[T]) {
+  public static from<T extends OpType>(type: T, payload: OpPayload[T]) {
     return new Op(type, payload);
   }
 }
