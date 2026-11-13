@@ -1,10 +1,16 @@
 import React, { createContext } from "react";
 import type { Editor } from "sketching-core";
 
+import { FormatPainterProvider } from "./use-format-painter";
+
 export const EditorContext = createContext<Editor | null>(null);
 export const WithEditor: React.FC<{ editor: Editor }> = props => {
   const { editor, children } = props;
-  return <EditorContext.Provider value={editor}>{children}</EditorContext.Provider>;
+  return (
+    <EditorContext.Provider value={editor}>
+      <FormatPainterProvider>{children}</FormatPainterProvider>
+    </EditorContext.Provider>
+  );
 };
 
 export const useEditor = () => {

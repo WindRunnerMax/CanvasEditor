@@ -1,3 +1,17 @@
 .block-kit-order-list .block-kit-order-indicator {
   margin-left: 6px;
 }
+
+.text-format-painter {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 12px;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.format-painter-active .block-kit-editable,
+.format-painter-active .block-kit-editable * {
+  cursor: crosshair;
+}
