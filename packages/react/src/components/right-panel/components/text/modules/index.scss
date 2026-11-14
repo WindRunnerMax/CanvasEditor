@@ -3,12 +3,14 @@
 }
 
 .text-format-painter {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  font-size: 12px;
-  gap: 8px;
-  margin-top: 8px;
+  background: none;
+  border: 0;
+  font: inherit;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
 }
 
 .format-painter-active .block-kit-editable,

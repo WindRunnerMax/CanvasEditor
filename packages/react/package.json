@@ -23,11 +23,11 @@
   "license": "MIT",
   "dependencies": {
     "@arco-design/web-react": "2.60.3",
-    "@block-kit/core": "1.0.18",
-    "@block-kit/delta": "1.0.18",
-    "@block-kit/plugin": "1.0.18",
-    "@block-kit/react": "1.0.18",
-    "@block-kit/utils": "1.0.18",
+    "@block-kit/core": "1.0.31",
+    "@block-kit/delta": "1.0.31",
+    "@block-kit/plugin": "1.0.31",
+    "@block-kit/react": "1.0.31",
+    "@block-kit/utils": "1.0.31",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "sketching-core": "workspace: *",
@@ -36,9 +36,9 @@
     "sketching-utils": "workspace: *"
   },
   "devDependencies": {
-    "@types/jest": "29.4.0",
     "@rspack/cli": "0.2.5",
     "@rspack/plugin-html": "0.2.5",
+    "@types/jest": "29.4.0",
     "@types/node": "20.11.10",
     "@types/pdfkit": "0.13.3",
     "@types/react": "17.0.2",

@@ -8,7 +8,7 @@ describe("text format painter", () => {
     const source = new Delta()
       .insert("Source", { bold: "true", color: "#f00", link: "https://source.example" })
       .insert("Mixed", { "italic": "true", "font-size": "24" })
-      .insertEOL({ "list-type": "bullet", "line-height": "2" });
+      .insertEOL({ "list": "bullet", "line-height": "2" });
     const snapshot = JSON.stringify(source.ops);
     const format = getTextFormat(source.ops);
     expect(format).toMatchObject({
@@ -18,7 +18,7 @@ describe("text format painter", () => {
       "font-size": "",
     });
     expect(format).not.toHaveProperty("link");
-    expect(format).not.toHaveProperty("list-type");
+    expect(format).not.toHaveProperty("list");
     expect(format).not.toHaveProperty("line-height");
     expect(JSON.stringify(source.ops)).toBe(snapshot);
   });
@@ -32,13 +32,13 @@ describe("text format painter", () => {
         "background": "#ff0",
         "link": "https://target.example",
       })
-      .insertEOL({ "list-type": "bullet", "line-height": "2" });
+      .insertEOL({ "list": "bullet", "line-height": "2" });
     const format = getTextFormat([{ insert: "Source", attributes: { bold: "true" } }])!;
     const change = new Delta().retain(6, format);
     const result = target.compose(change);
     expect(result.ops).toEqual([
       { insert: "Target", attributes: { bold: "true", link: "https://target.example" } },
-      { insert: "\n", attributes: { "list-type": "bullet", "line-height": "2" } },
+      { insert: "\n", attributes: { "list": "bullet", "line-height": "2" } },
     ]);
     expect(result.compose(change.invert(target)).ops).toEqual(target.ops);
   });
@@ -62,7 +62,7 @@ describe("text format painter", () => {
 
   it("skips newlines, images and dividers when finding source text", () => {
     const ops: Op[] = [
-      { insert: "\n", attributes: { "list-type": "bullet" } },
+      { insert: "\n", attributes: { list: "bullet" } },
       { insert: " ", attributes: { image: "true" } },
       { insert: " ", attributes: { divider: "true" } },
       { insert: "Source", attributes: { color: "#123456" } },

@@ -128,10 +128,11 @@ export const RichTextEditor: FC<{
     const rect = blockEditor.rect.getRawSelectionRect();
     if (rect) {
       const t = rect.top - 8;
-      let l = rect.left + rect.width / 2;
-      if (l + 200 > window.innerWidth) {
-        l = window.innerWidth - 200;
-      }
+      const halfWidth = 220;
+      const l = Math.max(
+        halfWidth,
+        Math.min(rect.left + rect.width / 2, window.innerWidth - halfWidth)
+      );
       return { top: t, left: l };
     }
     return { top: -999999, left: -999999 };
@@ -141,6 +142,7 @@ export const RichTextEditor: FC<{
     <BlockKit editor={blockEditor} readonly={false}>
       <div className="block-kit-editor-container">
         <FloatToolbar mountDOM={document.body} overridePosition={overridePosition}>
+          <FormatPainter editor={blockEditor} />
           <Tools.Bold></Tools.Bold>
           <Tools.Italic></Tools.Italic>
           <Tools.Underline></Tools.Underline>
@@ -165,7 +167,6 @@ export const RichTextEditor: FC<{
             className="block-kit-editable"
           ></Editable>
         </div>
-        <FormatPainter editor={blockEditor} />
       </div>
     </BlockKit>
   );
