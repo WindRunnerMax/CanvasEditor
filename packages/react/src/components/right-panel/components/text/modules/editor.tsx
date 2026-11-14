@@ -27,7 +27,7 @@ import {
 import { BlockKit, Editable, MountNode } from "@block-kit/react";
 import { useMemoFn } from "@block-kit/utils/dist/es/hooks";
 import type { FC } from "react";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import type { DeltaState } from "sketching-core";
 import type { Editor } from "sketching-core";
 import { Op, OP_TYPE } from "sketching-delta";
@@ -36,9 +36,11 @@ import { TEXT_ATTRS } from "sketching-plugin";
 import { debounce, TSON } from "sketching-utils";
 
 import { useIsMounted } from "../../../../../hooks/is-mounted";
+import { useFormatPainter } from "../../../../../hooks/use-format-painter";
 import { schema } from "../config/schema";
 import { getDefaultTextDelta } from "../utils/constant";
 import { textDeltaToSketch } from "../utils/transform";
+import { FormatPainter } from "./format-painter";
 import { PRESET_SHORTCUT } from "./short-cut";
 
 export const RichTextEditor: FC<{
@@ -48,6 +50,8 @@ export const RichTextEditor: FC<{
 }> = props => {
   const { dataRef, editor, state } = props;
   const { mounted } = useIsMounted();
+  const { format, setFormat } = useFormatPainter();
+  const paintTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const blockEditor = useMemo(() => {
     const instance = new BlockEditor({
@@ -75,6 +79,26 @@ export const RichTextEditor: FC<{
     ]);
     return instance;
   }, [dataRef]);
+
+  const paintFormat = useMemoFn(() => {
+    const selection = blockEditor.selection.get();
+    if (!format || !selection || selection.isCollapsed || blockEditor.state.isReadonly()) return;
+    blockEditor.perform.applyMarks(selection, format, { autoCaret: false });
+    setFormat(null);
+  });
+
+  const onPaintFormat = useMemoFn(() => {
+    if (!format) return;
+    if (paintTimer.current) clearTimeout(paintTimer.current);
+    // Let the browser's selectionchange synchronize the final mouse/keyboard selection.
+    paintTimer.current = setTimeout(paintFormat, 0);
+  });
+
+  useEffect(() => {
+    return () => {
+      if (paintTimer.current) clearTimeout(paintTimer.current);
+    };
+  }, []);
 
   const onSaveChange = useMemoFn((current: BlockDelta) => {
     if (!mounted.current) return void 0;
@@ -104,10 +128,11 @@ export const RichTextEditor: FC<{
     const rect = blockEditor.rect.getRawSelectionRect();
     if (rect) {
       const t = rect.top - 8;
-      let l = rect.left + rect.width / 2;
-      if (l + 200 > window.innerWidth) {
-        l = window.innerWidth - 200;
-      }
+      const halfWidth = 220;
+      const l = Math.max(
+        halfWidth,
+        Math.min(rect.left + rect.width / 2, window.innerWidth - halfWidth)
+      );
       return { top: t, left: l };
     }
     return { top: -999999, left: -999999 };
@@ -117,6 +142,7 @@ export const RichTextEditor: FC<{
     <BlockKit editor={blockEditor} readonly={false}>
       <div className="block-kit-editor-container">
         <FloatToolbar mountDOM={document.body} overridePosition={overridePosition}>
+          <FormatPainter editor={blockEditor} />
           <Tools.Bold></Tools.Bold>
           <Tools.Italic></Tools.Italic>
           <Tools.Underline></Tools.Underline>
@@ -127,7 +153,13 @@ export const RichTextEditor: FC<{
           <Tools.FontColor></Tools.FontColor>
           <Tools.LineHeight></Tools.LineHeight>
         </FloatToolbar>
-        <div className="block-kit-editable-container">
+        <div
+          className={`block-kit-editable-container${format ? " format-painter-active" : ""}`}
+          onMouseUp={onPaintFormat}
+          onKeyUp={event => {
+            if (event.key === "Shift" || event.shiftKey) onPaintFormat();
+          }}
+        >
           <div className="block-kit-mount-dom" ref={onMountRef}></div>
           <Editable
             placeholder="Please Enter..."

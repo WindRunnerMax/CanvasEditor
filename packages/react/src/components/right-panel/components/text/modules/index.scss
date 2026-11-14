@@ -1,3 +1,19 @@
 .block-kit-order-list .block-kit-order-indicator {
   margin-left: 6px;
 }
+
+.text-format-painter {
+  background: none;
+  border: 0;
+  font: inherit;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.format-painter-active .block-kit-editable,
+.format-painter-active .block-kit-editable * {
+  cursor: crosshair;
+}
