@@ -6,7 +6,8 @@
   "types": "dist/index.d.ts",
   "sideEffects": [
     "**/*.css",
-    "**/*.scss"
+    "**/*.scss",
+    "**/*.less"
   ],
   "files": [
     "dist"
